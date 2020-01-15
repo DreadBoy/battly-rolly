@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {FC} from 'react';
+import {createUseStyles} from 'react-jss';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {Gm} from './gm/Gm';
+import {Player} from './player/Player';
+import {SelectRole} from './SelectRole';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const useStyles = createUseStyles({
+    '@global': {
+        '*': {
+            boxSizing: 'border-box',
+        },
+    },
+});
+
+const App: FC = () => {
+    const classes = useStyles();
+    return (
+        <BrowserRouter>
+            <Switch>
+                <Route path="/gm">
+                    <Gm/>
+                </Route>
+                <Route path="/player">
+                    <Player/>
+                </Route>
+                <Route path="*">
+                    <SelectRole/>
+                </Route>
+            </Switch>
+        </BrowserRouter>
+    );
 };
 
 export default App;
