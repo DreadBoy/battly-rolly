@@ -6,7 +6,7 @@ const useStyles = createUseStyles({
 });
 
 export const Gm: FC = () => {
-  const classes = useStyles();
+  useStyles();
   return (
     <div>GM</div>
   );

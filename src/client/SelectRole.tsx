@@ -7,7 +7,7 @@ const useStyles = createUseStyles({
 });
 
 export const SelectRole: FC = () => {
-    const classes = useStyles();
+    useStyles();
     return (
         <div>
             <h1>Select role</h1>
