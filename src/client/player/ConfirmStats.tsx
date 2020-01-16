@@ -3,7 +3,7 @@ import {Button, Form, Header, Input} from 'semantic-ui-react';
 import {useNumber} from '../common/form-helpers';
 import {useHistory} from 'react-router';
 import bg from '../../assets/wp2227164.jpg';
-import {Splash} from './Splash';
+import {Splash} from '../common/Splash';
 
 export const ConfirmStats: FC = () => {
     const {push} = useHistory();
