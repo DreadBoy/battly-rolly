@@ -1,4 +1,4 @@
-import React, {createContext, FC, useCallback, useContext, useState} from 'react';
+import React, {createContext, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {Action} from './reducer';
 import Io from 'socket.io-client';
 import {Connect} from './Connect';
@@ -22,9 +22,20 @@ export const SocketProvider: FC = ({children}) => {
         });
     }, []);
 
-    const send = useCallback((action: Action) => {
-        socket?.emit('action', action);
+    const socketRef = useRef<SocketIOClient.Socket>();
+    useEffect(() => {
+        socketRef.current = socket
     }, [socket]);
+    useEffect(() => {
+        return () => {
+            socketRef.current?.disconnect();
+            setSocket(undefined);
+        }
+    }, []);
+
+    const send = useCallback((action: Action) => {
+        socketRef.current?.emit('action', action);
+    }, []);
 
     return (
         <socketContext.Provider value={{connected, send, socket}}>

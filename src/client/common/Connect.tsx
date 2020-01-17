@@ -6,7 +6,7 @@ import {Splash} from './Splash';
 import {useProbe} from './useProbe';
 
 type Props = {
-    connect: (origin: string) => void
+    connect: (origin: string) => void,
 }
 
 const useStyles = createUseStyles({

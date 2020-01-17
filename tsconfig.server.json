@@ -19,7 +19,10 @@
     "jsx": "react",
     "outDir": "build"
   },
-  "include": [
-    "src/server/**/*"
+  "files": [
+    "src/server/server.ts"
+  ],
+  "exclude": [
+    "src/client/**/*"
   ]
 }

@@ -2,10 +2,14 @@ import Koa from 'koa';
 import Router from '@koa/router';
 import Io from 'socket.io'
 import {createServer} from 'http';
-import {State} from '../client/common/reducer';
+import KoaStatic from 'koa-static-server';
 
 const app = new Koa();
 const router = new Router();
+const koaStatic = KoaStatic({
+    rootDir: __dirname,
+    notFoundFile: 'index.html',
+});
 
 router.get('/probe', ctx => ctx.response.status = 200);
 
@@ -16,13 +20,14 @@ app
     })
     .use(router.routes())
     .use(router.allowedMethods())
+    .use(koaStatic)
 ;
 
 const server = createServer(app.callback());
 const io = Io(server);
 
 let gm: Io.Socket | null = null;
-let cachedState: State | null = null;
+let cachedState: any | null = null;
 io.on('connect', socket => {
     console.log('connected');
     let playerId: string | null = null;
