@@ -1,6 +1,16 @@
+import {cloneDeep} from 'lodash';
+
 export type State = {
     phase: 0 | 1 | 2 | 3;
-    players: { [id: string]: any },
+    players: {
+        [id: string]: {
+            stats: PlayerStats
+        }
+    },
+}
+
+export type PlayerStats = {
+    AC: number,
 }
 
 export type Action = {
@@ -35,6 +45,11 @@ export function reducer(state: State = {phase: 0, players: {}}, action: Action) 
                 ...state,
                 players,
             };
+        case 'SET STATS':
+            const {playerId, ...stats} = action.payload;
+            const state1 = cloneDeep(state);
+            state1.players[playerId].stats = stats;
+            return state1;
         default:
             return state;
     }

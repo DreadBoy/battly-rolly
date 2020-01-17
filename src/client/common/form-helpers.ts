@@ -8,8 +8,8 @@ export function useText() {
     return {value, onChange}
 }
 
-export function useNumber() {
-    const [value, setValue] = useState<string>('');
+export function useNumber(defaultValue: string) {
+    const [value, setValue] = useState<string>(defaultValue);
     const onChange = useCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
         setValue(event.target.value);
     }, []);

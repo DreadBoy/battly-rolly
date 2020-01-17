@@ -64,6 +64,7 @@ io.on('connect', socket => {
         if (gm === null)
             return;
         console.log('Action:', JSON.stringify(action));
+        action.payload.playerId = playerId;
         gm.emit('action', action);
     });
     socket.on('state', state => {

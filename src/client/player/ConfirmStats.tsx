@@ -1,32 +1,49 @@
 import React, {FC, FormEventHandler, useCallback} from 'react';
-import {Button, Form, Header, Input} from 'semantic-ui-react';
+import {Button, Form, Header} from 'semantic-ui-react';
 import {useNumber} from '../common/form-helpers';
 import bg from '../../assets/wp2227164.jpg';
 import {Splash} from '../common/Splash';
 import {useSocket} from '../common/Socket';
+import {useLocalStorage} from '../common/use-local-storage';
+import {useHistory} from 'react-router';
+
+function positive(useNumber: { isValid: boolean, number: number | undefined }) {
+    return useNumber.isValid && useNumber.number && useNumber.number > 0;
+}
 
 export const ConfirmStats: FC = () => {
     const {send} = useSocket();
-
-    const {value: acString, number: ac, isValid, onChange: acOnChange} = useNumber();
+    const {push} = useHistory();
+    const {value, set} = useLocalStorage('default stats');
+    const stats = value ? JSON.parse(value) : {};
+    const AC = useNumber(stats?.AC?.toString() ?? '');
+    const passivePerception = useNumber(stats?.passivePerception?.toString() ?? '');
 
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();
+        const stats = {
+            AC: AC.number,
+            passivePerception: passivePerception.number,
+        };
+        set(JSON.stringify(stats));
         send({
             type: 'SET STATS',
-            payload: {
-                ac,
-            },
+            payload: stats,
         });
-    }, [ac, send]);
+        push('combat');
+    }, [AC.number, passivePerception.number, push, send, set]);
+
     return (
         <Splash bg={bg} position={'24% center'}>
             <Header as='h1'>Enter your stats</Header>
             <Form onSubmit={onSubmit}>
-                <Form.Field>
-                    <Input label={'AC'} onChange={acOnChange} value={acString} error={!isValid || !ac || ac < 1}/>
-                </Form.Field>
-                <Button primary type={'submit'} disabled={!isValid || !ac || ac < 1}>Confirm</Button>
+                <Form.Group widths='equal'>
+                    <Form.Input fluid label={'AC'} onChange={AC.onChange} value={AC.value} error={!positive(AC)}/>
+                    <Form.Input fluid label={'Passive perception'} onChange={passivePerception.onChange}
+                                value={passivePerception.value} error={!positive(passivePerception)}/>
+                </Form.Group>
+                <Button primary type={'submit'}
+                        disabled={!positive(AC) || !positive(passivePerception)}>Confirm</Button>
             </Form>
         </Splash>
     );
