@@ -4,10 +4,9 @@ import Io from 'socket.io-client';
 import {Connect} from './Connect';
 
 type SocketContext = {
+    socket: SocketIOClient.Socket | undefined,
     connected: boolean,
     send: (action: Action) => void,
-    claim: () => void,
-    claimed: boolean,
 }
 
 const socketContext = createContext<SocketContext>(undefined as any);
@@ -15,11 +14,6 @@ const socketContext = createContext<SocketContext>(undefined as any);
 export const SocketProvider: FC = ({children}) => {
     const [socket, setSocket] = useState<SocketIOClient.Socket>();
     const connected = !!socket;
-    const send = useCallback((action: Action) => {
-        if (!socket)
-            return;
-        socket.emit('action', action);
-    }, [socket]);
     const connect = useCallback((origin: string) => {
         const s = Io.connect(origin);
         setSocket(s);
@@ -28,15 +22,12 @@ export const SocketProvider: FC = ({children}) => {
         });
     }, []);
 
-    const [claimed, setClaimed] = useState<boolean>(false);
-    const claim = useCallback(() => {
-        if (!socket)
-            return false;
-        socket.emit('claim', setClaimed);
-        return true;
+    const send = useCallback((action: Action) => {
+        socket?.emit('action', action);
     }, [socket]);
+
     return (
-        <socketContext.Provider value={{connected, send, claim, claimed}}>
+        <socketContext.Provider value={{connected, send, socket}}>
             {connected ? children : (
                 <Connect connect={connect}/>
             )}

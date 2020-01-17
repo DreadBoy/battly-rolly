@@ -1,17 +1,24 @@
 import React, {FC, FormEventHandler, useCallback} from 'react';
 import {Button, Form, Header, Input} from 'semantic-ui-react';
 import {useNumber} from '../common/form-helpers';
-import {useHistory} from 'react-router';
 import bg from '../../assets/wp2227164.jpg';
 import {Splash} from '../common/Splash';
+import {useSocket} from '../common/Socket';
 
 export const ConfirmStats: FC = () => {
-    const {push} = useHistory();
+    const {send} = useSocket();
+
+    const {value: acString, number: ac, isValid, onChange: acOnChange} = useNumber();
+
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();
-        push('connect');
-    }, [push]);
-    const {value: acString, number: ac, isValid, onChange: acOnChange} = useNumber();
+        send({
+            type: 'SET STATS',
+            payload: {
+                ac,
+            },
+        });
+    }, [ac, send]);
     return (
         <Splash bg={bg} position={'24% center'}>
             <Header as='h1'>Enter your stats</Header>

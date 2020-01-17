@@ -1,5 +1,5 @@
 import {createUseStyles} from 'react-jss';
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Button, Input} from 'semantic-ui-react';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {Splash} from './Splash';
@@ -18,6 +18,10 @@ const useStyles = createUseStyles({
 export const Connect: FC<Props> = ({connect}) => {
     const classes = useStyles();
     const {status, origin, setOrigin} = useProbe();
+    useEffect(() => {
+        if (status === 'success')
+            connect(origin);
+    }, [connect, origin, status]);
     return (
         <Splash bg={bg} position={'88% center'}>
             <Input
