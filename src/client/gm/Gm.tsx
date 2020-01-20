@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Redirect, Route, Switch, useRouteMatch} from 'react-router';
-import {Combat} from './Combat';
+import {Encounter} from './Encounter';
 import {Reducer} from './Reducer';
 import {SocketProvider} from '../common/Socket';
 
@@ -10,11 +10,11 @@ export const Gm: FC = () => {
         <SocketProvider>
             <Reducer>
                 <Switch>
-                    <Route path={`${path}/combat`}>
-                        <Combat/>
+                    <Route path={`${path}/encounter`}>
+                        <Encounter/>
                     </Route>
                     <Route path={'*'}>
-                        <Redirect to={`${path}/combat`}/>
+                        <Redirect to={`${path}/encounter`}/>
                     </Route>
                 </Switch>
             </Reducer>

@@ -1,16 +1,13 @@
 import {cloneDeep} from 'lodash';
+import {Encounter, PlayerStats} from './encounter';
 
 export type State = {
-    phase: 0 | 1 | 2 | 3;
     players: {
         [id: string]: {
             stats: PlayerStats
         }
     },
-}
-
-export type PlayerStats = {
-    AC: number,
+    encounter?: Encounter,
 }
 
 export type Action = {
@@ -18,14 +15,26 @@ export type Action = {
     payload?: any;
 }
 
-export function reducer(state: State = {phase: 0, players: {}}, action: Action) {
+export function reducer(state: State = {players: {}}, action: Action) {
     switch (action.type) {
         case 'SET STATE':
             return action.payload;
-        case 'SET PHASE':
+        case 'START ENCOUNTER':
+            if (state.encounter)
+                return state;
             return {
                 ...state,
-                phase: action.payload,
+                encounter: action.payload,
+            };
+        case 'SET PHASE':
+            if (!state.encounter)
+                return state;
+            return {
+                ...state,
+                encounter: {
+                    ...state.encounter,
+                    phase: action.payload,
+                },
             };
         case 'CONNECT':
             return {

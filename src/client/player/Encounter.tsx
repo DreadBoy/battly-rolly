@@ -1,6 +1,7 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC} from 'react';
 import {Splash} from '../common/Splash';
+import noCombat from '../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import phase0 from '../../assets/MaoXBkH.jpg';
 import phase1 from '../../assets/rXi8wK.jpg';
 import phase2 from '../../assets/lcoznS.jpg';
@@ -8,6 +9,7 @@ import phase3 from '../../assets/157403.jpg';
 import {useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {Phase0} from './Phase0';
+import {Message} from '../common/Message';
 
 const useStyles = createUseStyles({
     combat: {},
@@ -16,16 +18,23 @@ const useStyles = createUseStyles({
 const bgs = [phase0, phase1, phase2, phase3];
 const poss = [23, 80, 66, 45];
 
-export const Combat: FC = () => {
+export const Encounter: FC = () => {
     useStyles();
-    const phase = useSelector((state: State) => state.phase);
-    switch (phase) {
+    const encounter = useSelector((state: State) => state.encounter);
+    if (!encounter)
+        return (
+            <Splash bg={noCombat}>
+                <Message>No combat going on <br/>😴🥱</Message>
+            </Splash>
+        );
+
+    switch (encounter.phase) {
         case 0:
             return (<Phase0/>);
     }
     return (
-        <Splash bg={bgs[phase]} position={`${poss[phase]}% center`}>
-            this is combat in phase {phase}
+        <Splash bg={bgs[encounter.phase]} position={`${poss[encounter.phase]}% center`}>
+            this is combat in phase {encounter.phase}
         </Splash>
     );
 };

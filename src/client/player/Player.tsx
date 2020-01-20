@@ -4,7 +4,7 @@ import {ConfirmStats} from './ConfirmStats';
 import {Reducer} from './Reducer';
 import {PlayerIdProvider} from './PlayerId';
 import {SocketProvider} from '../common/Socket';
-import {Combat} from './Combat';
+import {Encounter} from './Encounter';
 
 export const Player: FC = () => {
     const {path} = useRouteMatch();
@@ -17,7 +17,7 @@ export const Player: FC = () => {
                             <ConfirmStats/>
                         </Route>
                         <Route path={`${path}/combat`}>
-                            <Combat/>
+                            <Encounter/>
                         </Route>
                         <Route path={'*'}>
                             <Redirect to={`${path}/stats`}/>

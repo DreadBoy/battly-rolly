@@ -6,6 +6,7 @@ import {Splash} from '../common/Splash';
 import {useSocket} from '../common/Socket';
 import {useLocalStorage} from '../common/use-local-storage';
 import {useHistory} from 'react-router';
+import {PlayerStats} from '../common/encounter';
 
 function positive(useNumber: { isValid: boolean, number: number | undefined }) {
     return useNumber.isValid && useNumber.number && useNumber.number > 0;
@@ -15,7 +16,7 @@ export const ConfirmStats: FC = () => {
     const {send} = useSocket();
     const {push} = useHistory();
     const {value, set} = useLocalStorage('default stats');
-    const stats = value ? JSON.parse(value) : {};
+    const stats: PlayerStats = value ? JSON.parse(value) : {};
     const AC = useNumber(stats?.AC?.toString() ?? '');
     const passivePerception = useNumber(stats?.passivePerception?.toString() ?? '');
 
