@@ -1,4 +1,5 @@
 export type Phase = 0 | 1 | 2 | 3;
+export const phases = ['Fast player', 'Fast monster', 'Slow player', 'Slow monster'];
 export type PlayerStats = {
     AC: number,
     passivePerception: number,

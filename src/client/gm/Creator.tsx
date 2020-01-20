@@ -7,6 +7,7 @@ import {Button, Grid, Icon, List} from 'semantic-ui-react';
 import {Monster} from '../common/encounter';
 import {MonsterParser} from './MonsterParser';
 import {useDispatch} from 'react-redux';
+import {MonsterList} from './MonsterList';
 
 const useStyles = createUseStyles({
     creator: {},
@@ -19,6 +20,9 @@ export const Creator: FC = () => {
 
     const onParsed = useCallback((_monsters: Monster[]) => {
         setMonsters([...monsters, ..._monsters]);
+    }, [monsters]);
+    const onAdd = useCallback((monster: Monster) => {
+        setMonsters([...monsters, monster]);
     }, [monsters]);
 
     const remove = useCallback((monster: Monster) => () => {
@@ -40,6 +44,7 @@ export const Creator: FC = () => {
             <Message>Create encounter</Message>
             <Grid columns={2}>
                 <Grid.Column>
+                    <MonsterList onAdd={onAdd}/>
                     <MonsterParser onParsed={onParsed}/>
                 </Grid.Column>
                 <Grid.Column>
@@ -47,10 +52,10 @@ export const Creator: FC = () => {
                     <List divided verticalAlign='middle'>
                         {monsters.map(monster => (
                             <List.Item key={Math.random().toString()}>
-                                <List.Content floated='right'>
-                                    <Icon link name={'remove'} onClick={remove(monster)}/>
+                                <Icon link name={'remove'} onClick={remove(monster)}/>
+                                <List.Content>
+                                    <List.Header>{monster.name}</List.Header>
                                 </List.Content>
-                                <List.Content verticalAlign={'middle'}>{monster.name}</List.Content>
                             </List.Item>
                         ))}
                     </List>

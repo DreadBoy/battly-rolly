@@ -5,6 +5,7 @@ import {Segment} from 'semantic-ui-react';
 type Props = {
     bg: string,
     position?: string,
+    centered?: boolean,
 }
 
 const useStyles = createUseStyles({
@@ -29,13 +30,14 @@ const useStyles = createUseStyles({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        alignItems: ({centered}: Props) => centered ? 'center' : 'stretch',
         padding: 20,
         '&.ui.segment': {margin: 10},
     },
 });
 
-export const Splash: FC<Props> = ({bg, position, children}) => {
-    const classes = useStyles({bg, position});
+export const Splash: FC<Props> = ({bg, position, centered, children}) => {
+    const classes = useStyles({bg, position, centered});
     return (
         <div className={classes.grid}>
             <div className={classes.image}/>
@@ -47,4 +49,5 @@ export const Splash: FC<Props> = ({bg, position, children}) => {
 };
 Splash.defaultProps = {
     position: 'center center',
+    centered: false,
 };

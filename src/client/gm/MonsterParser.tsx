@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const MonsterParser: FC<Props> = ({onParsed}) => {
-    const {value, onChange, setValue} = useTextArea('Aboleth 10 21 9 15 18 15 18 0 0 6 8 6 0 attack 9 2 6 5 bludgeoning 14 constitution stunned\nAboleth 10 21 9 15 18 15 18 0 0 6 8 6 0 attack 9 2 6 5 bludgeoning 14 constitution stunned\nAboleth 10 21 9 15 18 15 18 0 0 6 8 6 0 attack 9 2 6 5 bludgeoning 14 constitution stunned');
+    const {value, onChange, setValue} = useTextArea();
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();
         const monsters = value.split('\n').map(parseMonster);
@@ -36,14 +36,14 @@ export const MonsterParser: FC<Props> = ({onParsed}) => {
     return (
         <Form onSubmit={onSubmit}>
             <Form.Field>
-                <TextArea placeholder={'Import monsters...'} value={value} onChange={onChange}/>
+                <TextArea placeholder={'Import monsters...'} value={value} onChange={onChange} rows={1}/>
             </Form.Field>
             <Button primary type={'submit'} disabled={value.length < 1}>Add monsters</Button>
         </Form>
     );
 };
 
-function parseMonster(str: string): Monster {
+export function parseMonster(str: string): Monster {
     const parts = str.split(' ');
     let index = 0;
 
