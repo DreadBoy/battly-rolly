@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Bullywug",
+    "HP": [
+      2,
+      8,
+      2
+    ],
+    "currentHP": 0,
+    "abilitySet": {
+      "strength": 12,
+      "dexterity": 12,
+      "constitution": 13,
+      "intelligence": 7,
+      "wisdom": 10,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              4,
+              1
+            ]
+          ],
+          "damageType": "bludgeoning"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spear_melee",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spear_ranged",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              8,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      }
+    ]
+  }
+]

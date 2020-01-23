@@ -40,18 +40,22 @@ export type Status = 'blinded'
 export const statuses = ['blinded', 'charmed', 'deafened', 'fatigued', 'frightened', 'grappled', 'incapacitated', 'invisible', 'paralyzed', 'petrified', 'poisoned', 'prone', 'restrained', 'stunned', 'unconscious', 'exhaustion'];
 export type Roll = [number, number, number];
 export type Damage = {
-    rolls?: Roll[],
-    damageType?: DamageType,
+    rolls: Roll[],
+    damageType: DamageType,
 }
 export type ActionType = 'attack' | 'save' | 'guarantied';
 export const actionTypes = ['attack', 'save', 'guarantied'];
 
 export type Attack = {
     type: 'attack',
+    name: string,
     modifier: number,
     damage: Damage,
     effect?: Effect,
 };
+export function isAttack(action: Action): action is Attack {
+    return action.type === 'attack';
+}
 
 export type Action = {
     type: ActionType,
@@ -70,7 +74,8 @@ export type Effect = {
 }
 export type Monster = {
     name: string,
-    HP: number,
+    HP: Roll,
+    currentHP: number,
     abilitySet: AbilitySet,
     savingThrows: AbilitySet,
     actions: Action[],

@@ -8,6 +8,9 @@ import {Monster} from '../common/encounter';
 import {MonsterParser} from './MonsterParser';
 import {useDispatch} from 'react-redux';
 import {MonsterList} from './MonsterList';
+import {cloneDeep} from 'lodash';
+import {roll} from '../common/roll';
+import {exportMonster} from '../common/monster-parser';
 
 const useStyles = createUseStyles({
     creator: {},
@@ -30,14 +33,20 @@ export const Creator: FC = () => {
     }, [monsters]);
 
     const confirm = useCallback(() => {
+        const _monsters = cloneDeep(monsters);
+        _monsters.forEach(monster => monster.currentHP = roll(monster.HP));
         dispatch({
             type: 'START ENCOUNTER',
             payload: {
-                monsters,
+                monsters: _monsters,
                 phase: 0,
             },
         })
     }, [monsters, dispatch]);
+
+    const exp = useCallback(() => {
+        console.log(monsters.map(exportMonster).join('\n'));
+    }, [monsters]);
 
     return (
         <Splash bg={bg} position={'88% center'}>
@@ -59,7 +68,10 @@ export const Creator: FC = () => {
                             </List.Item>
                         ))}
                     </List>
-                    <Button primary disabled={monsters.length < 1} onClick={confirm}>Confirm encounter</Button>
+                    <div>
+                        <Button primary disabled={monsters.length < 1} onClick={confirm}>Confirm encounter</Button>
+                        <Button floated={'right'} disabled={monsters.length < 1} onClick={exp}>Export encounter</Button>
+                    </div>
                 </Grid.Column>
             </Grid>
         </Splash>
