@@ -53,6 +53,7 @@ export function parseMonster(str: string): Monster {
         name,
         HP,
         currentHP: 0,
+        maxHP: 0,
         abilitySet,
         savingThrows,
         actions,

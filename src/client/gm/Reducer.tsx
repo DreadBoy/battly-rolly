@@ -22,9 +22,14 @@ export const Reducer: FC = ({children}) => {
         socket?.on('action', dispatch);
     }, [dispatch, socket]);
     useEffect(() => {
+        socket?.on('state', (state: State) => dispatch({type: 'SET STATE', payload: state}));
+    }, [dispatch, socket]);
+
+    useEffect(() => {
         return store.subscribe(() =>
             socket?.emit('state', store.getState()));
     }, [socket, store]);
+
     useEffect(() => {
         if (claimed)
             socket?.emit('state', store.getState());

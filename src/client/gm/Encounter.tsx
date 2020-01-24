@@ -24,9 +24,14 @@ export const Encounter: FC = () => {
     const players = useSelector((state: State) => state.players);
     const dispatch = useDispatch();
     const phase = encounter?.phase || 0;
+
+
     const increasePhase = useCallback(() => {
         dispatch({type: 'SET PHASE', payload: (phase + 1) % 4});
     }, [dispatch, phase]);
+    const finishEncounter = useCallback(() => {
+        dispatch({type: 'FINISH ENCOUNTER'});
+    }, [dispatch]);
 
     const attack = useCallback((monster: Monster) => (playerId: string, action: Action) => {
         if (!isAttack(action))
@@ -78,7 +83,8 @@ export const Encounter: FC = () => {
                     ))}
                 </Grid>
             </DndProvider>
-            <Button onClick={increasePhase}>Next phase</Button>
+            <Button primary onClick={increasePhase}>Next phase</Button>
+            <Button onClick={finishEncounter}>Finish</Button>
         </Splash>
     );
 };

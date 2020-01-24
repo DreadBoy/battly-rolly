@@ -19,16 +19,17 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
             canDrop: monitor.canDrop(),
         }),
     });
+    console.log(player);
     return (
         <div ref={drop}>
             <Card color={isOver ? 'red' : undefined}>
                 <Card.Content>
-                    <Card.Header>{player.stats.name}</Card.Header>
+                    <Card.Header>{player.stats?.name}</Card.Header>
                     <Card.Meta>
-                        AC: {player.stats.AC}
+                        AC: {player.stats?.AC}
                     </Card.Meta>
                     <Card.Meta>
-                        Pass. P: {player.stats.passivePerception}
+                        Pass. P: {player.stats?.passivePerception}
                     </Card.Meta>
                 </Card.Content>
                 {player.actionLog && !!player.actionLog.length && (<Card.Content extra>

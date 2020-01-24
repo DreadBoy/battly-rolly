@@ -24,7 +24,7 @@ export const MonsterCard: FC<Props> = ({monster, onAttack}) => {
                 <Card.Content>
                     <Card.Header>{monster.name}</Card.Header>
                     <Card.Meta>
-                        <span>HP: {monster.currentHP}</span>
+                        <span>HP: {monster.currentHP} / {monster.maxHP} - {monster.currentHP / monster.maxHP * 100}%</span>
                     </Card.Meta>
                 </Card.Content>
                 {monster.actions.map(action => isAttack(action) ? (

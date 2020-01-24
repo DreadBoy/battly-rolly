@@ -11,7 +11,6 @@ import {MonsterList} from './MonsterList';
 import {cloneDeep} from 'lodash';
 import {roll} from '../common/roll';
 import {exportMonster} from '../common/monster-parser';
-import {useSetupCombat} from './faker';
 
 
 const useStyles = createUseStyles({
@@ -38,6 +37,7 @@ export const Creator: FC = () => {
         const _monsters = monsters.map(monster => {
             const m = cloneDeep(monster);
             m.currentHP = roll(m.HP);
+            m.maxHP = m.currentHP;
             m.id = Math.random();
             return m;
         });
@@ -55,7 +55,7 @@ export const Creator: FC = () => {
     }, [monsters]);
 
     // TODO Remove this
-    useSetupCombat(monsters, setMonsters, confirm, dispatch);
+    // useSetupCombat(monsters, setMonsters, confirm, dispatch);
 
     return (
         <Splash bg={bg} position={'88% center'}>

@@ -24,7 +24,7 @@ export const ConfirmStats: FC = () => {
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();
         const stats = {
-            name,
+            name: name.value,
             AC: AC.number,
             passivePerception: passivePerception.number,
         };

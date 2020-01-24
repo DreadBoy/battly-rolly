@@ -4,9 +4,6 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {Gm} from './gm/Gm';
 import {Player} from './player/Player';
 import {SelectRole} from './SelectRole';
-import {Provider as StoreProvider} from 'react-redux'
-import {createStore} from 'redux';
-import {reducer} from './common/reducer';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -16,25 +13,15 @@ const useStyles = createUseStyles({
     },
 });
 
-const store = createStore(reducer);
-
 const App: FC = () => {
     useStyles();
     return (
         <BrowserRouter>
-            <StoreProvider store={store}>
-                <Switch>
-                    <Route path="/gm">
-                        <Gm/>
-                    </Route>
-                    <Route path="/player">
-                        <Player/>
-                    </Route>
-                    <Route path="*">
-                        <SelectRole/>
-                    </Route>
-                </Switch>
-            </StoreProvider>
+            <Switch>
+                <Route path="/gm" component={Gm}/>
+                <Route path="/player" component={Player}/>
+                <Route path="*" component={SelectRole}/>
+            </Switch>
         </BrowserRouter>
     );
 };

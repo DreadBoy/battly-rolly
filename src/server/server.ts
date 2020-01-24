@@ -27,7 +27,7 @@ const server = createServer(app.callback());
 const io = Io(server);
 
 let gm: Io.Socket | null = null;
-let cachedState: any | null = null;
+let cachedState: any = {};
 io.on('connect', socket => {
     console.log('connected');
     let playerId: string | null = null;
@@ -70,7 +70,7 @@ io.on('connect', socket => {
     socket.on('state', state => {
         if (socket !== gm)
             return;
-        console.log('State:', JSON.stringify(state));
+        console.log('Sending state');
         cachedState = state;
         socket.broadcast.emit('state', state);
     })

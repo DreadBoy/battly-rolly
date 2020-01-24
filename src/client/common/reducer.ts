@@ -24,6 +24,13 @@ export function reducer(state: State = {players: {}}, action: Action) {
                 ...state,
                 encounter: action.payload,
             };
+        case 'FINISH ENCOUNTER':
+            if (!state.encounter)
+                return state;
+            return {
+                ...state,
+                encounter: undefined,
+            };
         case 'SET PHASE':
             if (!state.encounter)
                 return state;
