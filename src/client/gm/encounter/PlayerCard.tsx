@@ -34,7 +34,7 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
                 {player.actionLog && !!player.actionLog.length && (<Card.Content extra>
                     <List>
                         {player.actionLog?.slice().reverse().map(log => (
-                            <List.Item>
+                            <List.Item key={Math.random()}>
                                 <List.Content>{monsters.find(m => m.id === log.monsterId)?.name} ({nameToDisplay(log.attackName)})
                                     -> {log.attackRoll}</List.Content>
                                 {isMissedAttackLog(log) && (

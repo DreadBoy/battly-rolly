@@ -35,16 +35,14 @@ export const Encounter: FC = () => {
 
         const player = players[playerId].stats;
         const attackRoll = roll([1, 20, action.modifier]);
-        if (attackRoll <= player.AC) {
-            alert('Attack missed!');
+        if (attackRoll <= player.AC)
             log = {
                 monsterId: monster.id,
                 attackRoll,
                 attackName: action.name,
             };
-        } else {
+        else {
             const damage = action.damage.rolls.map(roll).reduce((a, c) => a + c, 0);
-            alert(`${playerId} took ${damage} ${action.damage.damageType} damage`);
             log = {
                 monsterId: monster.id,
                 attackRoll,

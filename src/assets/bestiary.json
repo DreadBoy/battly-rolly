@@ -1,5 +1,6 @@
 [
   {
+    "id": 0,
     "name": "Bullywug",
     "HP": [
       2,
@@ -24,6 +25,21 @@
       "charisma": 0
     },
     "actions": [
+      {
+        "type": "attack",
+        "name": "unarmed",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              0,
+              4,
+              2
+            ]
+          ],
+          "damageType": "bludgeoning"
+        }
+      },
       {
         "type": "attack",
         "name": "bite",

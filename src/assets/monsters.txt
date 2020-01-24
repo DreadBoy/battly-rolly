@@ -1,2 +1,2 @@
-Bullywug 2 8 2 12 12 13 7 10 7 0 0 0 0 0 0 attack bite 3 1 4 1 bludgeoning attack spear_melee 3 1 6 1 piercing attack spear_ranged 3 1 8 1 piercing
+Bullywug 2 8 2 12 12 13 7 10 7 0 0 0 0 0 0 attack unarmed 3 0 4 2 bludgeoning attack bite 3 1 4 1 bludgeoning attack spear_melee 3 1 6 1 piercing attack spear_ranged 3 1 8 1 piercing
 # comment
