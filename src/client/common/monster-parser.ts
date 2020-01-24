@@ -49,6 +49,7 @@ export function parseMonster(str: string): Monster {
         index = nextIndex === -1 ? parts.length : nextIndex;
     }
     return {
+        id: 0,
         name,
         HP,
         currentHP: 0,

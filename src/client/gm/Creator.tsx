@@ -11,6 +11,8 @@ import {MonsterList} from './MonsterList';
 import {cloneDeep} from 'lodash';
 import {roll} from '../common/roll';
 import {exportMonster} from '../common/monster-parser';
+import {useSetupCombat} from './faker';
+
 
 const useStyles = createUseStyles({
     creator: {},
@@ -33,20 +35,27 @@ export const Creator: FC = () => {
     }, [monsters]);
 
     const confirm = useCallback(() => {
-        const _monsters = cloneDeep(monsters);
-        _monsters.forEach(monster => monster.currentHP = roll(monster.HP));
+        const _monsters = monsters.map(monster => {
+            const m = cloneDeep(monster);
+            m.currentHP = roll(m.HP);
+            m.id = Math.random();
+            return m;
+        });
         dispatch({
             type: 'START ENCOUNTER',
             payload: {
                 monsters: _monsters,
                 phase: 0,
             },
-        })
+        });
     }, [monsters, dispatch]);
 
     const exp = useCallback(() => {
         console.log(monsters.map(exportMonster).join('\n'));
     }, [monsters]);
+
+    // TODO Remove this
+    useSetupCombat(monsters, setMonsters, confirm, dispatch);
 
     return (
         <Splash bg={bg} position={'88% center'}>

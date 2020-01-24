@@ -1,9 +1,34 @@
 export type Phase = 0 | 1 | 2 | 3;
 export const phases = ['Fast player', 'Fast monster', 'Slow player', 'Slow monster'];
 export type PlayerStats = {
+    name: string,
     AC: number,
     passivePerception: number,
 }
+export type Player = {
+    stats: PlayerStats,
+    actionLog: ActionLog[],
+}
+export type ActionLog = AttackLog | MissedAttackLog;
+export type MissedAttackLog = {
+    monsterId: number,
+    attackRoll: number,
+    attackName: string,
+}
+
+export function isMissedAttackLog(log: ActionLog): log is MissedAttackLog {
+    return !!log.attackRoll && typeof (log as AttackLog).damage === 'undefined';
+}
+
+export type AttackLog = MissedAttackLog & {
+    damage: number,
+    damageType: DamageType,
+}
+
+export function isAttackLog(log: ActionLog): log is AttackLog {
+    return !!log.attackRoll && typeof (log as AttackLog).damage !== 'undefined';
+}
+
 export type DamageType =
     'acid'
     | 'bludgeoning'
@@ -53,6 +78,7 @@ export type Attack = {
     damage: Damage,
     effect?: Effect,
 };
+
 export function isAttack(action: Action): action is Attack {
     return action.type === 'attack';
 }
@@ -73,6 +99,7 @@ export type Effect = {
     status?: Status,
 }
 export type Monster = {
+    id: number,
     name: string,
     HP: Roll,
     currentHP: number,

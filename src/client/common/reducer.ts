@@ -1,11 +1,9 @@
 import {cloneDeep} from 'lodash';
-import {Encounter, PlayerStats} from './encounter';
+import {Encounter, Player} from './encounter';
 
 export type State = {
     players: {
-        [id: string]: {
-            stats: PlayerStats
-        }
+        [id: string]: Player
     },
     encounter?: Encounter,
 }
@@ -36,6 +34,16 @@ export function reducer(state: State = {players: {}}, action: Action) {
                     phase: action.payload,
                 },
             };
+        case 'ATTACK': {
+            if (!state.encounter)
+                return state;
+            const {playerId, log} = action.payload;
+            const state1 = cloneDeep(state);
+            state1.players[playerId].actionLog = state1.players[playerId].actionLog || [];
+            state1.players[playerId].actionLog.push(log);
+            return state1;
+        }
+
         case 'CONNECT':
             return {
                 ...state,
@@ -44,7 +52,6 @@ export function reducer(state: State = {players: {}}, action: Action) {
                     [action.payload.id]: action.payload.data,
                 },
             };
-
         case 'DISCONNECT':
             const players = {
                 ...state.players,
@@ -54,11 +61,12 @@ export function reducer(state: State = {players: {}}, action: Action) {
                 ...state,
                 players,
             };
-        case 'SET STATS':
+        case 'SET STATS': {
             const {playerId, ...stats} = action.payload;
             const state1 = cloneDeep(state);
             state1.players[playerId].stats = stats;
             return state1;
+        }
         default:
             return state;
     }
