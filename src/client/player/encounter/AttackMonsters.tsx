@@ -32,12 +32,14 @@ export const AttackMonsters: FC = () => {
         setFocused(focused + 1)
     }, [focused, monsters.length, result]);
 
+    const [sent, setSent] = useState<boolean>(false);
     const {send} = useSocket();
     const confirm = useCallback(() => {
         send<QueueAction>({
             type: 'QUEUE ACTION',
             payload: result,
         });
+        setSent(true);
     }, [send, result]);
 
     return (
@@ -46,7 +48,7 @@ export const AttackMonsters: FC = () => {
                 <Attack monster={monster} key={monster.id} focused={index === focused} onFinish={onFinish}/>
             ))}
             {focused === monsters.length && (
-                <Button primary onClick={confirm}>Confirm</Button>
+                <Button primary onClick={confirm} loading={sent} disabled={sent}>Confirm</Button>
             )}
         </Splash>
     );

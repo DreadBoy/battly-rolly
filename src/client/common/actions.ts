@@ -45,3 +45,9 @@ export type QueueAction = Action & {
 export function isQueueAction(action: Action): action is QueueAction {
     return action.type === 'QUEUE ACTION';
 }
+
+export type ResolveQueue = Action
+
+export function isResolveQueue(action: Action): action is ResolveQueue {
+    return action.type === 'RESOLVE QUEUE';
+}

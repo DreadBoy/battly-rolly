@@ -59,6 +59,7 @@ export function parseMonster(str: string): Monster {
         abilitySet,
         savingThrows,
         actions,
+        actionLog: [],
     };
 }
 

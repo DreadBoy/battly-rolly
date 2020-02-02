@@ -108,6 +108,7 @@ export type Monster = {
     abilitySet: AbilitySet,
     savingThrows: AbilitySet,
     actions: Action[],
+    actionLog: ActionLog[],
 }
 export type AbilitySet = {
     strength: number,
