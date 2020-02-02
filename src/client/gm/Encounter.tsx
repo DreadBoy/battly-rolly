@@ -2,7 +2,7 @@ import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback} from 'react';
 import {Splash} from '../common/Splash';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
-import {Button, Grid} from 'semantic-ui-react';
+import {Button, Form, Grid} from 'semantic-ui-react';
 import {useDispatch, useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {Creator} from './Creator';
@@ -15,11 +15,20 @@ import {PlayerCard} from './encounter/PlayerCard';
 import {roll} from '../common/roll';
 
 const useStyles = createUseStyles({
-    combat: {},
+    grid: {
+        '.ui.grid+.grid&': {
+            marginTop: 0,
+        },
+    },
+    actions: {
+        '.ui.form&': {
+            marginTop: '1rem',
+        },
+    },
 });
 
 export const Encounter: FC = () => {
-    useStyles();
+    const classes = useStyles();
     const encounter = useSelector((state: State) => state.encounter);
     const players = useSelector((state: State) => state.players);
     const dispatch = useDispatch();
@@ -29,6 +38,9 @@ export const Encounter: FC = () => {
     const increasePhase = useCallback(() => {
         dispatch({type: 'SET PHASE', payload: (phase + 1) % 4});
     }, [dispatch, phase]);
+    const resolveQueue = useCallback(() => {
+        dispatch({type: 'RESOLVE QUEUE'});
+    }, [dispatch]);
     const finishEncounter = useCallback(() => {
         dispatch({type: 'FINISH ENCOUNTER'});
     }, [dispatch]);
@@ -73,20 +85,29 @@ export const Encounter: FC = () => {
                 <Grid columns={'equal'}>
                     {encounter.monsters.map(monster => (
                         <Grid.Column key={Math.random()}>
-                            <MonsterCard monster={monster} onAttack={attack(monster)}/>
+                            <MonsterCard monster={monster} onAttack={attack(monster)} players={players}/>
                         </Grid.Column>
                     ))}
                 </Grid>
-                <Grid columns={'equal'}>
-                    {Object.keys(players).map(id => (
-                        <Grid.Column key={Math.random()}>
-                            <PlayerCard playerId={id} player={players[id]} monsters={encounter?.monsters}/>
-                        </Grid.Column>
-                    ))}
-                </Grid>
+                {Object.keys(players).length > 0 && (
+                    <Grid columns={'equal'} className={classes.grid}>
+                        {Object.keys(players).map(id => (
+                            <Grid.Column key={Math.random()}>
+                                <PlayerCard playerId={id} player={players[id]} monsters={encounter?.monsters}/>
+                            </Grid.Column>
+                        ))}
+                    </Grid>
+                )}
             </DndProvider>
-            <Button primary onClick={increasePhase}>Next phase</Button>
-            <Button onClick={finishEncounter}>Finish</Button>
+            <Form className={classes.actions}>
+                <Form.Field equal>
+                    <Button primary onClick={resolveQueue}>Resolve queue</Button>
+                    <Button primary onClick={increasePhase}>Next phase</Button>
+                </Form.Field>
+                <Form.Field equal>
+                    <Button onClick={finishEncounter}>Finish</Button>
+                </Form.Field>
+            </Form>
         </Splash>
     );
 };

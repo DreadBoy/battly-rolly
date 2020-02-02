@@ -106,7 +106,8 @@ export function reducer(state: State = {players: {}}, action: Action) {
                     return;
                 // TODO account for damage immunity/resistance
                 m.currentHP -= (al as AttackLog).damage;
-            })
+            });
+            m.actionLog = [];
         });
         return state1;
     }
