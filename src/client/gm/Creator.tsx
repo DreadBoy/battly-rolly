@@ -11,6 +11,7 @@ import {MonsterList} from './MonsterList';
 import {cloneDeep} from 'lodash';
 import {roll} from '../common/roll';
 import {exportMonster} from '../common/monster-parser';
+import {generateId} from '../common/generate-id';
 
 
 const useStyles = createUseStyles({
@@ -38,7 +39,7 @@ export const Creator: FC = () => {
             const m = cloneDeep(monster);
             m.currentHP = roll(m.HP);
             m.maxHP = m.currentHP;
-            m.id = Math.random();
+            m.id = generateId();
             return m;
         });
         dispatch({

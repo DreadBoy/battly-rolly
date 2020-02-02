@@ -9,9 +9,10 @@ export type Player = {
     stats: PlayerStats,
     actionLog: ActionLog[],
 }
-export type ActionLog = AttackLog | MissedAttackLog;
+export type ActionLog = MissedAttackLog | AttackLog;
 export type MissedAttackLog = {
-    monsterId: number,
+    attackerId: string,
+    targetId: string,
     attackRoll: number,
     attackName: string,
 }
@@ -99,7 +100,7 @@ export type Effect = {
     status?: Status,
 }
 export type Monster = {
-    id: number,
+    id: string,
     name: string,
     HP: Roll,
     currentHP: number,
@@ -108,7 +109,7 @@ export type Monster = {
     abilitySet: AbilitySet,
     savingThrows: AbilitySet,
     actions: Action[],
-    actionLog: ActionLog[],
+    actionLog?: ActionLog[],
 }
 export type AbilitySet = {
     strength: number,

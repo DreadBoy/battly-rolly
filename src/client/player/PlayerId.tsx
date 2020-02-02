@@ -1,11 +1,12 @@
 import React, {createContext, FC, useContext, useEffect, useState} from 'react';
+import {generateId} from '../common/generate-id';
 
 const playerIdContext = createContext<string | undefined>(undefined);
 
 export const PlayerIdProvider: FC = ({children}) => {
     const [id, setId] = useState<string>();
     useEffect(() => {
-        setId(Math.floor(Math.random() * 1000000).toString());
+        setId(generateId());
     }, []);
     return (
         <playerIdContext.Provider value={id}>

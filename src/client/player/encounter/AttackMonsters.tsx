@@ -19,7 +19,7 @@ export const AttackMonsters: FC = () => {
     useStyles();
     const {location: {search}} = useHistory();
     const params = new URLSearchParams(search);
-    const ids = params.get('monsters')?.split(',').map(id => parseFloat(id));
+    const ids = params.get('monsters')?.split(',');
     const encounter = useSelector((state: State) => state.encounter);
     const monsters = (encounter?.monsters || []).filter(m => ids?.includes(m.id));
 

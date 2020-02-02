@@ -4,6 +4,7 @@ import {Monster} from '../common/encounter';
 import {roll} from '../common/roll';
 import bestiary from '../../assets/bestiary.json';
 import {cloneDeep} from 'lodash';
+import {generateId} from '../common/generate-id';
 
 export function fakePlayer() {
     const id = Math.floor(Math.random() * 1000000).toString();
@@ -25,7 +26,7 @@ export function fakeMonster(HP: number = 1): Monster {
     const ret = cloneDeep(bestiary[0]) as Monster;
     ret.maxHP = roll(ret.HP);
     ret.currentHP = ret.maxHP * HP;
-    ret.id = Math.random();
+    ret.id = generateId();
     return ret;
 }
 

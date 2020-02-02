@@ -26,8 +26,11 @@ export const Reducer: FC = ({children}) => {
     }, [dispatch, socket]);
 
     useEffect(() => {
-        return store.subscribe(() =>
-            socket?.emit('state', store.getState()));
+        return store.subscribe(() => {
+            const state = store.getState();
+            console.log(state);
+            socket?.emit('state', state);
+        });
     }, [socket, store]);
 
     useEffect(() => {

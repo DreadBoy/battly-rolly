@@ -30,7 +30,7 @@ export const SelectMonsters: FC = () => {
     const encounter = useSelector((state: State) => state.encounter);
     const {push} = useHistory();
 
-    const [selected, setSelected] = useState<number[]>([]);
+    const [selected, setSelected] = useState<string[]>([]);
     const [type, setType] = useState<ActionType>('attack');
 
     const toggle = useCallback((monster: Monster) => () => {

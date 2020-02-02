@@ -24,7 +24,10 @@ export const Reducer: FC = ({children}) => {
     }, [id, joined, socket]);
 
     useEffect(() => {
-        socket?.on('state', (state: State) => dispatch({type: 'SET STATE', payload: state}));
+        socket?.on('state', (state: State) => {
+            dispatch({type: 'SET STATE', payload: state});
+            console.log(state);
+        });
     }, [dispatch, socket]);
 
     useEffect(() => {

@@ -86,11 +86,11 @@ export function reducer(state: State = {players: {}}, action: Action) {
             return;
         const state1 = cloneDeep(state);
         action.payload.forEach(log => {
-            const monster = find(state1.encounter?.monsters, ['id', log.monsterId]);
+            const monster = find(state1.encounter?.monsters, ['id', log.targetId]);
             if (!monster)
                 return;
-            monster.actionLog = monster.actionLog || [];
-            monster.actionLog.concat(log);
+            monster.actionLog = (monster.actionLog || []).concat(log);
+
         });
         return state1;
     }
@@ -99,9 +99,9 @@ export function reducer(state: State = {players: {}}, action: Action) {
             return;
         const state1 = cloneDeep(state);
         state1.encounter?.monsters.forEach(m => {
-            if (m.actionLog.length === 0)
+            if (m.actionLog?.length === 0)
                 return;
-            m.actionLog.forEach(al => {
+            m.actionLog?.forEach(al => {
                 if (isMissedAttackLog(al))
                     return;
                 // TODO account for damage immunity/resistance

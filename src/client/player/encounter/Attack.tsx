@@ -5,6 +5,7 @@ import {ActionLog, MissedAttackLog, Monster} from '../../common/encounter';
 import {MonsterCard} from './MonsterCard';
 import {useNumber} from '../../common/form-helpers';
 import {Input} from '../../common/Input';
+import {usePlayerId} from '../PlayerId';
 
 type Props = {
     monster: Monster,
@@ -20,6 +21,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
     useStyles();
     const attack = useNumber();
     const damage = useNumber();
+    const playerId = usePlayerId();
 
     const [stage, setStage] = useState<number>(0);
 
@@ -30,24 +32,26 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
         else {
             setStage(2);
             const log: MissedAttackLog = {
-                monsterId: monster.id,
+                attackerId: playerId ?? '',
+                targetId: monster.id,
                 attackRoll: attack.number ?? 0,
                 attackName: 'manual',
             };
             onFinish(log);
         }
-    }, [attack.isValid, attack.number, monster.AC, monster.id, onFinish]);
+    }, [attack.isValid, attack.number, monster.AC, monster.id, onFinish, playerId]);
 
     const damageRoll = useCallback(() => {
         setStage(4);
         onFinish({
-            monsterId: monster.id,
+            attackerId: playerId ?? '',
+            targetId: monster.id,
             attackRoll: attack.number ?? 0,
             attackName: 'manual',
             damage: damage.number ?? 0,
             damageType: 'acid',
         });
-    }, [attack.number, damage.number, monster.id, onFinish]);
+    }, [attack.number, damage.number, monster.id, onFinish, playerId]);
 
     return (
         <MonsterCard monster={monster}>
