@@ -104,6 +104,7 @@ export type Monster = {
     HP: Roll,
     currentHP: number,
     maxHP: number,
+    AC: number,
     abilitySet: AbilitySet,
     savingThrows: AbilitySet,
     actions: Action[],

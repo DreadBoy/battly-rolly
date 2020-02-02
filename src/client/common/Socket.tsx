@@ -6,7 +6,7 @@ import {Connect} from './Connect';
 type SocketContext = {
     socket: SocketIOClient.Socket | undefined,
     connected: boolean,
-    send: (action: Action) => void,
+    send: <T extends Action = Action>(action: T) => void,
 }
 
 const socketContext = createContext<SocketContext>(undefined as any);

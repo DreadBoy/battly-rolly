@@ -7,6 +7,8 @@ import {useSocket} from '../common/Socket';
 import {useLocalStorage} from '../common/use-local-storage';
 import {useHistory} from 'react-router';
 import {PlayerStats} from '../common/encounter';
+import {SetStats} from '../common/actions';
+import {usePlayerId} from './PlayerId';
 
 function positive(useNumber: { isValid: boolean, number: number | undefined }) {
     return useNumber.isValid && useNumber.number && useNumber.number > 0;
@@ -20,21 +22,23 @@ export const ConfirmStats: FC = () => {
     const AC = useNumber(stats?.AC?.toString() ?? '');
     const passivePerception = useNumber(stats?.passivePerception?.toString() ?? '');
     const name = useText(stats?.name?.toString() ?? '');
+    const playerId = usePlayerId() ?? '';
 
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();
         const stats = {
             name: name.value,
-            AC: AC.number,
-            passivePerception: passivePerception.number,
+            AC: AC.number ?? 0,
+            passivePerception: passivePerception.number ?? 0,
+            playerId,
         };
         set(JSON.stringify(stats));
-        send({
+        send<SetStats>({
             type: 'SET STATS',
             payload: stats,
         });
         push('combat');
-    }, [AC.number, name, passivePerception.number, push, send, set]);
+    }, [AC.number, name.value, passivePerception.number, playerId, push, send, set]);
 
     return (
         <Splash bg={bg} position={'24% center'}>

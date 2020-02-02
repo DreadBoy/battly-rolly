@@ -59,7 +59,7 @@ export const Encounter: FC = () => {
         dispatch({
             type: 'ATTACK',
             payload: {playerId, log},
-        })
+        });
     }, [dispatch, players]);
 
     if (!encounter)

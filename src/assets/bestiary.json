@@ -8,6 +8,8 @@
       2
     ],
     "currentHP": 0,
+    "maxHP": 0,
+    "AC": 15,
     "abilitySet": {
       "strength": 12,
       "dexterity": 12,

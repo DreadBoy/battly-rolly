@@ -21,9 +21,10 @@ export function fakePlayer() {
     };
 }
 
-export function fakeMonster(): Monster {
+export function fakeMonster(HP: number = 1): Monster {
     const ret = cloneDeep(bestiary[0]) as Monster;
-    ret.maxHP = ret.currentHP = roll(ret.HP);
+    ret.maxHP = roll(ret.HP);
+    ret.currentHP = ret.maxHP * HP;
     ret.id = Math.random();
     return ret;
 }

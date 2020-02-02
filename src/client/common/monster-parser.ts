@@ -27,6 +27,7 @@ export function parseMonster(str: string): Monster {
 
     const name = parts[index++];
     const HP = parts.slice(index++, index += 2).map(s => parseInt(s)) as Roll;
+    const AC = parseInt(parts[index++]);
     const abilitySet: AbilitySet = {} as AbilitySet;
     abilities.forEach((ability, ind) => {
         abilitySet[ability] = parseInt(parts[index + ind])
@@ -54,6 +55,7 @@ export function parseMonster(str: string): Monster {
         HP,
         currentHP: 0,
         maxHP: 0,
+        AC,
         abilitySet,
         savingThrows,
         actions,
