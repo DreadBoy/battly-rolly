@@ -44,7 +44,7 @@ export const AttackMonsters: FC = () => {
     }, [send, result]);
 
     useEffect(() => {
-        if (encounter?.phase !== 0)
+        if ((encounter?.phase ?? 1) % 2 !== 0)
             replace(`${path.slice(0, path.indexOf('/combat/attack'))}/combat`);
     });
 

@@ -24,6 +24,11 @@ const useStyles = createUseStyles({
             boxShadow: '0 0 0 1px #db2828, 0 2px 0 0 #db2828, 0 1px 3px 0 #d4d4d5',
         },
     },
+    dead: {
+        'a.ui.card&': {
+            background: 'grey',
+        },
+    },
     icon: {
         'i.icon&': {
             width: '1em',
@@ -44,7 +49,7 @@ export const MonsterCard: FC<Props> = ({monster, selected, onClick, children}) =
     return (
         <Card
             fluid
-            className={classNames(classes.card, {[classes.selected]: selected})}
+            className={classNames(classes.card, {[classes.selected]: selected, [classes.dead]: monster.currentHP <= 0})}
             color={bloody ? 'red' : undefined}
             onClick={onClick}
         >

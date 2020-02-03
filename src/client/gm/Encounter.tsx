@@ -13,6 +13,7 @@ import Backend from 'react-dnd-html5-backend'
 import {MonsterCard} from './encounter/MonsterCard';
 import {PlayerCard} from './encounter/PlayerCard';
 import {roll} from '../common/roll';
+import {flatMap} from 'lodash';
 
 const useStyles = createUseStyles({
     grid: {
@@ -38,6 +39,7 @@ export const Encounter: FC = () => {
     const increasePhase = useCallback(() => {
         dispatch({type: 'SET PHASE', payload: (phase + 1) % 4});
     }, [dispatch, phase]);
+    const hasQueue = flatMap(encounter?.monsters, m => m.actionLog).filter(Boolean).length > 0;
     const resolveQueue = useCallback(() => {
         dispatch({type: 'RESOLVE QUEUE'});
     }, [dispatch]);
@@ -101,7 +103,7 @@ export const Encounter: FC = () => {
             </DndProvider>
             <Form className={classes.actions}>
                 <Form.Field equal>
-                    <Button primary onClick={resolveQueue}>Resolve queue</Button>
+                    {hasQueue && (<Button primary onClick={resolveQueue}>Resolve queue</Button>)}
                     <Button primary onClick={increasePhase}>Next phase</Button>
                 </Form.Field>
                 <Form.Field equal>

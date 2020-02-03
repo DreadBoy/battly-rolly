@@ -1,5 +1,5 @@
 import {createUseStyles} from 'react-jss';
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {Splash} from '../common/Splash';
 import bg from '../../assets/rXi8wK.jpg';
 import {Button, Card, Header} from 'semantic-ui-react';
@@ -32,22 +32,34 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
 
     const logs = groupBy(player.actionLog, 'attackerId');
     const hasLogs = player.actionLog && player.actionLog.length > 0;
+    const hasHits = hasLogs && player.actionLog.filter(l => isAttackLog(l)).length > 0;
+
+    const [confirmed, setConfirmed] = useState<boolean>(false);
     const confirm = useCallback(() => {
         send<ConfirmLog>({
             type: 'CONFIRM LOG',
             payload: {
                 playerId,
             },
-        })
+        });
+        setConfirmed(true);
     }, [playerId, send]);
 
     return (
         <Splash bg={bg} position={`80% center`}>
             <Header className={classes.header} as={'h1'}>
                 {phase} round
-                {hasLogs ? (
+                {hasHits ? (
                     <Header.Subheader>
                         You are being attacked!
+                    </Header.Subheader>
+                ) : hasLogs ? (
+                    <Header.Subheader>
+                        You are being attacked but all attacks missed! 😎
+                    </Header.Subheader>
+                ) : confirmed ? (
+                    <Header.Subheader>
+                        Damage noted, get ready to attack back!
                     </Header.Subheader>
                 ) : (
                     <Header.Subheader>
@@ -55,7 +67,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                     </Header.Subheader>
                 )}
             </Header>
-            {Object.keys(logs).map(monsterId => {
+            {hasHits && Object.keys(logs).map(monsterId => {
                 const monster = getMonster(monsterId);
                 const list = logs[monsterId];
                 if (!monster)
@@ -67,7 +79,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                                 ?.filter(log => isAttackLog(log))
                                 .reverse()
                                 .map(log => isAttackLog(log) ? (
-                                    <div>
+                                    <div key={Math.random()}>
                                         <span>{log.damage} damage ({log.damageType})</span>
                                     </div>
                                 ) : null)}
@@ -75,7 +87,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                     </MonsterCard>
                 );
             })}
-            {hasLogs && (
+            {hasHits && (
                 <Button primary onClick={confirm}>
                     Ok, noted! 😥
                 </Button>

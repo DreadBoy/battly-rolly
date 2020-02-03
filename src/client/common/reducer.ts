@@ -1,6 +1,7 @@
 import {cloneDeep, find} from 'lodash';
 import {AttackLog, Encounter, isMissedAttackLog, Player} from './encounter';
 import {
+    ConfirmLog,
     isAttack,
     isConfirmLog,
     isFinishEncounter,
@@ -120,10 +121,8 @@ export function reducer(state: State = {players: {}}, action: Action) {
         return state1;
     }
     if (isConfirmLog(action)) {
-        if (!state.encounter)
-            return;
         const state1 = cloneDeep(state);
-        state1.players[action].actionLog = [];
+        state1.players[(action as ConfirmLog).payload.playerId].actionLog = [];
         return state1;
     }
 

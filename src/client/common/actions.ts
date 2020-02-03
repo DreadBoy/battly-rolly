@@ -53,7 +53,6 @@ export function isResolveQueue(action: Action): action is ResolveQueue {
 }
 
 export type ConfirmLog = Action & {
-    type: 'CONFIRM LOG',
     payload: {
         playerId: string,
     }
