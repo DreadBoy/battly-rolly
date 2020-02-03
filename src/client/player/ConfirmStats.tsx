@@ -22,7 +22,7 @@ export const ConfirmStats: FC = () => {
     const AC = useNumber(stats?.AC?.toString() ?? '');
     const passivePerception = useNumber(stats?.passivePerception?.toString() ?? '');
     const name = useText(stats?.name?.toString() ?? '');
-    const playerId = usePlayerId() ?? '';
+    const playerId = usePlayerId();
 
     const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>((event) => {
         event.preventDefault();

@@ -55,47 +55,48 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
 
     return (
         <MonsterCard monster={monster}>
-            <Card.Header>{monster.name}</Card.Header>
-            {stage === 0 && (
-                <Form onSubmit={attackRoll}>
-                    <Form.Field>
-                        <label>Attack roll</label>
-                        <Input
-                            fluid
-                            onChange={attack.onChange}
-                            value={attack.value}
-                            type={'number'}
-                            focused={focused}
-                        />
-                    </Form.Field>
-                    <Button type={'submit'}>Attack!</Button>
-                </Form>
-            )}
-            {stage === 2 && (
-                <>
-                    You missed it! 😢
-                </>
-            )}
-            {stage === 3 && (
-                <Form onSubmit={damageRoll}>
-                    <Form.Field>
-                        <label>Damage roll</label>
-                        <Input
-                            fluid
-                            onChange={damage.onChange}
-                            value={damage.value}
-                            type={'number'}
-                            focused={true}
-                        />
-                    </Form.Field>
-                    <Button type={'submit'}>Do damage!</Button>
-                </Form>
-            )}
-            {stage === 4 && (
-                <>
-                    You attacked it for {damage.number} damage!
-                </>
-            )}
+            <Card.Content>
+                {stage === 0 && (
+                    <Form onSubmit={attackRoll}>
+                        <Form.Field>
+                            <label>Attack roll</label>
+                            <Input
+                                fluid
+                                onChange={attack.onChange}
+                                value={attack.value}
+                                type={'number'}
+                                focused={focused}
+                            />
+                        </Form.Field>
+                        <Button type={'submit'}>Attack!</Button>
+                    </Form>
+                )}
+                {stage === 2 && (
+                    <>
+                        You missed it! 😢
+                    </>
+                )}
+                {stage === 3 && (
+                    <Form onSubmit={damageRoll}>
+                        <Form.Field>
+                            <label>Damage roll</label>
+                            <Input
+                                fluid
+                                onChange={damage.onChange}
+                                value={damage.value}
+                                type={'number'}
+                                focused={true}
+                            />
+                        </Form.Field>
+                        <Button type={'submit'}>Do damage!</Button>
+                    </Form>
+                )}
+                {stage === 4 && (
+                    <>
+                        You attacked it for {damage.number} damage!
+                    </>
+                )}
+            </Card.Content>
         </MonsterCard>
     );
 };

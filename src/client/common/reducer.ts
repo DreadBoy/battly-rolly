@@ -1,6 +1,14 @@
 import {cloneDeep, find} from 'lodash';
 import {AttackLog, Encounter, isMissedAttackLog, Player} from './encounter';
-import {isAttack, isFinishEncounter, isQueueAction, isResolveQueue, isSetStats, isStartEncounter} from './actions';
+import {
+    isAttack,
+    isConfirmLog,
+    isFinishEncounter,
+    isQueueAction,
+    isResolveQueue,
+    isSetStats,
+    isStartEncounter,
+} from './actions';
 
 export type State = {
     players: {
@@ -109,6 +117,13 @@ export function reducer(state: State = {players: {}}, action: Action) {
             });
             m.actionLog = [];
         });
+        return state1;
+    }
+    if (isConfirmLog(action)) {
+        if (!state.encounter)
+            return;
+        const state1 = cloneDeep(state);
+        state1.players[action].actionLog = [];
         return state1;
     }
 

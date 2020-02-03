@@ -51,3 +51,14 @@ export type ResolveQueue = Action
 export function isResolveQueue(action: Action): action is ResolveQueue {
     return action.type === 'RESOLVE QUEUE';
 }
+
+export type ConfirmLog = Action & {
+    type: 'CONFIRM LOG',
+    payload: {
+        playerId: string,
+    }
+}
+
+export function isConfirmLog(action: Action): action is ConfirmLog {
+    return action.type === 'CONFIRM LOG';
+}

@@ -1,8 +1,8 @@
 import {createUseStyles} from 'react-jss';
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Splash} from '../../common/Splash';
 import bg from '../../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
-import {useHistory} from 'react-router';
+import {useHistory, useRouteMatch} from 'react-router';
 import {useSelector} from 'react-redux';
 import {State} from '../../common/reducer';
 import {Attack} from './Attack';
@@ -17,7 +17,8 @@ const useStyles = createUseStyles({
 
 export const AttackMonsters: FC = () => {
     useStyles();
-    const {location: {search}} = useHistory();
+    const {location: {search}, replace} = useHistory();
+    const {path} = useRouteMatch();
     const params = new URLSearchParams(search);
     const ids = params.get('monsters')?.split(',');
     const encounter = useSelector((state: State) => state.encounter);
@@ -41,6 +42,11 @@ export const AttackMonsters: FC = () => {
         });
         setSent(true);
     }, [send, result]);
+
+    useEffect(() => {
+        if (encounter?.phase !== 0)
+            replace(`${path.slice(0, path.indexOf('/combat/attack'))}/combat`);
+    });
 
     return (
         <Splash bg={bg}>

@@ -51,8 +51,9 @@ export const MonsterCard: FC<Props> = ({monster, selected, onClick, children}) =
             <Card.Content>
                 <Icon name={'circle'} className={classNames('ui right floated', classes.icon)} size={'big'}
                       color={'orange'}/>
-                {children}
+                <Card.Header>{monster.name}</Card.Header>
             </Card.Content>
+            {children}
         </Card>
     );
 };

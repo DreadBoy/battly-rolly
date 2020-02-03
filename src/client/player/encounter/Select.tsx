@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {Card, Checkbox} from 'semantic-ui-react';
+import {Checkbox} from 'semantic-ui-react';
 import {Monster} from '../../common/encounter';
 import {createUseStyles} from 'react-jss';
 import {MonsterCard} from './MonsterCard';
@@ -41,7 +41,6 @@ export const Select: FC<Props> = ({monster, selected, onClick}) => {
     const classes = useStyles();
     return (
         <MonsterCard monster={monster} onClick={onClick} selected={selected}>
-            <Card.Header>{monster.name}</Card.Header>
             <Checkbox className={classes.checkbox} checked={selected}/>
         </MonsterCard>
     );

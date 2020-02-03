@@ -9,6 +9,7 @@ import phase3 from '../../assets/157403.jpg';
 import {useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {Phase0} from './Phase0';
+import {Phase1} from './Phase1';
 import {Message} from '../common/Message';
 
 const useStyles = createUseStyles({
@@ -28,10 +29,11 @@ export const Encounter: FC = () => {
             </Splash>
         );
 
-    switch (encounter.phase) {
-        case 0:
-            return (<Phase0/>);
-    }
+    if (encounter.phase % 2 === 0)
+        return <Phase0 phase={encounter.phase === 0 ? 'Fast' : 'Slow'}/>;
+    if (encounter.phase % 2 === 1)
+        return <Phase1 phase={encounter.phase === 1 ? 'Fast' : 'Slow'}/>;
+
     return (
         <Splash bg={bgs[encounter.phase]} position={`${poss[encounter.phase]}% center`}>
             this is combat in phase {encounter.phase}
