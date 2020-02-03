@@ -106,7 +106,7 @@ export const Encounter: FC = () => {
                     {hasQueue && (<Button primary onClick={resolveQueue}>Resolve queue</Button>)}
                     <Button primary onClick={increasePhase}>Next phase</Button>
                 </Form.Field>
-                <Form.Field equal>
+                <Form.Field>
                     <Button onClick={finishEncounter}>Finish</Button>
                 </Form.Field>
             </Form>
