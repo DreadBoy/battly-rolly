@@ -5,6 +5,7 @@ import {State} from '../common/reducer';
 import {Splash} from '../common/Splash';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {Message} from '../common/Message';
+import {sadFace} from '../common/emojis';
 
 export const Reducer: FC = ({children}) => {
     const {socket} = useSocket();
@@ -43,8 +44,7 @@ export const Reducer: FC = ({children}) => {
         <>{children}</>
     ) : (
         <Splash bg={bg} position={'88% center'}>
-            {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-            <Message>Game is already claimed by somebody else 😢</Message>
+            <Message>Game is already claimed by somebody else {sadFace}</Message>
         </Splash>
     );
 };

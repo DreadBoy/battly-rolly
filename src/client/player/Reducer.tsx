@@ -8,6 +8,7 @@ import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-deskto
 import {Message} from '../common/Message';
 import {useLocalStorage} from '../common/use-local-storage';
 import {PlayerStats} from '../common/encounter';
+import {sadFace} from '../common/emojis';
 
 export const Reducer: FC = ({children}) => {
     const {socket, send} = useSocket();
@@ -45,8 +46,7 @@ export const Reducer: FC = ({children}) => {
         <>{children}</>
     ) : (
         <Splash bg={bg} position={'88% center'}>
-            {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-            <Message>No game is running at the moment 😢</Message>
+            <Message>No game is running at the moment {sadFace}</Message>
         </Splash>
     );
 };

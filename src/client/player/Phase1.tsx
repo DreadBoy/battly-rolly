@@ -12,6 +12,7 @@ import {isAttackLog} from '../common/encounter';
 import {useSocket} from '../common/Socket';
 import {ConfirmLog} from '../common/actions';
 import {PhaseProps} from './encounter/phase';
+import {coolFace, sadFace} from '../common/emojis';
 
 const useStyles = createUseStyles({
     header: {
@@ -55,7 +56,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                     </Header.Subheader>
                 ) : hasLogs ? (
                     <Header.Subheader>
-                        You are being attacked but all attacks missed! 😎
+                        You are being attacked but all attacks missed! {coolFace}
                     </Header.Subheader>
                 ) : confirmed ? (
                     <Header.Subheader>
@@ -89,7 +90,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
             })}
             {hasHits && (
                 <Button primary onClick={confirm}>
-                    Ok, noted! 😥
+                    Ok, noted! {sadFace}
                 </Button>
             )}
         </Splash>
