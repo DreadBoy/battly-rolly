@@ -29,21 +29,6 @@
     "actions": [
       {
         "type": "attack",
-        "name": "unarmed",
-        "modifier": 3,
-        "damage": {
-          "rolls": [
-            [
-              0,
-              4,
-              2
-            ]
-          ],
-          "damageType": "bludgeoning"
-        }
-      },
-      {
-        "type": "attack",
         "name": "bite",
         "modifier": 3,
         "damage": {

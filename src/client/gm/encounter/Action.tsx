@@ -1,5 +1,4 @@
 import React, {FC} from 'react';
-import {Card} from 'semantic-ui-react';
 import {Action as DnDAction, isAttack, Roll} from '../../common/encounter';
 import {DragSourceMonitor, useDrag} from 'react-dnd';
 
@@ -21,16 +20,14 @@ export const Action: FC<Props> = ({action, onAttack}) => {
         }),
     });
     return (
-        <Card.Content extra key={Math.random()}>
-            <div ref={drag}>
-                {isAttack(action) ? (
-                    <span>
+        <div ref={drag} className={'extra content'}>
+            {isAttack(action) ? (
+                <span>
                         {nameToDisplay(action.name)}: <b>{action.damage.rolls.map(rollToDisplay)}</b> {action.damage.damageType}
                     </span>
-                ) : null}
+            ) : null}
 
-            </div>
-        </Card.Content>
+        </div>
 
     );
 };

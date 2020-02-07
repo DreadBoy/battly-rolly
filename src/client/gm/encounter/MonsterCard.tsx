@@ -4,6 +4,7 @@ import {Card, List} from 'semantic-ui-react';
 import {Action as DnDAction, isAttack, isAttackLog, isMissedAttackLog, Monster, Player} from '../../common/encounter';
 import {Action, nameToDisplay} from './Action';
 import classNames from 'classnames';
+import {ManualAction} from './ManualAction';
 
 type Props = {
     monster: Monster,
@@ -35,6 +36,7 @@ export const MonsterCard: FC<Props> = ({monster, onAttack, players}) => {
                     <span>HP: {monster.currentHP} / {monster.maxHP} - {(monster.currentHP / monster.maxHP * 100).toFixed(2)}%</span>
                 </Card.Meta>
             </Card.Content>
+            <ManualAction onAttack={onAttack}/>
             {monster.actions.map(action => isAttack(action) ? (
                 <Action key={Math.random()} action={action} onAttack={onAttack}/>
             ) : null)}

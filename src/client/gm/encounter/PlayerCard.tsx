@@ -19,7 +19,6 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
             canDrop: monitor.canDrop(),
         }),
     });
-    console.log(player);
     return (
         <div ref={drop}>
             <Card color={isOver ? 'red' : undefined}>
