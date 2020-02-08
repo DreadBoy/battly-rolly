@@ -51,7 +51,12 @@ export const AttackMonsters: FC = () => {
     return (
         <Splash bg={bg}>
             {monsters?.map((monster, index) => (
-                <Attack monster={monster} key={monster.id} focused={index === focused} onFinish={onFinish}/>
+                <Attack
+                    monster={monster}
+                    key={monster.id}
+                    focused={index === focused}
+                    onFinish={onFinish}
+                />
             ))}
             {focused === monsters.length && (
                 <Button primary onClick={confirm} loading={sent} disabled={sent}>Confirm</Button>

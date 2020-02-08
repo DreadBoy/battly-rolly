@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {Creator} from './Creator';
 import {Message} from '../common/Message';
-import {Action, AttackLog, isAttack, MissedAttackLog, Monster, phases} from '../common/encounter';
+import {Action, AttackLog, isAttack, isSave, Monster, phases, SaveLog} from '../common/encounter';
 import {DndProvider} from 'react-dnd';
 import Backend from 'react-dnd-html5-backend'
 import {MonsterCard} from './encounter/MonsterCard';
@@ -48,34 +48,48 @@ export const Encounter: FC = () => {
     }, [dispatch]);
 
     const attack = useCallback((monster: Monster) => (playerId: string, action: Action) => {
-        if (!isAttack(action))
-            return;
-        let log: AttackLog | MissedAttackLog;
+        if (isAttack(action)) {
+            let log: AttackLog;
 
-        const player = players[playerId].stats;
-        const attackRoll = roll([1, 20, action.modifier]);
-        if (attackRoll <= player.AC)
-            log = {
+            const player = players[playerId].stats;
+            const attackRoll = roll([1, 20, action.modifier]);
+            if (attackRoll <= player.AC)
+                log = {
+                    attackerId: monster.id,
+                    targetId: playerId,
+                    attack: action,
+                    hitRoll: attackRoll,
+                    damageRoll: 0,
+                    success: false,
+                };
+            else {
+                const damage = action.damage.rolls.map(roll).reduce((a, c) => a + c, 0);
+                log = {
+                    attackerId: monster.id,
+                    targetId: playerId,
+                    attack: action,
+                    hitRoll: attackRoll,
+                    damageRoll: damage,
+                    success: true,
+                };
+            }
+            dispatch({
+                type: 'ATTACK',
+                payload: {playerId, log},
+            });
+        } else if (isSave(action)) {
+            const log: SaveLog = {
                 attackerId: monster.id,
                 targetId: playerId,
-                attackRoll,
-                attackName: action.name,
+                save: action,
+                saveRoll: 0,
+                success: null,
             };
-        else {
-            const damage = action.damage.rolls.map(roll).reduce((a, c) => a + c, 0);
-            log = {
-                attackerId: monster.id,
-                targetId: playerId,
-                attackRoll,
-                attackName: action.name,
-                damage,
-                damageType: action.damage.damageType,
-            };
+            dispatch({
+                type: 'ATTACK',
+                payload: {playerId, log},
+            })
         }
-        dispatch({
-            type: 'ATTACK',
-            payload: {playerId, log},
-        });
     }, [dispatch, players]);
 
     if (!encounter)

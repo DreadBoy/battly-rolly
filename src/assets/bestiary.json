@@ -71,6 +71,33 @@
           ],
           "damageType": "piercing"
         }
+      },
+      {
+        "type": "save",
+        "name": "acid_breath",
+        "DC": 16,
+        "ability": "dexterity",
+        "damageSuccess": {
+          "damageType": "acid",
+          "rolls": [
+            [
+              6,
+              8,
+              0
+            ]
+          ]
+        },
+        "damageFailure": {
+          "damageType": "acid",
+          "rolls": [
+            [
+              12,
+              8,
+              0
+            ]
+          ]
+        },
+        "status": "frightened"
       }
     ]
   }

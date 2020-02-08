@@ -1,5 +1,5 @@
 import {cloneDeep, find} from 'lodash';
-import {AttackLog, Encounter, isMissedAttackLog, Player} from './encounter';
+import {AttackLog, Encounter, isAttackLog, isSaveLog, Player} from './encounter';
 import {
     ConfirmLog,
     isAttack,
@@ -111,10 +111,12 @@ export function reducer(state: State = {players: {}}, action: Action) {
             if (m.actionLog?.length === 0)
                 return;
             m.actionLog?.forEach(al => {
-                if (isMissedAttackLog(al))
-                    return;
-                // TODO account for damage immunity/resistance
-                m.currentHP -= (al as AttackLog).damage;
+                if (isAttackLog(al)) {
+                    // TODO account for damage immunity/resistance
+                    m.currentHP -= (al as AttackLog).damageRoll;
+                } else if(isSaveLog(al)) {
+                    console.warn('You didn\'t implement resolveQueue for saves yet!')
+                }
             });
             m.actionLog = [];
         });

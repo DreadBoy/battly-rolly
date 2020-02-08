@@ -1,8 +1,6 @@
-import {useEffect} from 'react';
-import m from '../../assets/bestiary.json';
+import bestiary from '../../assets/bestiary.json';
 import {Monster} from '../common/encounter';
 import {roll} from '../common/roll';
-import bestiary from '../../assets/bestiary.json';
 import {cloneDeep} from 'lodash';
 import {generateId} from '../common/generate-id';
 
@@ -28,18 +26,4 @@ export function fakeMonster(HP: number = 1, id: string = generateId()): Monster 
     ret.currentHP = ret.maxHP * HP;
     ret.id = id;
     return ret;
-}
-
-export function useSetupCombat(monsters: Monster[], setMonsters: Function, confirm: Function, dispatch: Function) {
-    useEffect(() => {
-        const _m = new Array(4).fill(m[0] as Monster);
-        if (monsters.length === 0) {
-            setMonsters(_m);
-            dispatch(fakePlayer());
-            dispatch(fakePlayer());
-            dispatch(fakePlayer());
-            dispatch(fakePlayer());
-        } else
-            confirm();
-    }, [confirm, dispatch, monsters, setMonsters]);
 }

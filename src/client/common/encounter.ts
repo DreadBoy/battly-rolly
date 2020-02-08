@@ -9,26 +9,33 @@ export type Player = {
     stats: PlayerStats,
     actionLog: ActionLog[],
 }
-export type ActionLog = MissedAttackLog | AttackLog;
-export type MissedAttackLog = {
+
+export type ActionLog = {
     attackerId: string,
     targetId: string,
-    attackRoll: number,
-    attackName: string,
 }
 
-export function isMissedAttackLog(log: ActionLog): log is MissedAttackLog {
-    return !!log.attackRoll && typeof (log as AttackLog).damage === 'undefined';
-}
-
-export type AttackLog = MissedAttackLog & {
-    damage: number,
-    damageType: DamageType,
+export type AttackLog = ActionLog & {
+    attack: Attack,
+    hitRoll: number,
+    damageRoll: number,
+    success: boolean,
 }
 
 export function isAttackLog(log: ActionLog): log is AttackLog {
-    return !!log.attackRoll && typeof (log as AttackLog).damage !== 'undefined';
+    return typeof (log as AttackLog).attack !== 'undefined';
 }
+
+export type SaveLog = ActionLog & {
+    save: Save,
+    saveRoll: number,
+    success: boolean | null,
+}
+
+export function isSaveLog(log: ActionLog): log is SaveLog {
+    return typeof (log as SaveLog).save !== 'undefined';
+}
+
 
 export type DamageType =
     'acid'
@@ -72,33 +79,47 @@ export type Damage = {
 export type ActionType = 'attack' | 'save' | 'guarantied';
 export const actionTypes = ['attack', 'save', 'guarantied'];
 
-export type Attack = {
+export type BaseAction = {
+    type: ActionType,
+};
+
+export type Attack = BaseAction & {
     type: 'attack',
     name: string,
     modifier: number,
     damage: Damage,
-    effect?: Effect,
 };
 
 export function isAttack(action: Action): action is Attack {
     return action.type === 'attack';
 }
 
-export type Action = {
-    type: ActionType,
-} | Attack | (
-    { type: 'save' } & Effect
-    ) | {
+export type Save = BaseAction & {
+    type: 'save',
+    name: string,
+} & Effect;
+
+export function isSave(action: Action): action is Save {
+    return action.type === 'save';
+}
+
+export type Action = BaseAction & (Attack | Save | {
     type: 'guarantied',
     damage?: Damage,
     effect?: Effect,
-}
+})
 export type Effect = {
     DC: number,
     ability: Ability,
-    damage?: Damage,
+    damageFailure?: Damage,
+    damageSuccess?: Damage,
     status?: Status,
 }
+
+export function abilityShort(ability: Ability) {
+    return ability.slice(0, 3);
+}
+
 export type Monster = {
     id: string,
     name: string,

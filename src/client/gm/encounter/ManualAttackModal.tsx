@@ -1,10 +1,10 @@
 import React, {FC, useCallback} from 'react';
-import {Action, DamageType, damageTypes, Roll} from '../../common/encounter';
+import {Attack, DamageType, damageTypes, Roll} from '../../common/encounter';
 import {Button, Dropdown, Form, Modal as SModal} from 'semantic-ui-react';
 import {useNumber, useText} from '../../common/form-helpers';
 
 type Props = {
-    onConfirm: (action: Action) => void,
+    onConfirm: (action: Attack) => void,
     onCancel: () => void,
 }
 
@@ -16,16 +16,18 @@ export const Modal: FC<Props> = ({onConfirm, onCancel}) => {
 
     const confirm = useCallback(() => {
         const parsedRolls = parseRolls(rolls.value);
+        if (!nameT.value || !modifier.isValid || !type.value || !parsedRolls.valid)
+            return;
         onConfirm({
             type: 'attack',
             name: nameT.value,
-            modifier: modifier.number,
+            modifier: modifier.number as number,
             damage: {
                 damageType: type.value as DamageType,
                 rolls: parsedRolls.valid ? parsedRolls.rolls : [],
             },
         });
-    }, [modifier.number, nameT.value, onConfirm, rolls.value, type.value]);
+    }, [modifier.isValid, modifier.number, nameT.value, onConfirm, rolls.value, type.value]);
 
     return (
         <SModal
@@ -42,6 +44,7 @@ export const Modal: FC<Props> = ({onConfirm, onCancel}) => {
                             onChange={nameT.onChange}
                             value={nameT.value}
                             error={!nameT.value}
+                            autoFocus
                         />
                         <Form.Input
                             label={'Modifier'}

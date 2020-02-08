@@ -1,16 +1,16 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Card, Form} from 'semantic-ui-react';
-import {ActionLog, MissedAttackLog, Monster} from '../../common/encounter';
+import {Button, Card, Dropdown, Form} from 'semantic-ui-react';
+import {Attack as AttackModel, AttackLog, DamageType, damageTypes, Monster} from '../../common/encounter';
 import {MonsterCard} from './MonsterCard';
-import {useNumber} from '../../common/form-helpers';
+import {useNumber, useText} from '../../common/form-helpers';
 import {Input} from '../../common/Input';
 import {usePlayerId} from '../PlayerId';
 
 type Props = {
     monster: Monster,
     focused?: boolean,
-    onFinish: (result: ActionLog) => void,
+    onFinish: (result: AttackLog) => void,
 };
 
 const useStyles = createUseStyles({
@@ -19,52 +19,62 @@ const useStyles = createUseStyles({
 
 export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
     useStyles();
-    const attack = useNumber();
-    const damage = useNumber();
+    const hitRoll = useNumber();
+    const damageRoll = useNumber();
+    const damageType = useText('');
     const playerId = usePlayerId();
 
     const [stage, setStage] = useState<number>(0);
 
-    const attackRoll = useCallback(() => {
+    const createAttack = useCallback((): AttackModel => ({
+        type: 'attack',
+        name: 'manual',
+        modifier: 0,
+        damage: {damageType: damageType.value as DamageType, rolls: [[0, 0, 0]]},
+    }), [damageType.value]);
+
+    const stage0 = useCallback(() => {
         // @ts-ignore
-        if (attack.isValid && attack.number >= monster.AC)
+        if (hitRoll.isValid && hitRoll.number >= monster.AC)
             setStage(3);
         else {
             setStage(2);
-            const log: MissedAttackLog = {
+            onFinish({
                 attackerId: playerId ?? '',
                 targetId: monster.id,
-                attackRoll: attack.number ?? 0,
-                attackName: 'manual',
-            };
-            onFinish(log);
+                attack: createAttack(),
+                hitRoll: hitRoll.number as number,
+                damageRoll: 0,
+                success: false,
+            });
         }
-    }, [attack.isValid, attack.number, monster.AC, monster.id, onFinish, playerId]);
+    }, [createAttack, hitRoll.isValid, hitRoll.number, monster.AC, monster.id, onFinish, playerId]);
 
-    const damageRoll = useCallback(() => {
+    const stage3 = useCallback(() => {
         setStage(4);
         onFinish({
             attackerId: playerId ?? '',
             targetId: monster.id,
-            attackRoll: attack.number ?? 0,
-            attackName: 'manual',
-            damage: damage.number ?? 0,
-            damageType: 'acid',
+            attack: createAttack(),
+            hitRoll: hitRoll.number as number,
+            damageRoll: damageRoll.number as number,
+            success: true,
         });
-    }, [attack.number, damage.number, monster.id, onFinish, playerId]);
+    }, [onFinish, playerId, monster.id, createAttack, hitRoll.number, damageRoll.number]);
 
     return (
         <MonsterCard monster={monster}>
             <Card.Content>
                 {stage === 0 && (
-                    <Form onSubmit={attackRoll}>
+                    <Form onSubmit={stage0}>
                         <Form.Field>
                             <label>Attack roll</label>
                             <Input
                                 fluid
-                                onChange={attack.onChange}
-                                value={attack.value}
+                                onChange={hitRoll.onChange}
+                                value={hitRoll.value}
                                 type={'number'}
+                                //TODO Can you use autoFocus for this?
                                 focused={focused}
                             />
                         </Form.Field>
@@ -77,15 +87,30 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                     </>
                 )}
                 {stage === 3 && (
-                    <Form onSubmit={damageRoll}>
+                    <Form onSubmit={stage3}>
                         <Form.Field>
                             <label>Damage roll</label>
                             <Input
                                 fluid
-                                onChange={damage.onChange}
-                                value={damage.value}
+                                onChange={damageRoll.onChange}
+                                value={damageRoll.value}
                                 type={'number'}
                                 focused={true}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Damage type</label>
+                            <Dropdown
+                                placeholder={'Damage type'}
+                                search
+                                selection
+                                options={damageTypes.map(t => ({
+                                    key: t, value: t, text: t,
+                                }))}
+                                value={damageType.value}
+                                onChange={(e, target) => damageType.onChange({
+                                    target,
+                                } as any)}
                             />
                         </Form.Field>
                         <Button type={'submit'}>Do damage!</Button>
@@ -93,7 +118,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                 )}
                 {stage === 4 && (
                     <>
-                        You attacked it for {damage.number} damage!
+                        You attacked it for {damageRoll.number} damage!
                     </>
                 )}
             </Card.Content>

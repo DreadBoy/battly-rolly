@@ -81,7 +81,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                                 .reverse()
                                 .map(log => isAttackLog(log) ? (
                                     <div key={Math.random()}>
-                                        <span>{log.damage} damage ({log.damageType})</span>
+                                        <span>{log.damageRoll} damage ({log.attack.damage.damageType})</span>
                                     </div>
                                 ) : null)}
                         </Card.Content>

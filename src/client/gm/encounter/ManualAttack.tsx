@@ -1,13 +1,13 @@
 import React, {FC, useCallback, useState} from 'react';
 import {Action as DnDAction} from '../../common/encounter';
 import {DragSourceMonitor, useDrag} from 'react-dnd';
-import {Modal} from './ManualActionModal';
+import {Modal} from './ManualAttackModal';
 
 type Props = {
     onAttack: (playerId: string, action: DnDAction) => void,
 }
 
-export const ManualAction: FC<Props> = ({onAttack}) => {
+export const ManualAttack: FC<Props> = ({onAttack}) => {
     const [modal, setModal] = useState<string>('');
     const [, drag] = useDrag({
         item: {type: 'monster'},

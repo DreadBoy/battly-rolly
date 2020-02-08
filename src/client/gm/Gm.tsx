@@ -6,10 +6,42 @@ import {SocketProvider} from '../common/Socket';
 import {createStore} from 'redux';
 import {reducer, State} from '../common/reducer';
 import {Provider as StoreProvider} from 'react-redux';
+import {fakeMonster} from './faker';
+import {AttackLog} from '../common/encounter';
 
+// const preloadedState: State = {
+//     players: {},
+//     encounter: undefined,
+// };
+const m = fakeMonster();
+m.actionLog = [{
+    attackerId: '557912',
+    targetId: m.id,
+    attack: {
+        type: 'attack',
+        name: 'mock_attack',
+        damage: {damageType: 'bludgeoning', rolls: [[1, 4, 0]]},
+        modifier: 5,
+    },
+    hitRoll: 16,
+    damageRoll: 4,
+    success: true,
+} as AttackLog];
 const preloadedState: State = {
-    players: {},
-    encounter: undefined,
+    players: {
+        '557912': {
+            stats: {
+                name: 'Matic',
+                AC: 15,
+                passivePerception: 15,
+            },
+            actionLog: [],
+        },
+    },
+    encounter: {
+        'monsters': [m],
+        'phase': 0,
+    },
 };
 const store = createStore(reducer, preloadedState);
 

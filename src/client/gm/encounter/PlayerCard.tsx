@@ -1,8 +1,8 @@
 import React, {FC} from 'react';
 import {Card, List} from 'semantic-ui-react';
-import {isAttackLog, isMissedAttackLog, Monster, Player} from '../../common/encounter';
+import {abilityShort, isAttackLog, isSaveLog, Monster, Player} from '../../common/encounter';
 import {useDrop} from 'react-dnd';
-import {nameToDisplay} from './Action';
+import {nameToDisplay} from './Attack';
 
 type Props = {
     playerId: string,
@@ -35,20 +35,28 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
                     <List>
                         {player.actionLog?.slice().reverse().map(log => (
                             <List.Item key={Math.random()}>
-                                <List.Content>{monsters.find(m => m.id === log.attackerId)?.name} ({nameToDisplay(log.attackName)})
-                                    -> {log.attackRoll}</List.Content>
-                                {isMissedAttackLog(log) && (
+                                {isAttackLog(log) ? (
                                     <>
-                                        <List.Icon name='checkmark' color={'green'}/>
-                                        <List.Content>missed</List.Content>
+                                        <List.Content>{monsters.find(m => m.id === log.attackerId)?.name} ({nameToDisplay(log.attack.name)})
+                                            -> {log.hitRoll}</List.Content>
+                                        {log.success ? (
+                                            <>
+                                                <List.Icon name='exclamation' color={'red'}/>
+                                                <List.Content>{log.damageRoll} ({log.attack.damage.damageType})</List.Content>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <List.Icon name='checkmark' color={'green'}/>
+                                                <List.Content>missed</List.Content>
+                                            </>
+                                        )}
                                     </>
-                                )}
-                                {isAttackLog(log) && (
+                                ) : isSaveLog(log) ? (
                                     <>
-                                        <List.Icon name='exclamation' color={'red'}/>
-                                        <List.Content>{log.damage} ({log.damageType})</List.Content>
+                                        <List.Content>{monsters.find(m => m.id === log.attackerId)?.name} ({nameToDisplay(log.save.name)})
+                                            -> {log.save.DC} {abilityShort(log.save.ability)}</List.Content>
                                     </>
-                                )}
+                                ) : null}
                             </List.Item>
                         ))}
                     </List>
