@@ -116,7 +116,7 @@ export const Encounter: FC = () => {
                 )}
             </DndProvider>
             <Form className={classes.actions}>
-                <Form.Field equal>
+                <Form.Field>
                     {hasQueue && (<Button primary onClick={resolveQueue}>Resolve queue</Button>)}
                     <Button primary onClick={increasePhase}>Next phase</Button>
                 </Form.Field>

@@ -76,8 +76,8 @@ export type Damage = {
     rolls: Roll[],
     damageType: DamageType,
 }
-export type ActionType = 'attack' | 'save' | 'guarantied';
-export const actionTypes = ['attack', 'save', 'guarantied'];
+export type ActionType = 'attack' | 'save';
+export const actionTypes = ['attack', 'save'];
 
 export type BaseAction = {
     type: ActionType,
@@ -103,11 +103,7 @@ export function isSave(action: Action): action is Save {
     return action.type === 'save';
 }
 
-export type Action = BaseAction & (Attack | Save | {
-    type: 'guarantied',
-    damage?: Damage,
-    effect?: Effect,
-})
+export type Action = BaseAction & (Attack | Save)
 export type Effect = {
     DC: number,
     ability: Ability,

@@ -73,13 +73,6 @@ export const SelectMonsters: FC = () => {
                     onChange={onChangeType('save')}
                     disabled={selected.length < 1}
                 />
-                <Form.Radio
-                    label='Guarantied'
-                    value='guarantied'
-                    checked={type === 'guarantied'}
-                    onChange={onChangeType('guarantied')}
-                    disabled={selected.length < 1}
-                />
             </Form.Group>
             <Button primary type={'submit'} disabled={selected.length < 1}>Attack!</Button>
         </Form>
