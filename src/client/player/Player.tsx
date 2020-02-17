@@ -15,6 +15,7 @@ const store = createStore(reducer, preloadedState);
 
 export const Player: FC = () => {
     const {path} = useRouteMatch();
+    console.log(path);
     return (
         <StoreProvider store={store}>
             <SocketProvider>
@@ -22,7 +23,7 @@ export const Player: FC = () => {
                     <Reducer>
                         <Switch>
                             <Route path={`${path}/stats`} component={ConfirmStats}/>
-                            <Route path={`${path}/combat/attack`} component={AttackMonsters}/>
+                            <Route path={`${path}/combat/:type`} component={AttackMonsters}/>
                             <Route path={`${path}/combat`} component={Encounter}/>
                             <Route path={'*'}>
                                 <Redirect to={`${path}/stats`}/>

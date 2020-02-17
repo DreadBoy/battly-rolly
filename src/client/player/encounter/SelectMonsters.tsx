@@ -31,49 +31,53 @@ export const SelectMonsters: FC = () => {
     const {push} = useHistory();
 
     const [selected, setSelected] = useState<string[]>([]);
-    const [type, setType] = useState<ActionType>('attack');
+    const [type, setType] = useState<ActionType>('save');
 
     const toggle = useCallback((monster: Monster) => () => {
         if (selected.find(id => id === monster.id))
             setSelected(selected.filter(s => s !== monster.id));
-        else
+        else if (type === 'save')
             setSelected([...selected, monster.id]);
-    }, [selected]);
+        else if (type === 'attack')
+            setSelected([monster.id]);
+    }, [selected, type]);
 
     const onChangeType = useCallback((t: ActionType) => () => {
         setType(t);
+        setSelected([]);
     }, []);
 
     const onSubmit = useCallback(() => {
-        push(`combat/attack?monsters=${selected.join(',')}`)
-    }, [push, selected]);
+        push(`combat/${type}?monsters=${selected.join(',')}`)
+    }, [push, selected, type]);
 
     return (
         <Form onSubmit={onSubmit}>
-            <Grid className={classes.grid}>
-                {encounter?.monsters.map(monster => (
-                    <Grid.Column width={8} className={classes.column} key={monster.id}>
-                        <Select monster={monster} onClick={toggle(monster)}
-                                     selected={selected.includes(monster.id)}/>
-                    </Grid.Column>
-                ))}
-            </Grid>
             <Form.Group inline>
                 <Form.Radio
                     label='Attack'
                     value='attack'
                     checked={type === 'attack'}
                     onChange={onChangeType('attack')}
-                    disabled={selected.length < 1}
                 />
                 <Form.Radio
                     label='Save'
                     value='save'
                     checked={type === 'save'}
                     onChange={onChangeType('save')}
-                    disabled={selected.length < 1}
                 />
             </Form.Group>
+            <Grid className={classes.grid}>
+                {encounter?.monsters.map(monster => (
+                    <Grid.Column width={8} className={classes.column} key={monster.id}>
+                        <Select
+                            monster={monster}
+                            onClick={toggle(monster)}
+                            selected={selected.includes(monster.id)}
+                        />
+                    </Grid.Column>
+                ))}
+            </Grid>
             <Button primary type={'submit'} disabled={selected.length < 1}>Attack!</Button>
         </Form>
     );

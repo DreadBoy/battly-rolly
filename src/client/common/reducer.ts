@@ -1,7 +1,7 @@
-import {cloneDeep, filter, find, first} from 'lodash';
-import {AttackLog, Encounter, isAttackLog, isSaveLog, Player, SaveLog} from './encounter';
+import {cloneDeep, filter, find, first, pull, sum} from 'lodash';
+import {Encounter, isAttackLog, isSaveLog, Player, SaveLog} from './encounter';
 import {Attack, ConfirmLog, QueueAction, ResolveSave, SetStats, StartEncounter} from './actions';
-import {pull} from 'lodash';
+import {roll} from './roll';
 
 export type State = {
     players: {
@@ -108,11 +108,14 @@ export function reducer(state: State = {players: {}}, action: Action) {
                 if (m.actionLog?.length === 0)
                     return;
                 m.actionLog?.forEach(al => {
+                    // TODO account for damage immunity/resistance
                     if (isAttackLog(al)) {
-                        // TODO account for damage immunity/resistance
-                        m.currentHP -= (al as AttackLog).damageRoll;
+                        m.currentHP -= al.damageRoll;
                     } else if (isSaveLog(al)) {
-                        console.warn('You didn\'t implement resolveQueue for saves yet!')
+                        al.saveRoll = roll([1, 20, m.savingThrows[al.save.ability]]);
+                        al.success = al.saveRoll > al.save.DC;
+                        const damage = al.success ? al.save.damageSuccess : al.save.damageFailure;
+                        m.currentHP -= sum(damage?.rolls.map(roll)) || 0;
                     }
                 });
                 m.actionLog = [];

@@ -9,10 +9,10 @@ type Props = {
 }
 
 export const Modal: FC<Props> = ({onConfirm, onCancel}) => {
-    const nameT = useText('');
-    const modifier = useNumber('');
-    const type = useText('');
-    const rolls = useText('');
+    const nameT = useText();
+    const modifier = useNumber();
+    const type = useText();
+    const rolls = useText();
 
     const confirm = useCallback(() => {
         const parsedRolls = parseRolls(rolls.value);
@@ -80,7 +80,7 @@ export const Modal: FC<Props> = ({onConfirm, onCancel}) => {
     );
 };
 
-function parseRolls(value: string): { valid: boolean, rolls: Roll[] } {
+export function parseRolls(value: string): { valid: boolean, rolls: Roll[] } {
     if (!value)
         return {valid: false, rolls: []};
     const rolls: Roll[] = value.split(',').map(r => {
@@ -89,4 +89,8 @@ function parseRolls(value: string): { valid: boolean, rolls: Roll[] } {
     }) as Roll[];
     const valid = rolls.length > 0 && rolls.length === rolls.filter(Boolean).length;
     return {valid, rolls};
+}
+
+export function displayRolls(rolls: Roll[]): string {
+    return rolls.map(r => `${r[0]}d${r[1]}${r[2] > 0 ? r[2].toString() : ''}`).join(' + ');
 }

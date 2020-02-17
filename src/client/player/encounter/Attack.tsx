@@ -21,7 +21,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
     useStyles();
     const hitRoll = useNumber();
     const damageRoll = useNumber();
-    const damageType = useText('');
+    const damageType = useText('bludgeoning');
     const playerId = usePlayerId();
 
     const [stage, setStage] = useState<number>(0);
@@ -67,7 +67,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
             <Card.Content>
                 {stage === 0 && (
                     <Form onSubmit={stage0}>
-                        <Form.Field>
+                        <Form.Field error={!hitRoll.isValid}>
                             <label>Attack roll</label>
                             <Input
                                 fluid
@@ -78,7 +78,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                                 focused={focused}
                             />
                         </Form.Field>
-                        <Button type={'submit'}>Attack!</Button>
+                        <Button type={'submit'} disabled={!hitRoll.isValid}>Attack!</Button>
                     </Form>
                 )}
                 {stage === 2 && (
@@ -88,7 +88,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                 )}
                 {stage === 3 && (
                     <Form onSubmit={stage3}>
-                        <Form.Field>
+                        <Form.Field error={!damageRoll.value}>
                             <label>Damage roll</label>
                             <Input
                                 fluid
@@ -113,7 +113,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                                 } as any)}
                             />
                         </Form.Field>
-                        <Button type={'submit'}>Do damage!</Button>
+                        <Button type={'submit'} disabled={!damageRoll.isValid}>Do damage!</Button>
                     </Form>
                 )}
                 {stage === 4 && (
