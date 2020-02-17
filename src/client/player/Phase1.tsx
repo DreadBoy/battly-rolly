@@ -1,5 +1,5 @@
 import {createUseStyles} from 'react-jss';
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Splash} from '../common/Splash';
 import bg from '../../assets/rXi8wK.jpg';
 import {Button, Card, Header} from 'semantic-ui-react';
@@ -7,12 +7,13 @@ import {useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {usePlayerId} from './PlayerId';
 import {MonsterCard} from './encounter/MonsterCard';
-import {find, groupBy} from 'lodash';
-import {isAttackLog} from '../common/encounter';
+import {filter, find, first, groupBy, size} from 'lodash';
+import {isAttackLog, isSaveLog, SaveLog} from '../common/encounter';
 import {useSocket} from '../common/Socket';
-import {ConfirmLog} from '../common/actions';
+import {ConfirmLog, ResolveSave as ResolveSaveDispatch} from '../common/actions';
 import {PhaseProps} from './encounter/phase';
 import {coolFace, sadFace} from '../common/emojis';
+import {ResolveSave} from './encounter/ResolveSave';
 
 const useStyles = createUseStyles({
     header: {
@@ -31,9 +32,10 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
         return find(encounter?.monsters, ['id', monsterId]);
     }, [encounter]);
 
-    const logs = groupBy(player.actionLog, 'attackerId');
-    const hasLogs = player.actionLog && player.actionLog.length > 0;
-    const hasHits = hasLogs && player.actionLog.filter(l => isAttackLog(l)).length > 0;
+    const logs = groupBy(player?.actionLog, 'attackerId');
+    const hasAttacks = size(filter(player?.actionLog, isAttackLog)) > 0;
+
+    const hasHits = hasAttacks && size(filter(player?.actionLog, l => isAttackLog(l) && l.success)) > 0;
 
     const [confirmed, setConfirmed] = useState<boolean>(false);
     const confirm = useCallback(() => {
@@ -45,6 +47,22 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
         });
         setConfirmed(true);
     }, [playerId, send]);
+    useEffect(() => {
+        if (hasHits && confirm)
+            setConfirmed(false);
+    }, [hasHits, confirm]);
+
+    const hasSaves = size(filter(player?.actionLog, isSaveLog)) > 0;
+    const firstSave = first(filter(player?.actionLog, isSaveLog)) as SaveLog;
+    const resolve = useCallback((num: number) => {
+        send<ResolveSaveDispatch>({
+            type: 'RESOLVE SAVE',
+            payload: {
+                playerId,
+                roll: num,
+            },
+        });
+    }, [playerId, send]);
 
     return (
         <Splash bg={bg} position={`80% center`}>
@@ -54,7 +72,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                     <Header.Subheader>
                         You are being attacked!
                     </Header.Subheader>
-                ) : hasLogs ? (
+                ) : hasAttacks ? (
                     <Header.Subheader>
                         You are being attacked but all attacks missed! {coolFace}
                     </Header.Subheader>
@@ -92,6 +110,9 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                 <Button primary onClick={confirm}>
                     Ok, noted! {sadFace}
                 </Button>
+            )}
+            {hasSaves && (
+                <ResolveSave save={firstSave} onResolve={resolve}/>
             )}
         </Splash>
     );

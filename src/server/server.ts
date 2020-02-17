@@ -3,6 +3,8 @@ import Router from '@koa/router';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
+// import {fakeMonster} from '../client/gm/faker';
+// import {Player} from '../client/common/encounter';
 
 const app = new Koa();
 const router = new Router();
@@ -28,6 +30,19 @@ const io = Io(server);
 
 let gm: Io.Socket | null = null;
 let cachedState: any = {};
+
+// gm = {
+//     emit: function () {
+//     } as unknown,
+// } as Io.Socket;
+// cachedState = {
+//     players: {},
+//     encounter: {
+//         monsters: [fakeMonster(0.7, '772936'), fakeMonster(0.3, '772937'), fakeMonster()],
+//         phase: 3,
+//     },
+// };
+
 io.on('connect', socket => {
     console.log('connected');
     let playerId: string | null = null;

@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {Card, List} from 'semantic-ui-react';
+import {Card, List, Icon} from 'semantic-ui-react';
 import {abilityShort, isAttackLog, isSaveLog, Monster, Player} from '../../common/encounter';
 import {useDrop} from 'react-dnd';
 import {nameToDisplay} from './Attack';
@@ -55,6 +55,14 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
                                     <>
                                         <List.Content>{monsters.find(m => m.id === log.attackerId)?.name} ({nameToDisplay(log.save.name)})
                                             -> {log.save.DC} {abilityShort(log.save.ability)}</List.Content>
+                                        {log.success !== null ? (
+                                            <div>{log.success.toString()}</div>
+                                        ) : (
+                                            <List.Content>
+                                                <Icon loading name='spinner' color={'blue'}/>
+                                                waiting for results
+                                            </List.Content>
+                                        )}
                                     </>
                                 ) : null}
                             </List.Item>
