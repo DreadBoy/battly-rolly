@@ -27,6 +27,7 @@ export const ResolveSave: FC<Props> = ({save, onResolve}) => {
                         onChange={form.onChange}
                         value={form.value}
                         error={!form.isValid}
+                        type={'number'}
                     />
                     <Form.Field>
                         <Button primary type='submit'>Confirm</Button>

@@ -130,8 +130,11 @@ export function reducer(state: State = {players: {}}, action: Action) {
             const firstSave = first(filter(state1.players[playerId].actionLog, isSaveLog)) as SaveLog;
             if (typeof firstSave === 'undefined')
                 return state;
-            if (roll < firstSave.save.DC)
+            if (roll < firstSave.save.DC) {
+                firstSave.saveRoll = roll;
+                firstSave.success = false;
                 return state;
+            }
             pull(state1.players[playerId].actionLog, firstSave);
             return state1;
         }

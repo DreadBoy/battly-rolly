@@ -31,7 +31,7 @@ export const SelectMonsters: FC = () => {
     const {push} = useHistory();
 
     const [selected, setSelected] = useState<string[]>([]);
-    const [type, setType] = useState<ActionType>('save');
+    const [type, setType] = useState<ActionType>('attack');
 
     const toggle = useCallback((monster: Monster) => () => {
         if (selected.find(id => id === monster.id))

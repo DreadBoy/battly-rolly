@@ -18,7 +18,7 @@ const useStyles = createUseStyles({
     attackCard: {},
 });
 
-export const Save: FC<Props> = ({monster, focused, onFinish}) => {
+export const Save: FC<Props> = ({monster, onFinish}) => {
     useStyles();
     const DC = useNumber();
     const ability = useText('dexterity');
@@ -59,7 +59,6 @@ export const Save: FC<Props> = ({monster, focused, onFinish}) => {
                                     onChange={DC.onChange}
                                     value={DC.value}
                                     type={'number'}
-                                    focused={focused}
                                 />
                             </Form.Field>
                             <Form.Field>
