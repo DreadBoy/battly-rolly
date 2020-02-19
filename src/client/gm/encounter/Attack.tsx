@@ -24,7 +24,7 @@ export const Attack: FC<Props> = ({action, onAttack}) => {
 };
 
 export function nameToDisplay(name: string) {
-    return name.split('_').map(part => part).join(' ');
+    return name;
 }
 
 export function rollToDisplay(roll: Roll) {

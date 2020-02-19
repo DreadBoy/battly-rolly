@@ -44,7 +44,7 @@
       },
       {
         "type": "attack",
-        "name": "spear_melee",
+        "name": "spear melee",
         "modifier": 3,
         "damage": {
           "rolls": [
@@ -59,7 +59,7 @@
       },
       {
         "type": "attack",
-        "name": "spear_ranged",
+        "name": "spear ranged",
         "modifier": 3,
         "damage": {
           "rolls": [
@@ -74,7 +74,7 @@
       },
       {
         "type": "save",
-        "name": "acid_breath",
+        "name": "acid breath",
         "DC": 16,
         "ability": "dexterity",
         "damageSuccess": {
@@ -98,6 +98,96 @@
           ]
         },
         "status": "frightened"
+      }
+    ]
+  },
+  {
+    "id": "0",
+    "name": "Lizardfolk",
+    "HP": [
+      4,
+      8,
+      4
+    ],
+    "currentHP": 0,
+    "maxHP": 0,
+    "AC": 15,
+    "abilitySet": {
+      "strength": 15,
+      "dexterity": 10,
+      "constitution": 13,
+      "intelligence": 7,
+      "wisdom": 12,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "heavy club",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "bludgeoning"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "javelin",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spiked shield",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
       }
     ]
   }
