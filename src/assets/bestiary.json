@@ -190,5 +190,95 @@
         }
       }
     ]
+  },
+  {
+    "id": "0",
+    "name": "Lizard",
+    "HP": [
+      1,
+      4,
+      0
+    ],
+    "currentHP": 0,
+    "maxHP": 0,
+    "AC": 15,
+    "abilitySet": {
+      "strength": 2,
+      "dexterity": 11,
+      "constitution": 10,
+      "intelligence": 1,
+      "wisdom": 8,
+      "charisma": 3
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 0,
+        "damage": {
+          "rolls": [
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      }
+    ]
+  },
+  {
+    "id": "0",
+    "name": "Cat",
+    "HP": [
+      1,
+      4,
+      0
+    ],
+    "currentHP": 0,
+    "maxHP": 0,
+    "AC": 15,
+    "abilitySet": {
+      "strength": 3,
+      "dexterity": 15,
+      "constitution": 10,
+      "intelligence": 3,
+      "wisdom": 12,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 0,
+        "damage": {
+          "rolls": [
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "damageType": "slashing"
+        }
+      }
+    ]
   }
 ]
