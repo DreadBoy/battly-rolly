@@ -30,12 +30,14 @@ export const ConfirmStats: FC = () => {
             name: name.value,
             AC: AC.number ?? 0,
             passivePerception: passivePerception.number ?? 0,
-            playerId,
         };
         set(JSON.stringify(stats));
         send<SetStats>({
             type: 'SET STATS',
-            payload: stats,
+            payload: {
+                ...stats,
+                playerId,
+            },
         });
         push('combat');
     }, [AC.number, name.value, passivePerception.number, playerId, push, send, set]);

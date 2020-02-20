@@ -42,9 +42,9 @@ export function reducer(state: State = {players: {}}, action: Action) {
         case 'DISCONNECT':
             const players = {
                 ...state.players,
+                // @ts-ignore
+                [action.payload]: {},
             };
-            // @ts-ignore
-            delete players[action.payload];
             return {
                 ...state,
                 players,
