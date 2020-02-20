@@ -5,6 +5,7 @@ import {Gm} from './gm/Gm';
 import {Player} from './player/Player';
 import {SelectRole} from './SelectRole';
 import {FullScreen} from './common/Fullscreen';
+import {TouchProvider} from './common/touch';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -18,13 +19,15 @@ const App: FC = () => {
     useStyles();
     return (
         <BrowserRouter>
-            <FullScreen>
-                <Switch>
-                    <Route path="/gm" component={Gm}/>
-                    <Route path="/player" component={Player}/>
-                    <Route path="*" component={SelectRole}/>
-                </Switch>
-            </FullScreen>
+            <TouchProvider>
+                <FullScreen>
+                    <Switch>
+                        <Route path="/gm" component={Gm}/>
+                        <Route path="/player" component={Player}/>
+                        <Route path="*" component={SelectRole}/>
+                    </Switch>
+                </FullScreen>
+            </TouchProvider>
         </BrowserRouter>
     );
 };

@@ -3,6 +3,7 @@ import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {Splash} from './Splash';
 import bg from '../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import {Button} from 'semantic-ui-react';
+import {useTouches} from './touch';
 
 const useStyles = createUseStyles({
     row: {
@@ -32,18 +33,14 @@ export const FullScreen: FC = ({children}) => {
         return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
     }, [onFullscreenChange]);
 
-    // If touched with 3 fingers, show Splash
-    const onTouchStart = useCallback((e: TouchEvent) => {
-        if (e.touches.length === 3) {
+    const {touches} = useTouches();
+    useEffect(() => {
+        if (touches === 3) {
             document.exitFullscreen()
                 .catch(() => undefined)
                 .finally(() => setFull(false))
         }
-    }, []);
-    useEffect(() => {
-        window.addEventListener('touchstart', onTouchStart);
-        return () => window.removeEventListener('touchstart', onTouchStart);
-    }, [onTouchStart]);
+    });
 
     return full ? (
         <>{children}</>

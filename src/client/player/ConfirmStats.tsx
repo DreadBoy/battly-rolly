@@ -46,7 +46,7 @@ export const ConfirmStats: FC = () => {
         <Splash bg={bg} position={'24% center'}>
             <Header as='h1'>Enter your stats</Header>
             <Form onSubmit={onSubmit}>
-                <Form.Input fluid label={'Name'} onChange={name.onChange} value={name.value} error={!name.value}/>
+                <Form.Input fluid label={'Name'} onChange={name.onChange} value={name.value} error={!name.value} autoFocus/>
                 <Form.Group widths='equal'>
                     <Form.Input fluid label={'AC'} onChange={AC.onChange} value={AC.value} error={!positive(AC)}/>
                     <Form.Input fluid label={'Passive perception'} onChange={passivePerception.onChange}
