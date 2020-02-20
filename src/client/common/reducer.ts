@@ -40,15 +40,7 @@ export function reducer(state: State = {players: {}}, action: Action) {
                 },
             };
         case 'DISCONNECT':
-            const players = {
-                ...state.players,
-                // @ts-ignore
-                [action.payload]: {},
-            };
-            return {
-                ...state,
-                players,
-            };
+            return state;
         case 'CONFIRM LOG': {
             const act = action as ConfirmLog;
             const state1 = cloneDeep(state);
