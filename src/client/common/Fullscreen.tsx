@@ -17,27 +17,40 @@ export const FullScreen: FC = ({children}) => {
     const div = useRef<HTMLDivElement | null>(null);
     // const [full, setFull] = useState<boolean>(true);
     const [full, setFull] = useState<boolean>(false);
-    const setTrue = useCallback(() => setFull(true), []);
     const go = useCallback(() => {
-        if (document.fullscreenElement) {
-            setFull(true);
-            return;
-        }
         document.documentElement.requestFullscreen()
-            .then(setTrue)
-            .catch(setTrue);
-    }, [setTrue]);
-    useEffect(() => {
-        if (document.fullscreenElement)
-            setFull(true);
+            .catch(() => undefined)
+            .finally(() => setFull(true));
     }, []);
+
+    // If fullscreen is turned off, show Splash
+    const onFullscreenChange = useCallback(() => {
+        setFull(!!document.fullscreenElement);
+    }, []);
+    useEffect(() => {
+        document.addEventListener('fullscreenchange', onFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+    }, [onFullscreenChange]);
+
+    // If touched with 3 fingers, show Splash
+    const onTouchStart = useCallback((e: TouchEvent) => {
+        if (e.touches.length === 3) {
+            document.exitFullscreen()
+                .catch(() => undefined)
+                .finally(() => setFull(false))
+        }
+    }, []);
+    useEffect(() => {
+        window.addEventListener('touchstart', onTouchStart);
+        return () => window.removeEventListener('touchstart', onTouchStart);
+    }, [onTouchStart]);
 
     return full ? (
         <>{children}</>
     ) : (
         <Splash bg={bg}>
             <div className={classes.row} ref={div}>
-                <Button onClick={setTrue}>Cancel</Button>
+                <Button onClick={() => setFull(true)}>Cancel</Button>
                 <Button primary onClick={go}>Go fullscreen</Button>
             </div>
         </Splash>
