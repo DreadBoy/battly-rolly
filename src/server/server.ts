@@ -90,4 +90,4 @@ io.on('connect', socket => {
         socket.broadcast.emit('state', state);
     })
 });
-server.listen(3000);
+server.listen(process.env.PORT || 3000);
