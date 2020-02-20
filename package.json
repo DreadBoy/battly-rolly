@@ -53,8 +53,7 @@
     "server:build": "tsc --project tsconfig.server.json",
     "server:test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run client:build && npm run server:build",
-    "start": "node build/server.js",
-    "postinstall": "npm run build"
+    "start": "node build/server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
