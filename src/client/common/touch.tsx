@@ -19,8 +19,6 @@ export const TouchProvider: FC = ({children}) => {
         return () => window.removeEventListener('touchstart', onTouchStart);
     }, [onTouchStart]);
 
-    console.log(touches);
-
     return (
         <touchContext.Provider value={{touches}}>
             {children}
