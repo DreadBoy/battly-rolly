@@ -1,30 +1,25 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Card, Dropdown, Form} from 'semantic-ui-react';
+import {Button, Card, Dropdown, Form, Input} from 'semantic-ui-react';
 import {abilities, Ability, abilityShort, Monster, Save as SaveModel, SaveLog} from '../../common/encounter';
-import {MonsterCard} from './MonsterCard';
 import {useNumber, useText} from '../../common/form-helpers';
 import {usePlayerId} from '../PlayerId';
-import {Input} from '../../common/Input';
-import {displayRolls, parseRolls} from '../../gm/encounter/ManualAttackModal';
 
 type Props = {
-    monster: Monster,
-    focused?: boolean,
-    onFinish: (result: SaveLog) => void,
+    monsters: Monster[],
+    onFinish: (result: SaveLog[]) => void,
 };
 
 const useStyles = createUseStyles({
     attackCard: {},
 });
 
-export const Save: FC<Props> = ({monster, onFinish}) => {
+export const Save: FC<Props> = ({monsters, onFinish}) => {
     useStyles();
     const DC = useNumber();
     const ability = useText('dexterity');
     const playerId = usePlayerId();
-    const damage = [useText(), useText()];
-    const rolls = damage.map(d => parseRolls(d.value));
+    const damage = [useNumber(), useNumber()];
 
     const [stage, setStage] = useState<number>(0);
 
@@ -37,17 +32,18 @@ export const Save: FC<Props> = ({monster, onFinish}) => {
 
     const stage0 = useCallback(() => {
         setStage(1);
-        onFinish({
+        const actions = monsters.map(m => ({
             attackerId: playerId ?? '',
-            targetId: monster.id,
+            targetId: m.id,
             save: createAttack(),
             saveRoll: 0,
             success: null,
-        });
-    }, [createAttack, monster.id, onFinish, playerId]);
+        }));
+        onFinish(actions);
+    }, [createAttack, monsters, onFinish, playerId]);
 
     return (
-        <MonsterCard monster={monster}>
+        <Card fluid>
             <Card.Content>
                 {stage === 0 && (
                     <Form onSubmit={stage0}>
@@ -56,6 +52,7 @@ export const Save: FC<Props> = ({monster, onFinish}) => {
                                 <label>DC</label>
                                 <Input
                                     fluid
+                                    autoFocus
                                     onChange={DC.onChange}
                                     value={DC.value}
                                     type={'number'}
@@ -78,7 +75,7 @@ export const Save: FC<Props> = ({monster, onFinish}) => {
                             </Form.Field>
                         </Form.Group>
                         <Form.Group widths={'equal'}>
-                            <Form.Field error={!rolls[0].valid}>
+                            <Form.Field error={!damage[0].isValid}>
                                 <label>Damage if failed</label>
                                 <Input
                                     fluid
@@ -86,7 +83,7 @@ export const Save: FC<Props> = ({monster, onFinish}) => {
                                     value={damage[0].value}
                                 />
                             </Form.Field>
-                            <Form.Field error={!!damage[1].value && !rolls[1].valid}>
+                            <Form.Field error={!!damage[1].value && !damage[1].isValid}>
                                 <label>Damage if saved (optional)</label>
                                 <Input
                                     fluid
@@ -97,23 +94,21 @@ export const Save: FC<Props> = ({monster, onFinish}) => {
                             </Form.Field>
                         </Form.Group>
                         <Button
-                            primary
                             type={'submit'}
-                            disabled={!DC.isValid || !ability.value || !rolls[0].valid}
-                        >Attack!</Button>
+                            disabled={!DC.isValid || !ability.value || !damage[0].isValid}
+                        >Do damage!</Button>
                     </Form>
                 )}
                 {stage === 1 && (
                     <>
-                        Target need to succeed {DC.value} {abilityShort(ability.value as Ability)} save
-                        or take {displayRolls(rolls[0].rolls)}.
-                        {rolls[1].valid && ` If saved, target will still take ${displayRolls(rolls[1].rolls)}`}
+                        <span>Target need to succeed {DC.value} {abilityShort(ability.value as Ability)} save
+                        or take {damage[0].number} damage.</span>
+                        {damage[1].isValid && (
+                            <span> If saved, target will still take {damage[1].number} damage.</span>
+                        )}
                     </>
                 )}
             </Card.Content>
-        </MonsterCard>
+        </Card>
     );
-};
-Save.defaultProps = {
-    focused: false,
 };

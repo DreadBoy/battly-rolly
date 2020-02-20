@@ -17,8 +17,6 @@ export const Input: FC<Props> = ({focused, ...props}) => {
             input.current.blur();
     }, [focused]);
 
-    console.log(props);
-
     return (
         <BaseInput {...props} ref={(i: BaseInput) => {
             if (!i)

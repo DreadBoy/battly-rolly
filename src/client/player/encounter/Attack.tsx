@@ -1,23 +1,21 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Card, Dropdown, Form} from 'semantic-ui-react';
+import {Button, Card, Dropdown, Form, Input} from 'semantic-ui-react';
 import {Attack as AttackModel, AttackLog, DamageType, damageTypes, Monster} from '../../common/encounter';
 import {MonsterCard} from './MonsterCard';
 import {useNumber, useText} from '../../common/form-helpers';
-import {Input} from '../../common/Input';
 import {usePlayerId} from '../PlayerId';
 
 type Props = {
     monster: Monster,
-    focused?: boolean,
-    onFinish: (result: AttackLog) => void,
+    onFinish: (result: AttackLog[]) => void,
 };
 
 const useStyles = createUseStyles({
     attackCard: {},
 });
 
-export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
+export const Attack: FC<Props> = ({monster, onFinish}) => {
     useStyles();
     const hitRoll = useNumber();
     const damageRoll = useNumber();
@@ -39,27 +37,27 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
             setStage(3);
         else {
             setStage(2);
-            onFinish({
+            onFinish([{
                 attackerId: playerId ?? '',
                 targetId: monster.id,
                 attack: createAttack(),
                 hitRoll: hitRoll.number as number,
                 damageRoll: 0,
                 success: false,
-            });
+            }]);
         }
     }, [createAttack, hitRoll.isValid, hitRoll.number, monster.AC, monster.id, onFinish, playerId]);
 
     const stage3 = useCallback(() => {
         setStage(4);
-        onFinish({
+        onFinish([{
             attackerId: playerId ?? '',
             targetId: monster.id,
             attack: createAttack(),
             hitRoll: hitRoll.number as number,
             damageRoll: damageRoll.number as number,
             success: true,
-        });
+        }]);
     }, [onFinish, playerId, monster.id, createAttack, hitRoll.number, damageRoll.number]);
 
     return (
@@ -74,8 +72,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                                 onChange={hitRoll.onChange}
                                 value={hitRoll.value}
                                 type={'number'}
-                                //TODO Can you use autoFocus for this?
-                                focused={focused}
+                                autoFocus
                             />
                         </Form.Field>
                         <Button type={'submit'} disabled={!hitRoll.isValid}>Attack!</Button>
@@ -95,7 +92,7 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
                                 onChange={damageRoll.onChange}
                                 value={damageRoll.value}
                                 type={'number'}
-                                focused={true}
+                                autoFocus
                             />
                         </Form.Field>
                         <Form.Field>
@@ -124,7 +121,4 @@ export const Attack: FC<Props> = ({monster, focused, onFinish}) => {
             </Card.Content>
         </MonsterCard>
     );
-};
-Attack.defaultProps = {
-    focused: false,
 };

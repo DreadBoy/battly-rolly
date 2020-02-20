@@ -27,13 +27,9 @@ export const AttackMonsters: FC = () => {
     const attackType = params.type as ActionType;
 
     const [result, setResult] = useState<ActionLog[]>([]);
-    const [focused, setFocused] = useState<number>(0);
-    const onFinish = useCallback((_result: ActionLog) => {
-        setResult([...result, _result]);
-        if (focused === monsters.length)
-            return;
-        setFocused(focused + 1)
-    }, [focused, monsters.length, result]);
+    const onFinish = useCallback((_result: ActionLog[]) => {
+        setResult([...result, ..._result]);
+    }, [result]);
 
     const {send} = useSocket();
 
@@ -58,24 +54,20 @@ export const AttackMonsters: FC = () => {
 
     return (
         <Splash bg={bg}>
-            {monsters?.map((monster, index) => attackType === 'attack' ? (
-                <Attack
-                    monster={monster}
-                    key={monster.id}
-                    focused={index === focused}
+            {attackType === 'save' && (
+                <Save
+                    monsters={monsters}
                     onFinish={onFinish}
                 />
-            ) : (
-                <Save
-                    monster={monster}
+            )}
+            {attackType === 'attack' && monsters?.map((monster) => (
+                <Attack
                     key={monster.id}
-                    focused={index === focused}
+                    monster={monster}
                     onFinish={onFinish}
                 />
             ))}
-            {focused === monsters.length && (
-                <Button primary onClick={confirm}>Confirm</Button>
-            )}
+            <Button primary disabled={result.length === 0} onClick={confirm}>Confirm</Button>
         </Splash>
     );
 };
