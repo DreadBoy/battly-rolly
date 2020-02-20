@@ -1,9 +1,10 @@
 import {createUseStyles} from 'react-jss';
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import monsters from '../../assets/bestiary.json';
-import {Icon, Input, List} from 'semantic-ui-react';
-import {useText} from '../common/form-helpers';
+import {Dropdown, Form} from 'semantic-ui-react';
 import {Monster} from '../common/encounter';
+import {DropdownProps} from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown';
+import {find} from 'lodash';
 
 type Props = {
     onAdd: (monster: Monster) => void,
@@ -17,31 +18,31 @@ const useStyles = createUseStyles({
 
 export const MonsterList: FC<Props> = ({onAdd}) => {
     const classes = useStyles();
-    const {value, onChange} = useText('');
-    const filter = value.toLowerCase();
+    const [value, setValue] = useState<string>('');
 
-    const _monsters = monsters
-        .filter(monster => monster.name?.toLowerCase().includes(filter)) as Monster[];
-
-    const add = useCallback((monster: Monster) => () => {
-        onAdd(monster);
+    const onClose = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
+        const monster = find(monsters as Monster[], ['name', data.value]);
+        if (monster) {
+            onAdd(monster);
+            setValue('')
+        }
     }, [onAdd]);
 
     return (
-        <div className={classes.list}>
-            <Input value={filter} onChange={onChange} placeholder={'Search monsters...'}/>
-            {filter.length > 0 && (
-                <List divided>
-                    {_monsters.map(monster => (
-                        <List.Item key={monster.name}>
-                            <Icon link name='add' onClick={add(monster)}/>
-                            <List.Content>
-                                <List.Header>{monster.name}</List.Header>
-                            </List.Content>
-                        </List.Item>
-                    ))}
-                </List>
-            )}
-        </div>
+        <Form className={classes.list}>
+            <Form.Field>
+                <Dropdown
+                    placeholder={'Search monsters...'}
+                    search
+                    selection
+                    options={monsters.map(m => ({
+                        key: m.name, value: m.name, text: m.name,
+                    }))}
+                    onClose={onClose}
+                    value={value}
+                    onChange={(e, d) => setValue(d.value as string)}
+                />
+            </Form.Field>
+        </Form>
     );
 };
