@@ -4,7 +4,10 @@ import Axios from 'axios';
 export function useProbe() {
     const [status, setStatus] = useState<'none' | 'probing' | 'success' | 'failure'>('none');
     const [origin, setOrigin] = useState<string>('');
-    useEffect(() => setOrigin(`${window.location.protocol}//${window.location.hostname}:3000`), []);
+    useEffect(() => {
+        const port = process.env.REACT_APP_API_PORT ? `:${process.env.REACT_APP_API_PORT}` : ':3000';
+        setOrigin(`${window.location.protocol}//${window.location.hostname}${port}`);
+    }, []);
 
     const check = useCallback(async () => {
         if (origin.length === 0)
