@@ -1,0 +1,10 @@
+{
+	"env": {
+		"NODE_ENV": "development",
+		"CLEARDB_DATABASE_URL": "",
+		"PORT": "3000"
+	},
+	"watch": ["src/server/**/*.ts"],
+	"ext": "ts",
+	"exec": "\"ts-node\" --project tsconfig.server.json src/server/server.ts"
+}

@@ -49,10 +49,11 @@
     "client:start": "react-scripts start",
     "client:build": "react-scripts build",
     "client:test": "react-scripts test",
-    "server:start": "nodemon --watch \"src/server/**/*.ts\" --ext ts --exec \"ts-node\" --project tsconfig.server.json src/server/server.ts",
+    "server:start": "nodemon",
     "server:build": "tsc --project tsconfig.server.json",
     "server:test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run client:build && npm run server:build",
+    "test": "npm run client:test && npm run server:test",
     "start": "node build/server.js"
   },
   "eslintConfig": {

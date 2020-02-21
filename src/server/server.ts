@@ -3,8 +3,6 @@ import Router from '@koa/router';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-// import {fakeMonster} from '../client/gm/faker';
-// import {Player} from '../client/common/encounter';
 
 const app = new Koa();
 const router = new Router();
@@ -31,17 +29,7 @@ const io = Io(server);
 let gm: Io.Socket | null = null;
 let cachedState: any = {};
 
-// gm = {
-//     emit: function () {
-//     } as unknown,
-// } as Io.Socket;
-// cachedState = {
-//     players: {},
-//     encounter: {
-//         monsters: [fakeMonster(0.7, '772936'), fakeMonster(0.3, '772937'), fakeMonster()],
-//         phase: 3,
-//     },
-// };
+// fake();
 
 io.on('connect', socket => {
     console.log('connected');
@@ -91,3 +79,20 @@ io.on('connect', socket => {
     })
 });
 server.listen(process.env.PORT || 3000);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function fake() {
+    const {fakeMonster} = require('../client/gm/faker');
+
+    gm = {
+        emit: function () {
+        } as unknown,
+    } as Io.Socket;
+    cachedState = {
+        players: {},
+        encounter: {
+            monsters: [fakeMonster(0.7, '772936'), fakeMonster(0.3, '772937'), fakeMonster()],
+            phase: 3,
+        },
+    };
+}
