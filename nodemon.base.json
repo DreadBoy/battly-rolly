@@ -1,7 +1,7 @@
 {
 	"env": {
 		"NODE_ENV": "development",
-		"CLEARDB_DATABASE_URL": "",
+		"DATABASE_URL": "",
 		"PORT": "3000"
 	},
 	"watch": ["src/server/**/*.ts"],

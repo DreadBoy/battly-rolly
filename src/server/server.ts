@@ -3,6 +3,8 @@ import Router from '@koa/router';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
+import {errorMiddleware} from './middlewares/error-middleware';
+import {ensureDatabase} from './middlewares/ensure-database';
 
 const app = new Koa();
 const router = new Router();
@@ -14,10 +16,12 @@ const koaStatic = KoaStatic({
 router.get('/probe', ctx => ctx.response.status = 200);
 
 app
+    .use(errorMiddleware)
     .use(async (ctx, next) => {
         ctx.set('Access-Control-Allow-Origin', '*');
         await next();
     })
+    .use(ensureDatabase)
     .use(router.routes())
     .use(router.allowedMethods())
     .use(koaStatic)
