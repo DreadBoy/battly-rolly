@@ -13,7 +13,7 @@ export const ResolveSave: FC<Props> = ({save, onResolve}) => {
     const form = useNumber();
     const onSubmit = useCallback(() => {
         if (form.isValid)
-            onResolve(form.number as number);
+            onResolve(form.number);
     }, [form.isValid, form.number, onResolve]);
     return (
         <Modal open={true}>

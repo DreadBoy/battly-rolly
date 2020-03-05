@@ -81,7 +81,7 @@
           "damageType": "acid",
           "rolls": [
             [
-              6,
+              12,
               8,
               0
             ]
@@ -91,7 +91,7 @@
           "damageType": "acid",
           "rolls": [
             [
-              12,
+              6,
               8,
               0
             ]

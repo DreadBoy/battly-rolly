@@ -21,7 +21,7 @@ export const Modal: FC<Props> = ({onConfirm, onCancel}) => {
         onConfirm({
             type: 'attack',
             name: nameT.value,
-            modifier: modifier.number as number,
+            modifier: modifier.number,
             damage: {
                 damageType: type.value as DamageType,
                 rolls: parsedRolls.valid ? parsedRolls.rolls : [],

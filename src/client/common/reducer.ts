@@ -1,4 +1,4 @@
-import {cloneDeep, filter, find, first, pull, sum} from 'lodash';
+import {cloneDeep, filter, find, first, sum} from 'lodash';
 import {Encounter, isAttackLog, isSaveLog, Player, SaveLog} from './encounter';
 import {Attack, ConfirmLog, QueueAction, ResolveSave, SetStats, StartEncounter} from './actions';
 import {roll} from './roll';
@@ -119,16 +119,18 @@ export function reducer(state: State = {players: {}}, action: Action) {
                 return state;
             const {payload: {playerId, roll}} = action as ResolveSave;
             const state1 = cloneDeep(state);
-            const firstSave = first(filter(state1.players[playerId].actionLog, isSaveLog)) as SaveLog;
+            const firstSave = first(filter(state1.players[playerId].actionLog, l => isSaveLog(l) && l.success == null)) as SaveLog;
             if (typeof firstSave === 'undefined')
-                return state;
+                return state1;
             if (roll < firstSave.save.DC) {
                 firstSave.saveRoll = roll;
+                firstSave.success = true;
+                return state1;
+            } else {
+                firstSave.saveRoll = roll;
                 firstSave.success = false;
-                return state;
+                return state1;
             }
-            pull(state1.players[playerId].actionLog, firstSave);
-            return state1;
         }
     }
 

@@ -16,7 +16,7 @@ export const Save: FC<Props> = ({action, onAttack}) => {
             {isSave(action) ? (
                 <span>
                         {nameToDisplay(action.name)}: {action.DC} {abilityShort(action.ability)} <b>
-                    {action.damageFailure?.rolls.map(rollToDisplay)}/{action.damageSuccess?.rolls.map(rollToDisplay)}
+                    {action.damageSuccess?.rolls.map(rollToDisplay)}/{action.damageFailure?.rolls.map(rollToDisplay)}
                         </b> {action.damageFailure?.damageType}
                     </span>
             ) : null}

@@ -28,6 +28,8 @@ export function isAttackLog(log: ActionLog): log is AttackLog {
 
 export type SaveLog = ActionLog & {
     save: Save,
+    damageSuccessRoll: number,
+    damageFailureRoll: number,
     saveRoll: number,
     success: boolean | null,
 }
@@ -107,8 +109,10 @@ export type Action = BaseAction & (Attack | Save)
 export type Effect = {
     DC: number,
     ability: Ability,
-    damageFailure?: Damage,
+    // this means whether AoE attack hits
     damageSuccess?: Damage,
+    // this means whether AoE attack misses
+    damageFailure?: Damage,
     status?: Status,
 }
 

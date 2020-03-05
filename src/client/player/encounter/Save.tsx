@@ -26,7 +26,7 @@ export const Save: FC<Props> = ({monsters, onFinish}) => {
     const createAttack = useCallback((): SaveModel => ({
         type: 'save',
         name: 'manual',
-        DC: DC.number as number,
+        DC: DC.number,
         ability: ability.value as Ability,
     }), [DC.number, ability.value]);
 
@@ -36,11 +36,13 @@ export const Save: FC<Props> = ({monsters, onFinish}) => {
             attackerId: playerId ?? '',
             targetId: m.id,
             save: createAttack(),
+            damageSuccessRoll: damage[0].isValid ? damage[0].number : 0,
+            damageFailureRoll: damage[1].isValid ? damage[1].number : 0,
             saveRoll: 0,
             success: null,
         }));
         onFinish(actions);
-    }, [createAttack, monsters, onFinish, playerId]);
+    }, [createAttack, damage, monsters, onFinish, playerId]);
 
     return (
         <Card fluid>

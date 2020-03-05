@@ -35,7 +35,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
     const logs = groupBy(player?.actionLog, 'attackerId');
     const hasAttacks = size(filter(player?.actionLog, isAttackLog)) > 0;
 
-    const hasHits = hasAttacks && size(filter(player?.actionLog, l => isAttackLog(l) && l.success)) > 0;
+    const hasAttacksThatHit = hasAttacks && size(filter(player?.actionLog, l => isAttackLog(l) && l.success)) > 0;
 
     const [confirmed, setConfirmed] = useState<boolean>(false);
     const confirm = useCallback(() => {
@@ -48,12 +48,16 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
         setConfirmed(true);
     }, [playerId, send]);
     useEffect(() => {
-        if (hasHits && confirm)
+        if (hasAttacksThatHit && confirm)
             setConfirmed(false);
-    }, [hasHits, confirm]);
+    }, [hasAttacksThatHit, confirm]);
 
-    const hasSaves = size(filter(player?.actionLog, isSaveLog)) > 0;
-    const firstSave = first(filter(player?.actionLog, isSaveLog)) as SaveLog;
+    const hasUnresolvedSaves = size(filter(player?.actionLog, l => isSaveLog(l) && l.success === null)) > 0;
+    const firstUnresolvedSave = first(filter(player?.actionLog, l => isSaveLog(l) && l.success === null)) as SaveLog;
+
+    const savesThatHit = [...filter(player?.actionLog, l => isSaveLog(l) && l.success === true),
+        ...filter(player?.actionLog, l => isSaveLog(l) && l.success === false && !!l.save.damageFailure)];
+    const savesThatMissed = filter(player?.actionLog, l => isSaveLog(l) && l.success === false && !l.save.damageFailure);
     const resolve = useCallback((num: number) => {
         send<ResolveSaveDispatch>({
             type: 'RESOLVE SAVE',
@@ -68,11 +72,11 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
         <Splash bg={bg} position={`80% center`}>
             <Header className={classes.header} as={'h1'}>
                 {phase} round
-                {hasHits ? (
+                {hasAttacksThatHit || size(savesThatHit) > 0 ? (
                     <Header.Subheader>
                         You are being attacked!
                     </Header.Subheader>
-                ) : hasAttacks ? (
+                ) : hasAttacks || size(savesThatMissed) > 0 ? (
                     <Header.Subheader>
                         You are being attacked but all attacks missed! {coolFace}
                     </Header.Subheader>
@@ -86,7 +90,7 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                     </Header.Subheader>
                 )}
             </Header>
-            {hasHits && Object.keys(logs).map(monsterId => {
+            {(hasAttacksThatHit || size(savesThatHit) > 0) && Object.keys(logs).map(monsterId => {
                 const monster = getMonster(monsterId);
                 const list = logs[monsterId];
                 if (!monster)
@@ -102,17 +106,29 @@ export const Phase1: FC<PhaseProps> = ({phase}) => {
                                         <span>{log.damageRoll} damage ({log.attack.damage.damageType})</span>
                                     </div>
                                 ) : null)}
+                            {list
+                                ?.filter(log => isSaveLog(log) && log.success != null)
+                                .reverse()
+                                .map(log => isSaveLog(log) && log.success ? (
+                                    <div key={Math.random()}>
+                                        <span>{log.damageSuccessRoll} damage ({log.save.damageSuccess?.damageType})</span>
+                                    </div>
+                                ) : isSaveLog(log) && !log.success ? (
+                                    <div key={Math.random()}>
+                                        <span>{log.damageFailureRoll} damage ({log.save.damageFailure?.damageType})</span>
+                                    </div>
+                                ) : null)}
                         </Card.Content>
                     </MonsterCard>
                 );
             })}
-            {hasHits && (
+            {hasAttacksThatHit && (
                 <Button primary onClick={confirm}>
                     Ok, noted! {sadFace}
                 </Button>
             )}
-            {hasSaves && (
-                <ResolveSave save={firstSave} onResolve={resolve}/>
+            {hasUnresolvedSaves && (
+                <ResolveSave save={firstUnresolvedSave} onResolve={resolve}/>
             )}
         </Splash>
     );

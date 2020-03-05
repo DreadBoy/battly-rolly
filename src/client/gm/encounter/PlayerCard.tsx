@@ -55,13 +55,28 @@ export const PlayerCard: FC<Props> = ({playerId, player, monsters}) => {
                                     <>
                                         <List.Content>{monsters.find(m => m.id === log.attackerId)?.name} ({nameToDisplay(log.save.name)})
                                             -> {log.save.DC} {abilityShort(log.save.ability)}</List.Content>
-                                        {log.success !== null ? (
-                                            <div>{log.success.toString()}</div>
-                                        ) : (
+                                        {log.success === null ? (
                                             <List.Content>
                                                 <Icon loading name='spinner' color={'blue'}/>
                                                 waiting for results
                                             </List.Content>
+                                        ) : log.success ? (
+                                            <>
+                                                <List.Icon name='exclamation' color={'red'}/>
+                                                {log.save.damageSuccess && (
+                                                    <List.Content>{log.damageSuccessRoll} ({log.save.damageSuccess.damageType})</List.Content>
+                                                )}
+                                            </>
+                                        ) : !!log.save.damageFailure ? (
+                                            <>
+                                                <List.Icon name='exclamation' color={'red'}/>
+                                                <List.Content>{log.damageFailureRoll} ({log.save.damageFailure.damageType})</List.Content>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <List.Icon name='checkmark' color={'green'}/>
+                                                <List.Content>missed</List.Content>
+                                            </>
                                         )}
                                     </>
                                 ) : null}

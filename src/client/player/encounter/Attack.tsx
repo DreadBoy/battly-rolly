@@ -41,7 +41,7 @@ export const Attack: FC<Props> = ({monster, onFinish}) => {
                 attackerId: playerId ?? '',
                 targetId: monster.id,
                 attack: createAttack(),
-                hitRoll: hitRoll.number as number,
+                hitRoll: hitRoll.number,
                 damageRoll: 0,
                 success: false,
             }]);
@@ -54,8 +54,8 @@ export const Attack: FC<Props> = ({monster, onFinish}) => {
             attackerId: playerId ?? '',
             targetId: monster.id,
             attack: createAttack(),
-            hitRoll: hitRoll.number as number,
-            damageRoll: damageRoll.number as number,
+            hitRoll: hitRoll.number,
+            damageRoll: damageRoll.number,
             success: true,
         }]);
     }, [onFinish, playerId, monster.id, createAttack, hitRoll.number, damageRoll.number]);
