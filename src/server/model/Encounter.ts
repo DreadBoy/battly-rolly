@@ -3,7 +3,7 @@ import {Entity} from './Entity';
 import {Campaign} from './Campaign';
 
 @TOEntity()
-export class Encounter extends BaseEntity{
+export class Encounter extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
     id!: string;
@@ -11,6 +11,6 @@ export class Encounter extends BaseEntity{
     @OneToOne(() => Campaign, campaign => campaign.encounter)
     campaign!: Campaign;
 
-    @OneToMany(() => Entity, entity => entity.encounter)
+    @OneToMany(() => Entity, entity => entity.encounter, {eager: true})
     entities!: Entity[];
 }

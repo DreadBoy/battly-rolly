@@ -7,6 +7,6 @@ export class Campaign extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @OneToOne(() => Encounter, encounter => encounter.campaign)
+    @OneToOne(() => Encounter, encounter => encounter.campaign, {eager: true})
     encounter!: Encounter;
 }

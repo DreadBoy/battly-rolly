@@ -1,0 +1,1 @@
+release: node build/db-tools/apply-migrations.js

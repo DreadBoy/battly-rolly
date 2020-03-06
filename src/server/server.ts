@@ -5,6 +5,7 @@ import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
+import {User} from './model';
 
 const app = new Koa();
 const router = new Router();
@@ -13,7 +14,11 @@ const koaStatic = KoaStatic({
     notFoundFile: 'index.html',
 });
 
-router.get('/probe', ctx => ctx.response.status = 200);
+router.get('/probe', async ctx => {
+    ctx.response.status = 200;
+    const user = new User();
+    await user.save();
+});
 
 app
     .use(errorMiddleware)

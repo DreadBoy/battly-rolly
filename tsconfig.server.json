@@ -21,8 +21,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "files": [
-    "src/server/server.ts"
+  "include": [
+    "src/server/**/*.ts"
   ],
   "exclude": [
     "src/client/**/*"
