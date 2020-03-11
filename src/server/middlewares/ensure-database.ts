@@ -4,6 +4,7 @@ import * as Koa from 'koa';
 import {getConfig} from '../db-tools/get-config';
 import {User} from '../model';
 import {InitSetup1583481379727} from '../migrations/1583481379727-InitSetup';
+import {EncounterWillBeJSON1583847880440} from '../migrations/1583847880440-EncounterWillBeJSON';
 
 let connection: Connection;
 
@@ -15,7 +16,7 @@ async function connect() {
     config = {
       ...config,
         entities: [User],
-        migrations: [InitSetup1583481379727],
+        migrations: [InitSetup1583481379727, EncounterWillBeJSON1583847880440],
     };
     connection = await createConnection(config);
     return connection;

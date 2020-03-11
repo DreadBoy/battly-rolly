@@ -1,5 +1,4 @@
-import {BaseEntity, Entity as TOEntity, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {Entity} from './Entity';
+import {BaseEntity, Column, Entity as TOEntity, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Campaign} from './Campaign';
 
 @TOEntity()
@@ -11,6 +10,9 @@ export class Encounter extends BaseEntity {
     @OneToOne(() => Campaign, campaign => campaign.encounter)
     campaign!: Campaign;
 
-    @OneToMany(() => Entity, entity => entity.encounter, {eager: true})
-    entities!: Entity[];
+    @Column()
+    data!: string;
+
+    @Column()
+    active!: boolean;
 }
