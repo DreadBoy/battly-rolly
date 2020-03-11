@@ -5,10 +5,10 @@ import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
-import {User} from './model';
+import {authenticate, AuthenticatedUser} from './middlewares/authenticate';
 
 const app = new Koa();
-const router = new Router();
+const router = new Router<AuthenticatedUser>();
 const koaStatic = KoaStatic({
     rootDir: __dirname,
     notFoundFile: 'index.html',
@@ -16,8 +16,7 @@ const koaStatic = KoaStatic({
 
 router.get('/probe', async ctx => {
     ctx.response.status = 200;
-    const user = new User();
-    await user.save();
+    ctx.body = ctx.state.user.id;
 });
 
 app
@@ -27,6 +26,7 @@ app
         await next();
     })
     .use(ensureDatabase)
+    .use(authenticate)
     .use(router.routes())
     .use(router.allowedMethods())
     .use(koaStatic)
