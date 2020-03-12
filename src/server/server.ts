@@ -1,36 +1,31 @@
 import Koa from 'koa';
-import Router from '@koa/router';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
+import {green} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
-import {authenticate, AuthenticatedUser} from './middlewares/authenticate';
+import {app as probeApi} from './api/probe';
+import {app as userApi} from './api/user';
+
+const mount = require('koa-mount');
 
 const app = new Koa();
-const router = new Router<AuthenticatedUser>();
 const koaStatic = KoaStatic({
     rootDir: __dirname,
     notFoundFile: 'index.html',
 });
 
-router.get('/probe', async ctx => {
-    ctx.response.status = 200;
-    ctx.body = ctx.state.user.id;
+app.use(errorMiddleware);
+app.use(async (ctx, next) => {
+    ctx.set('Access-Control-Allow-Origin', '*');
+    await next();
 });
+app.use(ensureDatabase);
+app.use(mount('/user', userApi));
+app.use(mount(probeApi));
+app.use(koaStatic);
 
-app
-    .use(errorMiddleware)
-    .use(async (ctx, next) => {
-        ctx.set('Access-Control-Allow-Origin', '*');
-        await next();
-    })
-    .use(ensureDatabase)
-    .use(authenticate)
-    .use(router.routes())
-    .use(router.allowedMethods())
-    .use(koaStatic)
-;
 
 const server = createServer(app.callback());
 const io = Io(server);
@@ -87,7 +82,9 @@ io.on('connect', socket => {
         socket.broadcast.emit('state', state);
     })
 });
-server.listen(process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
+server.listen(port);
+console.log(green(`Server listening on port ${port}`));
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function fake() {
