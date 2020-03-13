@@ -1,5 +1,6 @@
 import {BaseEntity, Column, Entity as TOEntity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Campaign} from './campaign';
+import {reducer} from '../../client/common/reducer';
 
 @TOEntity()
 export class Encounter extends BaseEntity {
@@ -11,8 +12,14 @@ export class Encounter extends BaseEntity {
     campaign!: Campaign;
 
     @Column()
-    data!: string;
+    data: string;
 
     @Column()
-    active!: boolean;
+    active: boolean;
+
+    constructor() {
+        super();
+        this.data = reducer(undefined, {type: 'INIT'});
+        this.active = false;
+    }
 }

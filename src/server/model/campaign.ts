@@ -12,7 +12,7 @@ export class Campaign extends BaseEntity {
     @JoinTable()
     users!: User[];
 
-    @OneToMany(() => Encounter, encounter => encounter.campaign, {eager: true})
+    @OneToMany(() => Encounter, encounter => encounter.campaign, {eager: true, cascade: true})
     encounters!: Encounter[];
 
     @ManyToOne(() => User, {eager: true})
