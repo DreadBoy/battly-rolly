@@ -1,5 +1,5 @@
-import {BaseEntity, Column, Entity as TOEntity, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {Campaign} from './Campaign';
+import {BaseEntity, Column, Entity as TOEntity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Campaign} from './campaign';
 
 @TOEntity()
 export class Encounter extends BaseEntity {
@@ -7,7 +7,7 @@ export class Encounter extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @OneToOne(() => Campaign, campaign => campaign.encounter)
+    @ManyToOne(() => Campaign, campaign => campaign.encounters)
     campaign!: Campaign;
 
     @Column()

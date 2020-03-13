@@ -1,5 +1,5 @@
 import {Middleware} from 'koa';
-import {User} from '../model';
+import {User} from '../model/user';
 import {HttpError} from './error-middleware';
 
 export type AuthenticatedUser = {
@@ -7,6 +7,8 @@ export type AuthenticatedUser = {
 }
 
 export const authenticate: Middleware<AuthenticatedUser> = async (ctx, next) => {
+    if (ctx.state.user)
+        throw new Error('There are 2 \'authenticate\' middlewares in stack, this isn\'t allowed');
     let user: User | undefined = undefined;
     if (ctx.get('Authorization'))
         try {

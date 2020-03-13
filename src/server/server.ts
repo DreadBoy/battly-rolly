@@ -7,6 +7,7 @@ import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
 import {app as userApi} from './api/user';
+import {app as campaignApi} from './api/campaign';
 
 const mount = require('koa-mount');
 
@@ -23,9 +24,9 @@ app.use(async (ctx, next) => {
 });
 app.use(ensureDatabase);
 app.use(mount('/user', userApi));
+app.use(mount('/campaign', campaignApi));
 app.use(mount(probeApi));
 app.use(koaStatic);
-
 
 const server = createServer(app.callback());
 const io = Io(server);

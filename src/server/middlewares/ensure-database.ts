@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import {Connection, createConnection} from 'typeorm';
 import * as Koa from 'koa';
 import {getConfig} from '../db-tools/get-config';
-import {User} from '../model';
-import {InitSetup1583481379727} from '../migrations/1583481379727-InitSetup';
-import {EncounterWillBeJSON1583847880440} from '../migrations/1583847880440-EncounterWillBeJSON';
+import {User} from '../model/user';
+import {Campaign} from '../model/campaign';
+import {Encounter} from '../model/encounter';
 
 let connection: Connection;
 
@@ -15,8 +15,8 @@ async function connect() {
     let config = getConfig(process.env.DATABASE_URL);
     config = {
       ...config,
-        entities: [User],
-        migrations: [InitSetup1583481379727, EncounterWillBeJSON1583847880440],
+        entities: [User, Campaign, Encounter],
+        migrations: [],
     };
     connection = await createConnection(config);
     return connection;
