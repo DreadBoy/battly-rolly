@@ -2,7 +2,7 @@ import Koa from 'koa';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {green} from 'chalk';
+import {green, magenta} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
@@ -19,6 +19,10 @@ const koaStatic = KoaStatic({
     notFoundFile: 'index.html',
 });
 
+app.use(async (ctx, next) => {
+    console.log(magenta(`> ${ctx.path}`));
+    await next();
+});
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');

@@ -14,7 +14,7 @@ export function useProbe() {
             return;
         setStatus('probing');
         const res = await Axios.get(`${origin}/probe`);
-        if (res.status !== 200)
+        if (res.status !== 204)
             throw new Error();
         setStatus('success');
     }, [origin]);

@@ -16,8 +16,8 @@ export const FullScreen: FC = ({children}) => {
     const classes = useStyles();
 
     const div = useRef<HTMLDivElement | null>(null);
-    // const [full, setFull] = useState<boolean>(true);
-    const [full, setFull] = useState<boolean>(false);
+    const [full, setFull] = useState<boolean>(true);
+    // const [full, setFull] = useState<boolean>(false);
     const go = useCallback(() => {
         document.documentElement.requestFullscreen()
             .catch(() => undefined)

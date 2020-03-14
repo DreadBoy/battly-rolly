@@ -1,12 +1,13 @@
 import Koa from 'koa';
 import Router from '@koa/router';
-import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
 
-const router = new Router<AuthenticatedUser>();
+const router = new Router();
 
-router.get('/probe', authenticate, async ctx => {
-    ctx.response.status = 200;
-    ctx.body = ctx.state.user.id;
+router.get('/probe', async ctx => {
+    ctx.response.status = 204;
+});
+router.get('/', async ctx => {
+    ctx.response.status = 204;
 });
 
 const app = new Koa();
