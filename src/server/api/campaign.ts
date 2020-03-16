@@ -8,6 +8,7 @@ import {
     getCampaign,
     getCampaignsForUser,
     removeUserFromCampaign,
+    updateCampaign,
 } from '../service/campaign';
 import {validateParam} from '../middlewares/validate-param';
 import {createEncounter, getActiveEncounter, getEncounters} from '../service/encounter';
@@ -26,6 +27,11 @@ router.get('/', authenticate, async ctx => {
 router.get('/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
     ctx.body = await getCampaign(id);
+});
+
+router.put('/:id', authenticate, async ctx => {
+    const id = validateParam(ctx, 'id');
+    ctx.body = await updateCampaign(id, pick(ctx.request.body, 'name'));
 });
 
 router.delete('/:id', authenticate, async ctx => {

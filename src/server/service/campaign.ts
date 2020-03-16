@@ -12,6 +12,15 @@ export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise
     return campaign;
 };
 
+export const updateCampaign = async (id: string, body: Partial<Campaign>): Promise<Campaign> => {
+    const campaign = await Campaign.findOne(id);
+    if (!campaign)
+        throw new HttpError(404, `Campaign with id ${id} not found`);
+    assign(campaign, body);
+    await campaign.save();
+    return campaign;
+};
+
 export const getCampaignsForUser = async (user: User): Promise<Campaign[]> => {
     return Campaign.find({where: {gm: user}});
 };
