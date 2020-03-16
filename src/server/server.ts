@@ -26,6 +26,7 @@ app.use(async (ctx, next) => {
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');
+    ctx.set('Access-Control-Allow-Headers', '*');
     await next();
 });
 app.use(ensureDatabase);
