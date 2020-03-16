@@ -1,8 +1,10 @@
 import Koa from 'koa';
+import logger from 'koa-logger';
+import bodyParser from 'koa-bodyparser';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {green, magenta} from 'chalk';
+import {green} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
@@ -19,16 +21,17 @@ const koaStatic = KoaStatic({
     notFoundFile: 'index.html',
 });
 
-app.use(async (ctx, next) => {
-    console.log(magenta(`> ${ctx.path}`));
-    await next();
-});
+app.use(logger());
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');
     ctx.set('Access-Control-Allow-Headers', '*');
+    ctx.set('Access-Control-Allow-Methods', '*');
+    if (ctx.method.toLowerCase() === 'options')
+        return ctx.status = 204;
     await next();
 });
+app.use(bodyParser());
 app.use(ensureDatabase);
 app.use(mount('/user', userApi));
 app.use(mount('/campaign', campaignApi));
