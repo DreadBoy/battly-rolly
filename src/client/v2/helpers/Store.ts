@@ -10,7 +10,7 @@ export class Store<T> {
     @observable public data: Obj<T> = {};
 
     @action
-    public fetch(request: AxiosPromise<T>, uuid: string, silent?: Silent) {
+    public async fetchAsync(request: AxiosPromise<T>, uuid: string, silent?: Silent) {
         const isSilent = silent === 'silent';
         if (!isSilent) {
             this.loading[uuid] = true;
@@ -18,18 +18,25 @@ export class Store<T> {
             delete this.error[uuid];
         }
 
-        request
-            .then(response => {
-                this.data[uuid] = response.data;
-                this.loading[uuid] = false;
-            })
-            .catch(e => {
-                if (e.response && e.response.data)
-                    e = e.response.data;
-                console.error(e);
-                this.error[uuid] = e;
-                this.loading[uuid] = false;
-            });
+        try {
+            const response = await request;
+            this.data[uuid] = response.data;
+            this.loading[uuid] = false;
+        } catch (e) {
+            let error = e;
+            if (e.response && e.response.data)
+                error = e.response.data;
+            console.error(error);
+            this.error[uuid] = error;
+            this.loading[uuid] = false;
+            throw error;
+        }
+        return this.data[uuid];
+    }
+
+    @action
+    public fetch(request: AxiosPromise<T>, uuid: string, silent?: Silent) {
+        this.fetchAsync(request, uuid, silent).catch(() => undefined);
     }
 
     @action

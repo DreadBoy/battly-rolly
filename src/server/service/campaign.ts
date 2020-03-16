@@ -1,10 +1,11 @@
 import {User} from '../model/user';
 import {Campaign} from '../model/campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {remove, some} from 'lodash';
+import {assign, remove, some} from 'lodash';
 
-export const createCampaign = async (gm: User): Promise<Campaign> => {
+export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise<Campaign> => {
     const campaign = new Campaign();
+    assign(campaign, body);
     campaign.users = [gm];
     campaign.gm = gm;
     await campaign.save();
