@@ -11,11 +11,12 @@ import {
 } from '../service/campaign';
 import {validateParam} from '../middlewares/validate-param';
 import {createEncounter, getActiveEncounter, getEncounters} from '../service/encounter';
+import {pick} from 'lodash';
 
 const router = new Router<AuthenticatedUser>();
 
 router.post('/', authenticate, async ctx => {
-    ctx.body = await createCampaign(ctx.state.user);
+    ctx.body = await createCampaign(ctx.state.user, pick(ctx.request.body, 'name'));
 });
 
 router.get('/', authenticate, async ctx => {
