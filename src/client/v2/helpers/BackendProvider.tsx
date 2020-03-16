@@ -1,7 +1,7 @@
 import React, {createContext, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import Io from 'socket.io-client';
 import {Connect} from '../../common/Connect';
-import Axios, {AxiosInstance} from 'axios';
+import Axios, {AxiosInstance, AxiosPromise} from 'axios';
 
 type BackendContext = {
     origin: string,
@@ -56,3 +56,9 @@ export const BackendProvider: FC = ({children}) => {
 
 export const useBackend = () => useContext(backendContext);
 
+export function fakeRequest<T>(creator: () => Partial<T>, status = 200): AxiosPromise<T> {
+    return Promise.resolve({
+        data: creator(),
+        status,
+    } as any);
+}

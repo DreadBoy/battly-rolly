@@ -2,7 +2,7 @@ import {Campaign} from '../../../server/model/campaign';
 import {Store} from './Store';
 import React, {createContext, FC, useContext} from 'react';
 
-type StoreContext = {
+export type StoreContext = {
     noContent: Store<object>,
     campaign: Store<Campaign>,
     campaigns: Store<Campaign[]>,

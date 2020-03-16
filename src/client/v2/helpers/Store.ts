@@ -45,11 +45,4 @@ export class Store<T> {
         this.error = {};
         this.loading = {};
     }
-
-    public static empty<T>(creator: () => Partial<T>): AxiosPromise<T> {
-        return Promise.resolve({
-            data: creator(),
-            status: 200,
-        } as any);
-    }
 }
