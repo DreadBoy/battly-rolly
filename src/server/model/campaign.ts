@@ -1,4 +1,4 @@
-import {BaseEntity, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, ManyToOne, JoinTable} from 'typeorm';
+import {BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {Encounter} from './encounter';
 import {User} from './user';
 
@@ -7,6 +7,9 @@ export class Campaign extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
     id!: string;
+
+    @Column()
+    name!: string;
 
     @ManyToMany(() => User, user => user.campaigns, {eager: true})
     @JoinTable()

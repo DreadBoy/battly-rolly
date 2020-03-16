@@ -17,6 +17,7 @@ async function connect() {
       ...config,
         entities: [User, Campaign, Encounter],
         migrations: [],
+        synchronize: true,
     };
     connection = await createConnection(config);
     return connection;
