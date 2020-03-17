@@ -32,6 +32,7 @@ export const CampaignEdit: FC = observer(() => {
                                     <Form.Input
                                         label={'Campaign\'s name'}
                                         {...textControl('name')}
+                                        required
                                     />
                                     <FormButtons/>
                                 </Form>

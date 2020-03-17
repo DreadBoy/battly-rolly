@@ -3,7 +3,6 @@ import {Store} from './Store';
 import React, {createContext, FC, useContext} from 'react';
 
 export type StoreContext = {
-    noContent: Store<object>,
     campaign: Store<Campaign>,
     campaigns: Store<Campaign[]>,
 }
@@ -14,7 +13,6 @@ export const StoreProvider: FC = ({children}) => (
         value={{
             campaign: new Store<Campaign>(),
             campaigns: new Store<Campaign[]>(),
-            noContent: new Store<object>(),
         }}
     >
         {children}

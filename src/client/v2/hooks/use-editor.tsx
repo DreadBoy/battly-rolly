@@ -1,13 +1,13 @@
 import {fakeRequest, useBackend} from '../helpers/BackendProvider';
 import {useHistory, useRouteMatch} from 'react-router';
-import React, {FC, useCallback, useEffect} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {observer, useLocalStore} from 'mobx-react';
-import {useStore} from '../helpers/StoreProvider';
 import {Store} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
 import {Button, InputOnChangeData} from 'semantic-ui-react';
 import {Stacktrace} from '../helpers/Stacktrace';
+import {ConfirmButton} from '../helpers/ConfirmButton';
 
 export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Partial<T>) {
     const fakeId = baseUrl;
@@ -28,24 +28,37 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
         });
     }, [api, baseUrl, creator, editor, editorDefault, fakeId, id, store]);
 
-    const {noContent} = useStore();
+    const [submitter] = useState<Store<null>>(new Store<null>());
     const reset = useCallback(() => {
         assign(editor, editorDefault);
     }, [editor, editorDefault]);
     const submit = useCallback(() => {
         const promise = id ?
-            noContent
-                .fetchAsync(api.put(`/${baseUrl}/${id}`, toJS(editor)), id) :
-            noContent
-                .fetchAsync(api.post(`/${baseUrl}`, toJS(editor)), fakeId);
+            submitter.fetchAsync(api.put(`/${baseUrl}/${id}`, toJS(editor)), id) :
+            submitter.fetchAsync(api.post(`/${baseUrl}`, toJS(editor)), fakeId);
         promise.then(goBack).catch(() => undefined);
-    }, [api, baseUrl, editor, fakeId, goBack, id, noContent]);
+    }, [api, baseUrl, editor, fakeId, goBack, id, submitter]);
+
+    const [remover] = useState<Store<null>>(new Store<null>());
+    const remove = useCallback(() => {
+        const promise = id ?
+            remover.fetchAsync(api.delete(`/${baseUrl}/${id}`), id) :
+            Promise.resolve(null);
+        promise.then(goBack).catch(() => undefined);
+    }, [api, baseUrl, goBack, id, remover]);
 
     const finalId = id || fakeId;
-    const loading = noContent.loading[finalId];
+    const loading = submitter.loading[finalId] || remover.loading[finalId];
     const FormButtons: FC = observer(() => (
         <>
-            <Button.Group>
+            <ConfirmButton
+                basic
+                colors={['red', 'blue']}
+                onClick={remove}
+                loading={remover.loading[finalId]}
+                disabled={loading}
+            >Delete</ConfirmButton>
+            <Button.Group floated={'right'}>
                 <Button
                     basic
                     color={'red'}
@@ -57,12 +70,15 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
                     basic
                     color={'blue'}
                     type='submit'
-                    loading={loading}
+                    loading={submitter.loading[finalId]}
                     disabled={loading}
                 >Submit</Button>
             </Button.Group>
-            {noContent.error[finalId] && (
-                <Stacktrace error={noContent.error[finalId]}/>
+            {submitter.error[finalId] && (
+                <Stacktrace error={submitter.error[finalId]}/>
+            )}
+            {remover.error[finalId] && (
+                <Stacktrace error={remover.error[finalId]}/>
             )}
         </>
     ));
@@ -75,5 +91,5 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
         },
     });
 
-    return {submit, id: finalId, FormButtons, textControl};
+    return {editor, submit, id: finalId, FormButtons, textControl};
 }
