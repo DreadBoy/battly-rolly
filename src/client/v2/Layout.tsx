@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, ReactNode} from 'react';
 import {Container, Icon, Menu} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
 import icon from '../../assets/dice-twenty-faces-twenty.svg';
@@ -10,7 +10,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Layout: FC<{ title?: string }> = ({title, children}) => {
+export const Layout: FC<{ title: ReactNode }> = ({title, children}) => {
     const classes = useStyles();
     return (
         <div className={classes.grid}>

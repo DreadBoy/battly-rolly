@@ -13,7 +13,7 @@ import {Link, useRouteMatch} from 'react-router-dom';
 const List = LoadingFactory<Campaign[]>();
 
 export const CampaignList: FC = observer(() => {
-    const { path } = useRouteMatch();
+    const {url} = useRouteMatch();
     const {api} = useBackend();
     const {id} = usePlayerId();
     const {campaigns} = useStore();
@@ -28,7 +28,7 @@ export const CampaignList: FC = observer(() => {
                         <Header>Campaigns</Header>
                         <Button.Group>
                             <Button basic color={'grey'}>Join campaign</Button>
-                            <Link to={`${path}/edit`} className={'ui button basic blue'}>Create campaign</Link>
+                            <Link to={`${url}/edit`} className={'ui button basic blue'}>Create campaign</Link>
                         </Button.Group>
                     </Grid.Column>
                 </Grid.Row>
@@ -54,7 +54,7 @@ export const CampaignList: FC = observer(() => {
                                                     <Table.Cell>
                                                         {row.gm.id === id ? (
                                                             <Link
-                                                                to={`${path}/edit/${row.id}`}
+                                                                to={`${url}/edit/${row.id}`}
                                                                 className={'ui button basic mini blue'}
                                                             >Edit</Link>
                                                         ) : (

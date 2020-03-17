@@ -3,8 +3,8 @@ import {BackendProvider} from './helpers/BackendProvider';
 import {PlayerIdProvider} from './helpers/PlayerId';
 import {StoreProvider} from './helpers/StoreProvider';
 import {Redirect, Route, Switch, useRouteMatch} from 'react-router';
+import {CampaignEdit} from './campaign/CampaignEdit';
 import {CampaignList} from './campaign/CampaignList';
-import {CampaignCreate} from './campaign/CampaignCreate';
 
 export const V2: FC = () => {
     const {path} = useRouteMatch();
@@ -13,8 +13,8 @@ export const V2: FC = () => {
             <StoreProvider>
                 <PlayerIdProvider>
                     <Switch>
-                        <Route path={`${path}/campaign/edit/:id`} component={CampaignCreate}/>
-                        <Route path={`${path}/campaign/edit`} component={CampaignCreate}/>
+                        <Route path={`${path}/campaign/edit/:id`} component={CampaignEdit}/>
+                        <Route path={`${path}/campaign/edit`} component={CampaignEdit}/>
                         <Route path={`${path}/campaign`} component={CampaignList}/>
                         <Route path={'*'}><Redirect to={`${path}/campaign`}/></Route>
                     </Switch>

@@ -6,10 +6,12 @@ import {observer} from 'mobx-react';
 import {useStore} from '../helpers/StoreProvider';
 import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
+import {Link, useRouteMatch} from 'react-router-dom';
 
 const Editor = LoadingFactory<Campaign>();
 
-export const CampaignCreate: FC = observer(() => {
+export const CampaignEdit: FC = observer(() => {
+    const {url} = useRouteMatch();
     const {campaign} = useStore();
     const empty = useCallback(() => ({
         name: '',
@@ -17,7 +19,7 @@ export const CampaignCreate: FC = observer(() => {
     const {submit, id, FormButtons, textControl} = useEditor<Campaign>(campaign, 'campaign', empty);
 
     return (
-        <Layout title={'Campaigns'}>
+        <Layout title={<Link to={url.replace(/\/campaign.*$/, '/campaign')}>Campaigns</Link>}>
             <Grid doubling columns={1}>
                 <Grid.Row>
                     <Grid.Column>
