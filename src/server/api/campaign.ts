@@ -10,14 +10,14 @@ import {
     removeUserFromCampaign,
     updateCampaign,
 } from '../service/campaign';
-import {validateParam} from '../middlewares/validate-param';
+import {validateBody, validateParam} from '../middlewares/validators';
 import {createEncounter, getActiveEncounter, getEncounters} from '../service/encounter';
-import {pick} from 'lodash';
 
 const router = new Router<AuthenticatedUser>();
 
 router.post('/', authenticate, async ctx => {
-    ctx.body = await createCampaign(ctx.state.user, pick(ctx.request.body, 'name'));
+    const body = validateBody(ctx, 'name');
+    ctx.body = await createCampaign(ctx.state.user, body);
 });
 
 router.get('/', authenticate, async ctx => {
@@ -31,7 +31,8 @@ router.get('/:id', authenticate, async ctx => {
 
 router.put('/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    ctx.body = await updateCampaign(id, pick(ctx.request.body, 'name'));
+    const body = validateBody(ctx, 'name');
+    ctx.body = await updateCampaign(id, body);
 });
 
 router.delete('/:id', authenticate, async ctx => {
@@ -48,7 +49,8 @@ router.post('/:id/user', authenticate, async ctx => {
 
 router.delete('/:id/user', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    await removeUserFromCampaign(id, ctx.state.user, pick(ctx.request.body, 'id'));
+    const body = validateBody(ctx, 'id');
+    await removeUserFromCampaign(id, ctx.state.user, body);
     ctx.status = 204;
 });
 

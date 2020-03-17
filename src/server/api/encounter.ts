@@ -2,8 +2,8 @@ import Koa from 'koa';
 import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser'
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
-import {validateParam} from '../middlewares/validate-param';
-import {applyAction, deleteEncounter, setActiveEncounter} from '../service/encounter';
+import {validateBody, validateParam} from '../middlewares/validators';
+import {createLog, deleteEncounter, setActiveEncounter} from '../service/encounter';
 
 const router = new Router<AuthenticatedUser>();
 
@@ -21,7 +21,8 @@ router.post(`/:id/active`, authenticate, async ctx => {
 
 router.put(`/:id`, bodyParser(), authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    await applyAction(id, ctx.request.body, ctx.state.user);
+    const body = validateBody(ctx, 'source', 'target');
+    await createLog(id, ctx.state.user, body);
     ctx.status = 204;
 });
 

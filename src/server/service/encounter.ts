@@ -2,9 +2,10 @@ import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {some} from 'lodash';
+import {assign, some} from 'lodash';
 import {broadcastState} from './socket';
-import {Encounter as EncounterData} from './encounter-data';
+import {Log} from '../model/log';
+import {getFeatures} from './feature';
 
 export async function createEncounter(campaignId: string, user: User): Promise<Encounter> {
     const campaign = await getCampaign(campaignId);
@@ -52,28 +53,19 @@ export async function getActiveEncounter(campaignId: string): Promise<Encounter>
     return encounter;
 }
 
-export type Action = {
-    type: string;
-}
-
-function reducer(state: EncounterData, action: Action) {
-    if (action.type === 'INIT')
-        return {
-            version: 1,
-            entities: [],
-            log: [],
-        };
-    if (state.version !== 1)
-        throw new HttpError(400, 'You are trying to act in outdated encounter, delete it and create new one.');
-    return state;
-}
-
-export async function applyAction(encounterId: string, action: Action, user: User) {
+export async function createLog(encounterId: string, user: User, body: { source: string[], target: string[] }) {
     const encounter = await getEncounter(encounterId);
     if (!some(encounter.campaign.users, ['id', user.id]))
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
-    const state = reducer(JSON.parse(encounter.data), action);
-    encounter.data = JSON.stringify(state);
+    const log = new Log();
+    const source = await getFeatures(body.source);
+    const target = await getFeatures(body.target);
+    assign(log, {
+        source,
+        target,
+    });
+    await log.save();
+    encounter.logs.push(log);
     await encounter.save();
-    broadcastState(state, ...encounter.campaign.users.map(u => u.id));
+    broadcastState(JSON.stringify(encounter), ...encounter.campaign.users.map(u => u.id));
 }

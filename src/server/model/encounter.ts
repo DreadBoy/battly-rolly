@@ -1,8 +1,9 @@
-import {BaseEntity, Column, Entity as TOEntity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {Campaign} from './campaign';
-import {reducer} from '../../client/common/reducer';
+import {Feature} from './feature';
+import {Log} from './log';
 
-@TOEntity()
+@Entity()
 export class Encounter extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
@@ -12,14 +13,16 @@ export class Encounter extends BaseEntity {
     campaign!: Campaign;
 
     @Column()
-    data: string;
-
-    @Column()
     active: boolean;
+
+    @OneToMany(() => Feature, feature => feature.encounter, {cascade: true, eager: true})
+    features!: Feature[];
+
+    @OneToMany(() => Log, log => log.encounter, {cascade: true, eager: true})
+    logs!: Log[];
 
     constructor() {
         super();
-        this.data = reducer(undefined, {type: 'INIT'});
         this.active = false;
     }
 }
