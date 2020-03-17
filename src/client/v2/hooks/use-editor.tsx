@@ -49,16 +49,18 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
 
     const finalId = id || fakeId;
     const loading = submitter.loading[finalId] || remover.loading[finalId];
-    const FormButtons: FC = observer(() => (
+    const FormButtons: FC<{ removeButton?: boolean }> = observer(({removeButton}) => (
         <>
-            <ConfirmButton
-                basic
-                colors={['red', 'blue']}
-                onClick={remove}
-                loading={remover.loading[finalId]}
-                disabled={loading}
-            >Delete</ConfirmButton>
-            <Button.Group floated={'right'}>
+            {removeButton && (
+                <ConfirmButton
+                    basic
+                    colors={['red', 'blue']}
+                    onClick={remove}
+                    loading={remover.loading[finalId]}
+                    disabled={loading}
+                >Delete</ConfirmButton>
+            )}
+            <Button.Group floated={removeButton ? 'right' : undefined}>
                 <Button
                     basic
                     color={'red'}
@@ -82,6 +84,9 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
             )}
         </>
     ));
+    FormButtons.defaultProps = {
+        removeButton: true,
+    };
 
     const textControl = (key: keyof T) => ({
         value: editor[key],

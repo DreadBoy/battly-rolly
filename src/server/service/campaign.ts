@@ -14,9 +14,7 @@ export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise
 };
 
 export const updateCampaign = async (id: string, body: Partial<Campaign>): Promise<Campaign> => {
-    const campaign = await Campaign.findOne(id);
-    if (!campaign)
-        throw new HttpError(404, `Campaign with id ${id} not found`);
+    const campaign = await getCampaign(id);
     assign(campaign, body);
     await campaign.save();
     return campaign;
