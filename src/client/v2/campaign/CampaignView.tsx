@@ -39,6 +39,7 @@ export const CampaignView: FC = observer(() => {
         campaign.fetch(promise, id);
     }, [api, campaign, id, url]);
 
+    const canShare = navigator.share && navigator.canShare;
     const share = useCallback(() => {
         if (!navigator.share || !navigator.canShare) return;
         const data = {
@@ -74,6 +75,11 @@ export const CampaignView: FC = observer(() => {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
+                            <Grid.Column>
+                                <Header size={'tiny'}>Share campaign</Header>
+                                <Image src={code} alt={'QR code'} className={classes.img}/>
+                                {canShare && <Button basic primary onClick={share}>Share</Button>}
+                            </Grid.Column>
                             {!some(data.users, ['id', playerId]) ? (
                                 <Grid.Column>
                                     <Header size={'tiny'}>Join campaign</Header>
@@ -107,11 +113,6 @@ export const CampaignView: FC = observer(() => {
                                     <Stacktrace error={_leave.error[id]}/>
                                 </Grid.Column>
                             )}
-                            <Grid.Column>
-                                <Header size={'tiny'}>Share campaign</Header>
-                                <Image src={code} alt={'QR code'} className={classes.img}/>
-                                <Button basic primary onClick={share}>Share</Button>
-                            </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 )}
