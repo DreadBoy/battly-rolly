@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {Button, Grid, Header, Image} from 'semantic-ui-react';
+import {Button, Grid, Header, Image, Table} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {Campaign} from '../../../server/model/campaign';
 import {observer} from 'mobx-react';
@@ -13,6 +13,7 @@ import {useSimpleStore} from '../helpers/Store';
 import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
 import {Stacktrace} from '../helpers/Stacktrace';
+import {ConfirmButton} from '../helpers/ConfirmButton';
 
 const Editor = LoadingFactory<Campaign>();
 
@@ -58,9 +59,15 @@ export const CampaignView: FC = observer(() => {
 
     const _leave = useSimpleStore();
     const leave = useCallback(() => {
-        _leave.fetchAsync(api.delete(`/campaign/${id}/user`), id)
+        _leave.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), id)
             .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
-    }, [_leave, api, id, campaign]);
+    }, [_leave, api, id, playerId, campaign]);
+
+    const _kick = useSimpleStore();
+    const kick = useCallback((playerId) => () => {
+        _kick.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), playerId)
+            .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
+    }, [_kick, api, id, campaign]);
 
     return (
         <Layout title={<Link to={url.replace(/\/campaign.*$/, '/campaign')}>Campaigns</Link>}>
@@ -113,6 +120,44 @@ export const CampaignView: FC = observer(() => {
                                     <Stacktrace error={_leave.error[id]}/>
                                 </Grid.Column>
                             )}
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Header size={'tiny'}>Dungeon master</Header>
+                                {data.gm.name}
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <Header size={'tiny'}>Joined users</Header>
+                                <Table fixed celled unstackable>
+                                    <Table.Header>
+                                        <Table.Row>
+                                            <Table.HeaderCell>Name</Table.HeaderCell>
+                                            <Table.HeaderCell/>
+                                        </Table.Row>
+                                    </Table.Header>
+                                    <Table.Body>
+                                        {data.users.filter(user => user.id !== id).map(user => (
+                                            <Table.Row key={user.id}>
+                                                <Table.Cell>{user.name || user.id}</Table.Cell>
+                                                <Table.Cell>
+                                                    {user.id !== data.gm.id && (
+                                                        <ConfirmButton
+                                                            basic
+                                                            size={'tiny'}
+                                                            onClick={kick(user.id)}
+                                                            loading={_kick.loading[user.id]}
+                                                            disabled={_kick.loading[user.id]}
+                                                        >Kick</ConfirmButton>
+                                                    )}
+                                                    <Stacktrace error={_kick.error[user.id]}/>
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        ))}
+                                    </Table.Body>
+                                </Table>
+                            </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 )}

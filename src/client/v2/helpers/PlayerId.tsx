@@ -14,7 +14,7 @@ export const PlayerIdProvider: FC = ({children}) => {
     const {value, set} = useLocalStorage('playerId');
     const {api} = useBackend();
     const connect = useCallback(() => {
-        api.post<User>('/user')
+        api.post<User>('/user', {name: 'Temporary name'})
             .then(res => {
                 set(res.data.id)
             })

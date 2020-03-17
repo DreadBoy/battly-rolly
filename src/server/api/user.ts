@@ -8,7 +8,7 @@ import {pick} from 'lodash';
 const router = new Router<AuthenticatedUser>();
 
 router.post('/', async ctx => {
-    ctx.body = await createUser();
+    ctx.body = await createUser(pick(ctx.request.body, 'name'));
 });
 
 router.get('/:id', authenticate, async ctx => {

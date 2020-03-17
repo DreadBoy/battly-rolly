@@ -47,12 +47,14 @@ export const addUserToCampaign = async (id: string, user: User): Promise<void> =
     await campaign.save();
 };
 
-export const removeUserFromCampaign = async (id: string, user: User): Promise<void> => {
+export const removeUserFromCampaign = async (id: string, authenticatedUser: User, user: Partial<User>): Promise<void> => {
     const campaign = await getCampaign(id);
     if (!some(campaign.users, ['id', user.id]))
         throw new HttpError(400, 'You are not in this campaign!');
     if (campaign.gm.id === user.id)
         throw new HttpError(400, 'You are GM of this campaign, you can\'t leave it, only delete!');
+    if (authenticatedUser.id !== campaign.gm.id && authenticatedUser.id !== user.id)
+        throw new HttpError(403, 'You can\'t kick other players unless you are GM!');
     remove(campaign.users, ['id', user.id]);
     await campaign.save();
 };

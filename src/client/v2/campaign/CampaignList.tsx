@@ -25,7 +25,7 @@ export const CampaignList: FC = observer(() => {
 
     const _leave = useSimpleStore();
     const leave = useCallback((campaignId: string) => () => {
-        _leave.fetchAsync(api.delete(`/campaign/${campaignId}/user`), campaignId)
+        _leave.fetchAsync(api.delete(`/campaign/${campaignId}/user`, {data: {id}}), campaignId)
             .then(() => campaigns.fetch(api.get('/campaign'), id));
     }, [_leave, api, id, campaigns]);
     return (

@@ -2,8 +2,9 @@ import {User} from '../model/user';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign} from 'lodash';
 
-export const createUser = async (): Promise<User> => {
+export const createUser = async (body: Partial<User>): Promise<User> => {
     const user = new User();
+    assign(user, body);
     await user.save();
     return user;
 };

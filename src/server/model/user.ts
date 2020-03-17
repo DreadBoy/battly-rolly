@@ -7,7 +7,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({nullable: true, default: ''})
+    @Column()
     name!: string;
 
     @ManyToMany(() => Campaign, campaign => campaign.users)

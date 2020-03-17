@@ -48,7 +48,7 @@ router.post('/:id/user', authenticate, async ctx => {
 
 router.delete('/:id/user', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    await removeUserFromCampaign(id, ctx.state.user);
+    await removeUserFromCampaign(id, ctx.state.user, pick(ctx.request.body, 'id'));
     ctx.status = 204;
 });
 
