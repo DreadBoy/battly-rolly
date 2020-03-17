@@ -8,9 +8,9 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Stacktrace: FC<{error: Error}> = ({error}) => {
+export const Stacktrace: FC<{ error?: Error }> = ({error}) => {
     const classes = useStyles();
-    return (
+    return error ? (
         <Message negative>
             {error.message ? (
                 <Message.Header>{error.message}</Message.Header>
@@ -19,6 +19,5 @@ export const Stacktrace: FC<{error: Error}> = ({error}) => {
             )}
             {error.stack && <pre className={classes.pre}><code>{error.stack}</code></pre>}
         </Message>
-
-    );
+    ) : null;
 };

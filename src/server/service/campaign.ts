@@ -2,6 +2,7 @@ import {User} from '../model/user';
 import {Campaign} from '../model/campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, remove, some} from 'lodash';
+import {getUser} from './user';
 
 export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise<Campaign> => {
     const campaign = new Campaign();
@@ -22,7 +23,8 @@ export const updateCampaign = async (id: string, body: Partial<Campaign>): Promi
 };
 
 export const getCampaignsForUser = async (user: User): Promise<Campaign[]> => {
-    return Campaign.find({where: {gm: user}});
+    user = await getUser(user.id, ['campaigns']);
+    return user.campaigns;
 };
 
 export const getCampaign = async (id: string): Promise<Campaign> => {

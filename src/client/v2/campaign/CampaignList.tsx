@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useCallback, useEffect} from 'react';
 import {Grid, Table, Button, Header} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {useBackend} from '../helpers/BackendProvider';
@@ -9,6 +9,8 @@ import {observer} from 'mobx-react';
 import {usePlayerId} from '../helpers/PlayerId';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 import {Link, useRouteMatch} from 'react-router-dom';
+import {useSimpleStore} from '../helpers/Store';
+import {Stacktrace} from '../helpers/Stacktrace';
 
 const List = LoadingFactory<Campaign[]>();
 
@@ -20,6 +22,12 @@ export const CampaignList: FC = observer(() => {
     useEffect(() => {
         campaigns.fetch(api.get('/campaign'), id);
     }, [api, campaigns, id]);
+
+    const _leave = useSimpleStore();
+    const leave = useCallback((campaignId: string) => () => {
+        _leave.fetchAsync(api.delete(`/campaign/${campaignId}/user`), campaignId)
+            .then(() => campaigns.fetch(api.get('/campaign'), id));
+    }, [_leave, api, id, campaigns]);
     return (
         <Layout title={'Campaigns'}>
             <Grid doubling columns={1}>
@@ -39,7 +47,7 @@ export const CampaignList: FC = observer(() => {
                             store={campaigns}
                             render={(data) => (
                                 <>
-                                    <Header.Subheader>Joined campaigns</Header.Subheader>
+                                    <Header size={'tiny'}>Joined campaigns</Header>
                                     <Table fixed celled unstackable>
                                         <Table.Header>
                                             <Table.Row>
@@ -50,17 +58,27 @@ export const CampaignList: FC = observer(() => {
                                         <Table.Body>
                                             {data.map(row => (
                                                 <Table.Row key={row.id}>
-                                                    <Table.Cell>{row.name}</Table.Cell>
+                                                    <Table.Cell>
+                                                        <Link to={`${url}/${row.id}`}>
+                                                            {row.name}
+                                                        </Link>
+                                                    </Table.Cell>
                                                     <Table.Cell>
                                                         {row.gm.id === id ? (
                                                             <Link
-                                                                to={`${url}/edit/${row.id}`}
+                                                                to={`${url}/${row.id}/edit`}
                                                                 className={'ui button basic mini blue'}
                                                             >Edit</Link>
                                                         ) : (
-                                                            <ConfirmButton
-                                                                onClick={() => alert('leave')}
-                                                            >Leave</ConfirmButton>
+                                                            <>
+                                                                <ConfirmButton
+                                                                    basic
+                                                                    onClick={leave(row.id)}
+                                                                    loading={_leave.loading[row.id]}
+                                                                    disabled={_leave.loading[row.id]}
+                                                                >Leave</ConfirmButton>
+                                                                <Stacktrace error={_leave.error[row.id]}/>
+                                                            </>
                                                         )}
                                                     </Table.Cell>
                                                 </Table.Row>

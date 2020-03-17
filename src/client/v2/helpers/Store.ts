@@ -1,5 +1,6 @@
 import {action, observable} from 'mobx';
 import {AxiosPromise} from 'axios';
+import {useState} from 'react';
 
 export type Silent = 'silent' | undefined;
 type Obj<T> = { [id: string]: T };
@@ -46,3 +47,5 @@ export class Store<T> {
         this.loading = {};
     }
 }
+
+export const useSimpleStore = () => useState<Store<null>>(new Store<null>())[0];

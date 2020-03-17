@@ -1,8 +1,8 @@
 import {fakeRequest, useBackend} from '../helpers/BackendProvider';
 import {useHistory, useRouteMatch} from 'react-router';
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect} from 'react';
 import {observer, useLocalStore} from 'mobx-react';
-import {Store} from '../helpers/Store';
+import {Store, useSimpleStore} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
 import {Button, InputOnChangeData} from 'semantic-ui-react';
@@ -28,7 +28,7 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
         });
     }, [api, baseUrl, creator, editor, editorDefault, fakeId, id, store]);
 
-    const [submitter] = useState<Store<null>>(new Store<null>());
+    const submitter = useSimpleStore();
     const reset = useCallback(() => {
         assign(editor, editorDefault);
     }, [editor, editorDefault]);
@@ -39,7 +39,7 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
         promise.then(goBack).catch(() => undefined);
     }, [api, baseUrl, editor, fakeId, goBack, id, submitter]);
 
-    const [remover] = useState<Store<null>>(new Store<null>());
+    const remover = useSimpleStore();
     const remove = useCallback(() => {
         const promise = id ?
             remover.fetchAsync(api.delete(`/${baseUrl}/${id}`), id) :

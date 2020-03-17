@@ -4,6 +4,7 @@ import {PlayerIdProvider} from './helpers/PlayerId';
 import {StoreProvider} from './helpers/StoreProvider';
 import {Redirect, Route, Switch, useRouteMatch} from 'react-router';
 import {CampaignEdit} from './campaign/CampaignEdit';
+import {CampaignView} from './campaign/CampaignView';
 import {CampaignList} from './campaign/CampaignList';
 
 export const V2: FC = () => {
@@ -13,8 +14,9 @@ export const V2: FC = () => {
             <StoreProvider>
                 <PlayerIdProvider>
                     <Switch>
-                        <Route path={`${path}/campaign/edit/:id`} component={CampaignEdit}/>
                         <Route path={`${path}/campaign/edit`} component={CampaignEdit}/>
+                        <Route path={`${path}/campaign/:id/edit`} component={CampaignEdit}/>
+                        <Route path={`${path}/campaign/:id`} component={CampaignView}/>
                         <Route path={`${path}/campaign`} component={CampaignList}/>
                         <Route path={'*'}><Redirect to={`${path}/campaign`}/></Route>
                     </Switch>
