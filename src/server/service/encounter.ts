@@ -7,12 +7,13 @@ import {broadcastState} from './socket';
 import {Log} from '../model/log';
 import {getFeatures} from './feature';
 
-export async function createEncounter(campaignId: string, user: User): Promise<Encounter> {
+export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
     const campaign = await getCampaign(campaignId);
     if (campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t create encounter in it!');
     const encounter = new Encounter();
     encounter.campaign = campaign;
+    assign(encounter, body);
     await encounter.save();
     delete encounter.campaign;
     return encounter;
@@ -27,6 +28,13 @@ export async function getEncounter(id: string): Promise<Encounter> {
     const encounter = await Encounter.findOne(id, {relations: ['campaign']});
     if (!encounter)
         throw new HttpError(404, `Encounter with id ${id} not found`);
+    return encounter;
+}
+
+export async function updateEncounter(id: string, body: Partial<Encounter>): Promise<Encounter> {
+    const encounter = await getEncounter(id);
+    assign(encounter, body);
+    await encounter.save();
     return encounter;
 }
 

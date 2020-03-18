@@ -9,11 +9,14 @@ export class Encounter extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToOne(() => Campaign, campaign => campaign.encounters)
-    campaign!: Campaign;
+    @Column({default: false})
+    active: boolean;
 
     @Column()
-    active: boolean;
+    name!: string;
+
+    @ManyToOne(() => Campaign, campaign => campaign.encounters)
+    campaign!: Campaign;
 
     @OneToMany(() => Feature, feature => feature.encounter)
     features!: Feature[];

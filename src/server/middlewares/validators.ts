@@ -4,16 +4,16 @@ import {pick} from 'lodash';
 
 export const validateParam = (ctx: ParameterizedContext, param: string) => {
     if (!ctx.params[param])
-        throw new HttpError(400, `Missing required parameter <${param}>`);
+        throw new HttpError(400, `Missing required parameter <${param}>!`);
     return ctx.params[param];
 };
 
-export const validateBody = (ctx: ParameterizedContext, ...keys: string[]): any => {
+export const validateBody = (ctx: ParameterizedContext, required: string[], optional: string[] = []): any => {
     const body = ctx.request.body;
     if (!body)
         throw new HttpError(400, 'Missing request body!');
-    const missing = keys.filter(key => typeof ctx.request.body[key] === 'undefined');
+    const missing = required.filter(key => typeof ctx.request.body[key] === 'undefined');
     if (missing.length > 0)
-        throw new HttpError(400, `Missing request body keys ${missing.map(k => `<${k}>`).join(', ')}`);
-    return pick(ctx.request.body, keys);
+        throw new HttpError(400, `Missing required keys ${missing.map(k => `<${k}>`).join(', ')} in request body!`);
+    return pick(ctx.request.body, [...required, ...optional]);
 };

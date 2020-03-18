@@ -15,11 +15,6 @@ import {createEncounter, getActiveEncounter, getEncounters} from '../service/enc
 
 const router = new Router<AuthenticatedUser>();
 
-router.post('/', authenticate, async ctx => {
-    const body = validateBody(ctx, 'name');
-    ctx.body = await createCampaign(ctx.state.user, body);
-});
-
 router.get('/', authenticate, async ctx => {
     ctx.body = await getCampaignsForUser(ctx.state.user);
 });
@@ -29,9 +24,14 @@ router.get('/:id', authenticate, async ctx => {
     ctx.body = await getCampaign(id);
 });
 
+router.post('/', authenticate, async ctx => {
+    const body = validateBody(ctx, ['name']);
+    ctx.body = await createCampaign(ctx.state.user, body);
+});
+
 router.put('/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, 'name');
+    const body = validateBody(ctx, ['name']);
     ctx.body = await updateCampaign(id, body);
 });
 
@@ -49,14 +49,15 @@ router.post('/:id/user', authenticate, async ctx => {
 
 router.delete('/:id/user', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, 'id');
+    const body = validateBody(ctx, ['id']);
     await removeUserFromCampaign(id, ctx.state.user, body);
     ctx.status = 204;
 });
 
 router.post(`/:id/encounter`, authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    ctx.body = await createEncounter(id, ctx.state.user);
+    const body = validateBody(ctx, ['name']);
+    ctx.body = await createEncounter(id, ctx.state.user, body);
 });
 
 router.get(`/:id/encounter`, authenticate, async ctx => {
