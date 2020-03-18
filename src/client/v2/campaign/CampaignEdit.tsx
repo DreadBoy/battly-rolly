@@ -11,7 +11,7 @@ import {Link, useRouteMatch} from 'react-router-dom';
 const Editor = LoadingFactory<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
-    const {url} = useRouteMatch();
+    const {url, params: {id: urlId}} = useRouteMatch();
     const campaign = useLoader<Campaign>();
     const empty = useCallback(() => ({
         name: '',
@@ -23,7 +23,7 @@ export const CampaignEdit: FC = observer(() => {
             <Grid doubling columns={1}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Header>Create campaign</Header>
+                        <Header>{urlId ? 'Edit' : 'Create'} campaign</Header>
                         <Editor
                             id={id}
                             store={campaign}
