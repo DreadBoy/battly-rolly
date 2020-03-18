@@ -18,16 +18,18 @@ export const Layout: FC<{ title: ReactNode }> = ({title, children}) => {
     return (
         <div className={classes.grid}>
             <Menu>
-                <Link to={'/v2'} className={'header item'}>
-                    <img src={icon} alt={'icon'}/>
-                </Link>
-                {title && <Menu.Item header>{title}</Menu.Item>}
-                <Menu.Item position={'right'}>
-                    {/*TODO Use some logic to create this link*/}
-                    <Link to={`/v2/user/${id}/edit`}>
-                        <Icon name='user outline'/>
+                <Container>
+                    <Link to={'/v2'} className={'header item'}>
+                        <img src={icon} alt={'icon'}/>
                     </Link>
-                </Menu.Item>
+                    {title && <Menu.Item header>{title}</Menu.Item>}
+                    <Menu.Item position={'right'}>
+                        {/*TODO Use some logic to create this link*/}
+                        <Link to={`/v2/user/${id}/edit`}>
+                            <Icon name='user outline'/>
+                        </Link>
+                    </Menu.Item>
+                </Container>
             </Menu>
             <Container>
                 {children}

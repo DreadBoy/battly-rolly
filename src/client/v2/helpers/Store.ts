@@ -49,3 +49,7 @@ export class Store<T> {
 }
 
 export const useSimpleStore = () => useState<Store<null>>(new Store<null>())[0];
+
+export function useLoader<T>() {
+    return useState<Store<T>>(new Store<T>())[0];
+}

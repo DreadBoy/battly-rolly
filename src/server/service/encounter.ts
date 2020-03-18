@@ -23,7 +23,7 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
     return campaign.encounters;
 }
 
-async function getEncounter(id: string): Promise<Encounter> {
+export async function getEncounter(id: string): Promise<Encounter> {
     const encounter = await Encounter.findOne(id, {relations: ['campaign']});
     if (!encounter)
         throw new HttpError(404, `Encounter with id ${id} not found`);

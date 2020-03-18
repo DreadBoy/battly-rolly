@@ -3,10 +3,14 @@ import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser'
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
 import {validateBody, validateParam} from '../middlewares/validators';
-import {createLog, deleteEncounter, setActiveEncounter} from '../service/encounter';
+import {createLog, deleteEncounter, getEncounter, setActiveEncounter} from '../service/encounter';
 
 const router = new Router<AuthenticatedUser>();
 
+router.get(`/:id`, authenticate, async ctx => {
+    const id = validateParam(ctx, 'id');
+    ctx.body = await getEncounter(id);
+});
 router.delete(`/:id`, authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
     await deleteEncounter(id, ctx.state.user);

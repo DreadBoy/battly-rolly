@@ -15,10 +15,10 @@ export class Encounter extends BaseEntity {
     @Column()
     active: boolean;
 
-    @OneToMany(() => Feature, feature => feature.encounter, {cascade: true, eager: true})
+    @OneToMany(() => Feature, feature => feature.encounter)
     features!: Feature[];
 
-    @OneToMany(() => Log, log => log.encounter, {cascade: true, eager: true})
+    @OneToMany(() => Log, log => log.encounter)
     logs!: Log[];
 
     constructor() {

@@ -8,11 +8,11 @@ export class Log extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @ManyToMany(() => Feature, {cascade: true, eager: true})
+    @ManyToMany(() => Feature)
     @JoinTable()
     source!: Feature[];
 
-    @ManyToMany(() => Feature, {cascade: true, eager: true})
+    @ManyToMany(() => Feature)
     @JoinTable()
     target!: Feature[];
 

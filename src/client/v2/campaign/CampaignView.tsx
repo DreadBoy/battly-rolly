@@ -14,6 +14,7 @@ import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
 import {Stacktrace} from '../helpers/Stacktrace';
 import {ConfirmButton} from '../helpers/ConfirmButton';
+import {EncounterList} from '../encounter/EncounterList';
 
 const Editor = LoadingFactory<Campaign>();
 
@@ -30,6 +31,10 @@ export const CampaignView: FC = observer(() => {
     const {api} = useBackend();
     const {campaign} = useStore();
     const [code, setCode] = useState<string>();
+    const [refresh, setRefresh] = useState<number>(0);
+    const _refresh = useCallback(() => {
+        setRefresh(refresh + 1);
+    }, [refresh]);
     useEffect(() => {
         const promise = api.get(`/campaign/${id}`)
             .then(async response => {
@@ -37,8 +42,8 @@ export const CampaignView: FC = observer(() => {
                 setCode(code);
                 return response;
             });
-        campaign.fetch(promise, id);
-    }, [api, campaign, id, url]);
+        campaign.fetch(promise, id, refresh > 0 ? 'silent' : undefined);
+    }, [api, campaign, id, refresh, url]);
 
     const canShare = navigator.share && navigator.canShare;
     const share = useCallback(() => {
@@ -159,6 +164,13 @@ export const CampaignView: FC = observer(() => {
                                 </Table>
                             </Grid.Column>
                         </Grid.Row>
+                        {playerId === data.gm.id && (
+                            <Grid.Row>
+                                <Grid.Column>
+                                    <EncounterList campaign={data} refresh={_refresh}/>
+                                </Grid.Column>
+                            </Grid.Row>
+                        )}
                     </Grid>
                 )}
             />
