@@ -3,13 +3,12 @@ import {Button, Grid, Header, Image, Table} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {Campaign} from '../../../server/model/campaign';
 import {observer} from 'mobx-react';
-import {useStore} from '../helpers/StoreProvider';
 import {LoadingFactory} from '../helpers/Loading';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
 import {toDataURL} from 'qrcode';
 import {createUseStyles} from 'react-jss';
-import {useSimpleStore} from '../helpers/Store';
+import {useLoader} from '../helpers/Store';
 import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
 import {Stacktrace} from '../helpers/Stacktrace';
@@ -29,7 +28,7 @@ export const CampaignView: FC = observer(() => {
     const {id: playerId} = usePlayerId();
     const {url, params: {id}} = useRouteMatch();
     const {api} = useBackend();
-    const {campaign} = useStore();
+    const campaign = useLoader<Campaign>();
     const [code, setCode] = useState<string>();
     const [refresh, setRefresh] = useState<number>(0);
     const _refresh = useCallback(() => {
@@ -56,19 +55,19 @@ export const CampaignView: FC = observer(() => {
             navigator.share(data).catch((e) => console.error(e));
     }, [campaign.data, id]);
 
-    const _join = useSimpleStore();
+    const _join = useLoader();
     const join = useCallback(() => {
         _join.fetchAsync(api.post(`/campaign/${id}/user`), id)
             .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
     }, [_join, api, id, campaign]);
 
-    const _leave = useSimpleStore();
+    const _leave = useLoader();
     const leave = useCallback(() => {
         _leave.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), id)
             .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
     }, [_leave, api, id, playerId, campaign]);
 
-    const _kick = useSimpleStore();
+    const _kick = useLoader();
     const kick = useCallback((playerId) => () => {
         _kick.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), playerId)
             .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));

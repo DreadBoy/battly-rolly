@@ -3,7 +3,7 @@ import {Form, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {Campaign} from '../../../server/model/campaign';
 import {observer} from 'mobx-react';
-import {useStore} from '../helpers/StoreProvider';
+import {useLoader} from '../helpers/Store';
 import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {Link, useRouteMatch} from 'react-router-dom';
@@ -12,7 +12,7 @@ const Editor = LoadingFactory<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
     const {url} = useRouteMatch();
-    const {campaign} = useStore();
+    const campaign = useLoader<Campaign>();
     const empty = useCallback(() => ({
         name: '',
     }), []);

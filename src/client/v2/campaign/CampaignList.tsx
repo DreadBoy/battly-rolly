@@ -1,15 +1,14 @@
 import React, {FC, useCallback, useEffect} from 'react';
-import {Grid, Table, Button, Header} from 'semantic-ui-react';
+import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {useBackend} from '../helpers/BackendProvider';
-import {useStore} from '../helpers/StoreProvider';
 import {LoadingFactory} from '../helpers/Loading';
 import {Campaign} from '../../../server/model/campaign';
 import {observer} from 'mobx-react';
 import {usePlayerId} from '../helpers/PlayerId';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 import {Link, useRouteMatch} from 'react-router-dom';
-import {useSimpleStore} from '../helpers/Store';
+import {useLoader} from '../helpers/Store';
 import {Stacktrace} from '../helpers/Stacktrace';
 
 const List = LoadingFactory<Campaign[]>();
@@ -18,12 +17,12 @@ export const CampaignList: FC = observer(() => {
     const {url} = useRouteMatch();
     const {api} = useBackend();
     const {id} = usePlayerId();
-    const {campaigns} = useStore();
+    const campaigns = useLoader<Campaign[]>();
     useEffect(() => {
         campaigns.fetch(api.get('/campaign'), id);
     }, [api, campaigns, id]);
 
-    const _leave = useSimpleStore();
+    const _leave = useLoader();
     const leave = useCallback((campaignId: string) => () => {
         _leave.fetchAsync(api.delete(`/campaign/${campaignId}/user`, {data: {id}}), campaignId)
             .then(() => campaigns.fetch(api.get('/campaign'), id));

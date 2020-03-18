@@ -2,7 +2,7 @@ import React, {FC, useCallback} from 'react';
 import {Form, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../Layout';
 import {observer} from 'mobx-react';
-import {useStore} from '../helpers/StoreProvider';
+import {useLoader} from '../helpers/Store';
 import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {User} from '../../../server/model/user';
@@ -10,7 +10,7 @@ import {User} from '../../../server/model/user';
 const Editor = LoadingFactory<User>();
 
 export const UserEdit: FC = observer(() => {
-    const {user} = useStore();
+    const user = useLoader<User>();
     const empty = useCallback(() => ({
         name: '',
     }), []);

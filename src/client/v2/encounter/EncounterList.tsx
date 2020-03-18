@@ -3,7 +3,7 @@ import {Button, Header, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 import {Link, useHistory, useRouteMatch} from 'react-router-dom';
-import {useSimpleStore, useLoader} from '../helpers/Store';
+import {useLoader} from '../helpers/Store';
 import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../helpers/Stacktrace';
 import {Campaign} from '../../../server/model/campaign';
@@ -20,7 +20,7 @@ export const EncounterList: FC<Props> = observer(({campaign: {id: campaignId, en
     const {api} = useBackend();
     const { push } = useHistory();
 
-    const _remove = useSimpleStore();
+    const _remove = useLoader();
     const remove = useCallback((id: string) => () => {
         _remove.fetchAsync(api.delete(`/encounter/${id}`), id)
             .then(refresh)
