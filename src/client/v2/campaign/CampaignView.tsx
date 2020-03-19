@@ -138,25 +138,27 @@ export const CampaignView: FC = observer(() => {
                                     <Table.Header>
                                         <Table.Row>
                                             <Table.HeaderCell>Name</Table.HeaderCell>
-                                            <Table.HeaderCell/>
+                                            {playerId === data.gm.id && <Table.HeaderCell/>}
                                         </Table.Row>
                                     </Table.Header>
                                     <Table.Body>
                                         {data.users.filter(user => user.id !== id).map(user => (
                                             <Table.Row key={user.id}>
                                                 <Table.Cell>{user.name || user.id}</Table.Cell>
-                                                <Table.Cell>
-                                                    {user.id !== data.gm.id && (
-                                                        <ConfirmButton
-                                                            basic
-                                                            size={'tiny'}
-                                                            onClick={kick(user.id)}
-                                                            loading={_kick.loading[user.id]}
-                                                            disabled={_kick.loading[user.id]}
-                                                        >Kick</ConfirmButton>
-                                                    )}
-                                                    <Stacktrace error={_kick.error[user.id]}/>
-                                                </Table.Cell>
+                                                {playerId === data.gm.id && (
+                                                    <Table.Cell>
+                                                        {user.id !== data.gm.id && (
+                                                            <ConfirmButton
+                                                                basic
+                                                                size={'tiny'}
+                                                                onClick={kick(user.id)}
+                                                                loading={_kick.loading[user.id]}
+                                                                disabled={_kick.loading[user.id]}
+                                                            >Kick</ConfirmButton>
+                                                        )}
+                                                        <Stacktrace error={_kick.error[user.id]}/>
+                                                    </Table.Cell>
+                                                )}
                                             </Table.Row>
                                         ))}
                                     </Table.Body>

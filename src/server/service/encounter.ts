@@ -59,10 +59,10 @@ export async function toggleActiveEncounter(id: string, user: User): Promise<voi
     });
     const off = find(changed, enc => !enc.active);
     if (off)
-        broadcastEncounter(off, encounter.campaign.users.map(u => u.id));
+        broadcastEncounter(await getEncounter(off.id), encounter.campaign.users.map(u => u.id));
     const on = find(changed, enc => enc.active);
     if (on)
-        broadcastEncounter(on, encounter.campaign.users.map(u => u.id));
+        broadcastEncounter(await getEncounter(on.id), encounter.campaign.users.map(u => u.id));
 }
 
 export async function getActiveEncounter(campaignId: string): Promise<Encounter> {
