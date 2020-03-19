@@ -14,6 +14,6 @@ export function removeSocket(userId: string) {
     delete sockets[userId];
 }
 
-export function broadcastState(state: string, ...userIds: string[]) {
-    intersection(Object.keys(sockets), userIds).forEach(id => sockets[id].emit('state', state));
+export function broadcastEncounter(state: string, ...userIds: string[]) {
+    intersection(Object.keys(sockets), userIds).forEach(id => sockets[id].emit('encounter', state));
 }

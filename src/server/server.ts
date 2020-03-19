@@ -4,7 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {green} from 'chalk';
+import {green, gray, white} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
@@ -46,13 +46,13 @@ io.on('connect', socket => {
     let connectedUser: string | null = null;
 
     socket.on('join', (userId: string) => {
-        console.log('connected', userId);
+        console.log(gray('  <-- ') + white('SOCKET ') + gray(userId));
         connectedUser = userId;
         addSocket(userId, socket);
     });
 
     socket.on('disconnect', () => {
-        console.log('disconnected', connectedUser);
+        console.log(gray('  --> ') + white('SOCKET ') + gray(connectedUser));
         if (connectedUser != null)
             removeSocket(connectedUser);
     });

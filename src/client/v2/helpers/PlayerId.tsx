@@ -12,7 +12,7 @@ const playerIdContext = createContext<{ id: string }>(undefined as any);
 export const PlayerIdProvider: FC = ({children}) => {
     const [init, setInit] = useState(false);
     const {value, set} = useLocalStorage('playerId');
-    const {api} = useBackend();
+    const {api, socket} = useBackend();
     const connect = useCallback(() => {
         api.post<User>('/user', {name: 'Temporary name'})
             .then(res => {
@@ -24,8 +24,9 @@ export const PlayerIdProvider: FC = ({children}) => {
     useEffect(() => {
         if (!value) return;
         api.defaults.headers.common['Authorization'] = value;
+        socket?.emit('join', value);
         setInit(true);
-    }, [api.defaults.headers.common, value]);
+    }, [api.defaults.headers.common, socket, value]);
     return (
         <playerIdContext.Provider value={{id: value || ''}}>
             {init ? children : (

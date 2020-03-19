@@ -3,7 +3,7 @@ import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, some} from 'lodash';
-import {broadcastState} from './socket';
+import {broadcastEncounter} from './socket';
 import {Log} from '../model/log';
 import {getFeatures} from './feature';
 
@@ -75,5 +75,5 @@ export async function createLog(encounterId: string, user: User, body: { source:
     await log.save();
     encounter.logs.push(log);
     await encounter.save();
-    broadcastState(JSON.stringify(encounter), ...encounter.campaign.users.map(u => u.id));
+    broadcastEncounter(JSON.stringify(encounter), ...encounter.campaign.users.map(u => u.id));
 }
