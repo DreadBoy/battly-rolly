@@ -3,7 +3,7 @@ import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser'
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
 import {validateBody, validateParam} from '../middlewares/validators';
-import {createLog, deleteEncounter, getEncounter, setActiveEncounter, updateEncounter} from '../service/encounter';
+import {createLog, deleteEncounter, getEncounter, toggleActiveEncounter, updateEncounter} from '../service/encounter';
 
 const router = new Router<AuthenticatedUser>();
 
@@ -26,7 +26,7 @@ router.delete(`/:id`, authenticate, async ctx => {
 
 router.post(`/:id/active`, authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    await setActiveEncounter(id, ctx.state.user);
+    await toggleActiveEncounter(id, ctx.state.user);
     ctx.status = 204;
 });
 

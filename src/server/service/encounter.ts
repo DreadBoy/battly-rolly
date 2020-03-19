@@ -2,7 +2,7 @@ import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {assign, some} from 'lodash';
+import {assign, filter, find, map, pick, some} from 'lodash';
 import {broadcastEncounter} from './socket';
 import {Log} from '../model/log';
 import {getFeatures} from './feature';
@@ -45,12 +45,24 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
     await Encounter.remove(encounter);
 }
 
-export async function setActiveEncounter(id: string, user: User): Promise<void> {
+export async function toggleActiveEncounter(id: string, user: User): Promise<void> {
     const encounter = await getEncounter(id);
     if (encounter.campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
-    encounter.campaign.encounters.forEach(encounter => encounter.active = encounter.id === id);
+    const before = map(encounter.campaign.encounters, e => pick(e, ['id', 'name', 'active']));
+    encounter.campaign.encounters.forEach(encounter => encounter.active = encounter.id === id && !encounter.active);
     await encounter.campaign.save();
+
+    const changed = filter(encounter.campaign.encounters, a => {
+        const b = find(before, ['id', a.id]);
+        return b?.active !== a.active;
+    });
+    const off = find(changed, enc => !enc.active);
+    if (off)
+        broadcastEncounter(off, encounter.campaign.users.map(u => u.id));
+    const on = find(changed, enc => enc.active);
+    if (on)
+        broadcastEncounter(on, encounter.campaign.users.map(u => u.id));
 }
 
 export async function getActiveEncounter(campaignId: string): Promise<Encounter> {
@@ -75,5 +87,5 @@ export async function createLog(encounterId: string, user: User, body: { source:
     await log.save();
     encounter.logs.push(log);
     await encounter.save();
-    broadcastEncounter(JSON.stringify(encounter), ...encounter.campaign.users.map(u => u.id));
+    // broadcastEncounter(encounter);
 }

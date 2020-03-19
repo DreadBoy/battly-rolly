@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {Header, Table} from 'semantic-ui-react';
+import {Checkbox, Header, Loader, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 import {Link, useRouteMatch} from 'react-router-dom';
@@ -24,12 +24,20 @@ export const EncounterList: FC<Props> = observer(({encounters, refresh}) => {
             .catch(() => undefined);
     }, [_remove, api, refresh]);
 
+    const _active = useLoader();
+    const setActive = useCallback((id: string) => () => {
+        _active.fetchAsync(api.post(`/encounter/${id}/active`), id)
+            .then(refresh)
+            .catch(() => undefined);
+    }, [_active, api, refresh]);
+
     return (
         <>
             <Header size={'tiny'}>Encounters</Header>
-            <Table fixed celled unstackable>
+            <Table celled unstackable>
                 <Table.Header>
                     <Table.Row>
+                        <Table.HeaderCell>Active</Table.HeaderCell>
                         <Table.HeaderCell>Name</Table.HeaderCell>
                         <Table.HeaderCell/>
                     </Table.Row>
@@ -37,6 +45,20 @@ export const EncounterList: FC<Props> = observer(({encounters, refresh}) => {
                 <Table.Body>
                     {encounters.map(enc => (
                         <Table.Row key={enc.id}>
+                            <Table.Cell>
+                                {_active.loading[enc.id] ? (
+                                    <Loader active size={'small'} inline={true}/>
+                                ) : (
+                                    <Checkbox
+                                        toggle
+                                        checked={enc.active}
+                                        onChange={setActive(enc.id)}
+                                    />
+                                )}
+                                {_active.error[enc.id] && (
+                                    <Stacktrace error={_active.error[enc.id]}/>
+                                )}
+                            </Table.Cell>
                             <Table.Cell>{enc.name}</Table.Cell>
                             <Table.Cell>
                                 <Link
