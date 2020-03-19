@@ -6,14 +6,17 @@ import Axios, {AxiosInstance, AxiosPromise} from 'axios';
 type BackendContext = {
     origin: string,
     api: AxiosInstance;
-    socket: SocketIOClient.Socket | undefined,
+    socket: SocketIOClient.Socket | undefined | null,
     connected: boolean,
 }
 
 const backendContext = createContext<BackendContext>(undefined as any);
 
 export const BackendProvider: FC = ({children}) => {
-    const [socket, setSocket] = useState<SocketIOClient.Socket>();
+    /***
+     * undefined means uninitialized, null means disconnected
+     */
+    const [socket, setSocket] = useState<SocketIOClient.Socket | null | undefined>(undefined);
     const [origin, setOrigin] = useState<string>('');
     const [api, setApi] = useState<AxiosInstance>();
 
@@ -21,9 +24,16 @@ export const BackendProvider: FC = ({children}) => {
 
     const connect = useCallback((origin: string) => {
         const s = Io.connect(origin);
-        setSocket(s);
-        s.on('disconnect', () => {
-            setSocket(undefined);
+        s.on('connect', () => {
+            setSocket(s);
+            console.log('%c  <-- %cSOCKET', 'color:green', 'color:white');
+            s.on('disconnect', () => {
+                console.log('%c  --> %cSOCKET', 'color:red', 'color:white');
+                setSocket(null);
+            });
+            s.on('encounter', (state: string) => {
+                console.log(JSON.parse(state));
+            });
         });
 
         const api = Axios.create({
@@ -36,7 +46,7 @@ export const BackendProvider: FC = ({children}) => {
 
     const socketRef = useRef<SocketIOClient.Socket>();
     useEffect(() => {
-        socketRef.current = socket
+        socketRef.current = socket || undefined;
     }, [socket]);
     useEffect(() => {
         return () => {

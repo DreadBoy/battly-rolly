@@ -4,7 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {green, gray, white} from 'chalk';
+import {green, gray, white, red} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
@@ -21,7 +21,6 @@ const koaStatic = KoaStatic({
     notFoundFile: 'index.html',
 });
 
-app.use(logger());
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');
@@ -31,6 +30,7 @@ app.use(async (ctx, next) => {
         return ctx.status = 204;
     await next();
 });
+app.use(logger());
 app.use(bodyParser());
 app.use(ensureDatabase);
 app.use(mount('/user', userApi));
@@ -46,13 +46,13 @@ io.on('connect', socket => {
     let connectedUser: string | null = null;
 
     socket.on('join', (userId: string) => {
-        console.log(gray('  <-- ') + white('SOCKET ') + gray(userId));
+        console.log(green('  <-- ') + white('SOCKET ') + gray(userId));
         connectedUser = userId;
         addSocket(userId, socket);
     });
 
     socket.on('disconnect', () => {
-        console.log(gray('  --> ') + white('SOCKET ') + gray(connectedUser));
+        console.log(red('  --> ') + white('SOCKET ') + gray(connectedUser));
         if (connectedUser != null)
             removeSocket(connectedUser);
     });
