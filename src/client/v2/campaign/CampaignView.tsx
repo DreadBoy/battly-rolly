@@ -26,7 +26,7 @@ const useStyles = createUseStyles({
 export const CampaignView: FC = observer(() => {
     const classes = useStyles();
     const {id: playerId} = usePlayerId();
-    const {url, params: {id}} = useRouteMatch();
+    const {url, params: {campaignId: id}} = useRouteMatch();
     const {api} = useBackend();
     const campaign = useLoader<Campaign>();
     const [code, setCode] = useState<string>();
@@ -74,7 +74,7 @@ export const CampaignView: FC = observer(() => {
     }, [_kick, api, id, campaign]);
 
     return (
-        <Layout title={<Link to={url.replace(/\/campaign.*$/, '/campaign')}>Campaigns</Link>}>
+        <Layout>
             <Editor
                 id={id}
                 store={campaign}
@@ -166,7 +166,7 @@ export const CampaignView: FC = observer(() => {
                         {playerId === data.gm.id && (
                             <Grid.Row>
                                 <Grid.Column>
-                                    <EncounterList campaign={data} refresh={_refresh}/>
+                                    <EncounterList encounters={data.encounters} refresh={_refresh}/>
                                 </Grid.Column>
                             </Grid.Row>
                         )}

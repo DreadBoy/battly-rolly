@@ -1,5 +1,5 @@
 import {fakeRequest, useBackend} from '../helpers/BackendProvider';
-import {useHistory, useRouteMatch} from 'react-router';
+import {useHistory} from 'react-router';
 import React, {FC, useCallback, useEffect} from 'react';
 import {observer, useLocalStore} from 'mobx-react';
 import {Store, useLoader} from '../helpers/Store';
@@ -9,43 +9,59 @@ import {Button, InputOnChangeData} from 'semantic-ui-react';
 import {Stacktrace} from '../helpers/Stacktrace';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 
-export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Partial<T>) {
-    const fakeId = baseUrl;
+type Mode = 'edit' | 'create';
+type Urls = {
+    get: string,
+    put: string,
+    post: string,
+    delete: string,
+}
+
+export function useEditor<T>(store: Store<T>, baseUrl: string, id: string, creator: () => Partial<T>, urls?: Partial<Urls>) {
     const {api} = useBackend();
     const {goBack} = useHistory();
-    const {params: {id}} = useRouteMatch();
+
+    const mode: Mode = id ? 'edit' : 'create';
+    const fakeId = baseUrl;
+    const urlsAll = {} as Urls;
+    assign(urlsAll, {
+        get: `/${baseUrl}/${id}`,
+        put: `/${baseUrl}/${id}`,
+        post: `/${baseUrl}`,
+        delete: `/${baseUrl}/${id}`
+    }, urls);
 
     const editor = useLocalStore<Partial<T>>(creator);
 
     const editorDefault = useLocalStore<Partial<T>>(creator);
     useEffect(() => {
-        const promise = id ?
-            store.fetchAsync(api.get(`/${baseUrl}/${id}`), id) :
+        const promise = mode === 'edit' ?
+            store.fetchAsync(api.get(urlsAll.get), id) :
             store.fetchAsync(fakeRequest<T>(creator), fakeId);
         promise.then((data) => {
             assign(editorDefault, data);
             assign(editor, data);
         });
-    }, [api, baseUrl, creator, editor, editorDefault, fakeId, id, store]);
+    }, [api, baseUrl, creator, editor, editorDefault, fakeId, id, mode, store, urlsAll.get]);
 
     const submitter = useLoader();
     const reset = useCallback(() => {
         assign(editor, editorDefault);
     }, [editor, editorDefault]);
     const submit = useCallback(() => {
-        const promise = id ?
-            submitter.fetchAsync(api.put(`/${baseUrl}/${id}`, toJS(editor)), id) :
-            submitter.fetchAsync(api.post(`/${baseUrl}`, toJS(editor)), fakeId);
+        const promise = mode === 'edit' ?
+            submitter.fetchAsync(api.put(urlsAll.put, toJS(editor)), id) :
+            submitter.fetchAsync(api.post(urlsAll.post, toJS(editor)), fakeId);
         promise.then(goBack).catch(() => undefined);
-    }, [api, baseUrl, editor, fakeId, goBack, id, submitter]);
+    }, [api, editor, fakeId, goBack, id, mode, submitter, urlsAll.post, urlsAll.put]);
 
     const remover = useLoader();
     const remove = useCallback(() => {
-        const promise = id ?
-            remover.fetchAsync(api.delete(`/${baseUrl}/${id}`), id) :
+        const promise = mode === 'edit' ?
+            remover.fetchAsync(api.delete(urlsAll.delete), id) :
             Promise.resolve(null);
         promise.then(goBack).catch(() => undefined);
-    }, [api, baseUrl, goBack, id, remover]);
+    }, [api, goBack, id, mode, remover, urlsAll.delete]);
 
     const finalId = id || fakeId;
     const loading = submitter.loading[finalId] || remover.loading[finalId];
@@ -96,5 +112,5 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, creator: () => Pa
         },
     });
 
-    return {editor, submit, id: finalId, FormButtons, textControl};
+    return {editor, submit, id: finalId, FormButtons, textControl, mode};
 }

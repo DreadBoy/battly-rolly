@@ -1,4 +1,4 @@
-import React, {FC, ReactNode} from 'react';
+import React, {FC} from 'react';
 import {Container, Icon, Menu} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
 import icon from '../../assets/dice-twenty-faces-twenty.svg';
@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Layout: FC<{ title: ReactNode }> = ({title, children}) => {
+export const Layout: FC = ({ children}) => {
     const classes = useStyles();
     const {id} = usePlayerId();
     return (
@@ -22,7 +22,7 @@ export const Layout: FC<{ title: ReactNode }> = ({title, children}) => {
                     <Link to={'/v2'} className={'header item'}>
                         <img src={icon} alt={'icon'}/>
                     </Link>
-                    {title && <Menu.Item header>{title}</Menu.Item>}
+                   <Menu.Item header>Battly Rolly</Menu.Item>
                     <Menu.Item position={'right'}>
                         {/*TODO Use some logic to create this link*/}
                         <Link to={`/v2/user/${id}/edit`}>

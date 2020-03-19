@@ -6,18 +6,20 @@ import {useLoader} from '../helpers/Store';
 import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {User} from '../../../server/model/user';
+import {useRouteMatch} from 'react-router';
 
 const Editor = LoadingFactory<User>();
 
 export const UserEdit: FC = observer(() => {
+    const {params: {userId}} = useRouteMatch();
     const user = useLoader<User>();
     const empty = useCallback(() => ({
         name: '',
     }), []);
-    const {submit, id, FormButtons, textControl} = useEditor<User>(user, 'user', empty);
+    const {submit, id, FormButtons, textControl} = useEditor<User>(user, 'user', userId, empty);
 
     return (
-        <Layout title={'User'}>
+        <Layout>
             <Grid doubling columns={1}>
                 <Grid.Row>
                     <Grid.Column>

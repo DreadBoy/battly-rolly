@@ -28,14 +28,14 @@ export const CampaignList: FC = observer(() => {
             .then(() => campaigns.fetch(api.get('/campaign'), id));
     }, [_leave, api, id, campaigns]);
     return (
-        <Layout title={'Campaigns'}>
+        <Layout>
             <Grid doubling columns={1}>
                 <Grid.Row>
                     <Grid.Column>
                         <Header>Campaigns</Header>
                         <Button.Group>
                             <Button basic color={'grey'}>Join campaign</Button>
-                            <Link to={`${url}/edit`} className={'ui button basic blue'}>Create campaign</Link>
+                            <Link to={`${url}/create`} className={'ui button basic blue'}>Create campaign</Link>
                         </Button.Group>
                     </Grid.Column>
                 </Grid.Row>

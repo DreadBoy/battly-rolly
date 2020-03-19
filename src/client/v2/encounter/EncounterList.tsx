@@ -1,24 +1,21 @@
 import React, {FC, useCallback} from 'react';
-import {Button, Header, Table} from 'semantic-ui-react';
+import {Header, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {ConfirmButton} from '../helpers/ConfirmButton';
-import {Link, useHistory, useRouteMatch} from 'react-router-dom';
+import {Link, useRouteMatch} from 'react-router-dom';
 import {useLoader} from '../helpers/Store';
 import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../helpers/Stacktrace';
-import {Campaign} from '../../../server/model/campaign';
 import {Encounter} from '../../../server/model/encounter';
 
 type Props = {
-    campaign: Campaign,
+    encounters: Encounter[],
     refresh: () => void,
 };
 
-export const EncounterList: FC<Props> = observer(({campaign: {id: campaignId, encounters}, refresh}) => {
+export const EncounterList: FC<Props> = observer(({encounters, refresh}) => {
     const {url} = useRouteMatch();
-    const base = url.replace(/\/campaign.*$/, '');
     const {api} = useBackend();
-    const { push } = useHistory();
 
     const _remove = useLoader();
     const remove = useCallback((id: string) => () => {
@@ -27,30 +24,23 @@ export const EncounterList: FC<Props> = observer(({campaign: {id: campaignId, en
             .catch(() => undefined);
     }, [_remove, api, refresh]);
 
-    const _create = useLoader<Encounter>();
-    const create = useCallback(() => {
-        _create.fetchAsync(api.post(`campaign/${campaignId}/encounter`), 'create')
-            .then((encounter) => push(`${base}/encounter/${encounter.id}`))
-            .catch(() => undefined);
-    }, [_create, api, base, campaignId, push]);
-
     return (
         <>
             <Header size={'tiny'}>Encounters</Header>
             <Table fixed celled unstackable>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell>CR</Table.HeaderCell>
+                        <Table.HeaderCell>Name</Table.HeaderCell>
                         <Table.HeaderCell/>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
                     {encounters.map(enc => (
                         <Table.Row key={enc.id}>
-                            <Table.Cell>8</Table.Cell>
+                            <Table.Cell>{enc.name}</Table.Cell>
                             <Table.Cell>
                                 <Link
-                                    to={`${base}/encounter/${enc.id}/edit`}
+                                    to={`${url}/encounter/${enc.id}/edit`}
                                     className={'ui button basic mini blue'}
                                 >Edit</Link>
                                 <ConfirmButton
@@ -66,14 +56,7 @@ export const EncounterList: FC<Props> = observer(({campaign: {id: campaignId, en
                     ))}
                 </Table.Body>
             </Table>
-            <Button
-                basic
-                primary
-                onClick={create}
-                loading={_create.loading['create']}
-                disabled={_create.loading['create']}
-            >Create</Button>
-            <Stacktrace error={_create.error['create']}/>
+            <Link className={'ui button basic blue'} to={`${url}/encounter/create`}>Create</Link>
         </>
     );
 });

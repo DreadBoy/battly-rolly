@@ -6,24 +6,24 @@ import {observer} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
 import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
-import {Link, useRouteMatch} from 'react-router-dom';
+import {useRouteMatch} from 'react-router-dom';
 
 const Editor = LoadingFactory<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
-    const {url, params: {id: urlId}} = useRouteMatch();
+    const {params: {campaignId}} = useRouteMatch();
     const campaign = useLoader<Campaign>();
     const empty = useCallback(() => ({
         name: '',
     }), []);
-    const {submit, id, FormButtons, textControl} = useEditor<Campaign>(campaign, 'campaign', empty);
+    const {submit, id, FormButtons, textControl, mode} = useEditor<Campaign>(campaign, 'campaign', campaignId, empty);
 
     return (
-        <Layout title={<Link to={url.replace(/\/campaign.*$/, '/campaign')}>Campaigns</Link>}>
+        <Layout>
             <Grid doubling columns={1}>
                 <Grid.Row>
                     <Grid.Column>
-                        <Header>{urlId ? 'Edit' : 'Create'} campaign</Header>
+                        <Header>{mode[0].toUpperCase() + mode.slice(1)} campaign</Header>
                         <Editor
                             id={id}
                             store={campaign}
@@ -34,7 +34,7 @@ export const CampaignEdit: FC = observer(() => {
                                         {...textControl('name')}
                                         required
                                     />
-                                    <FormButtons/>
+                                    <FormButtons removeButton={mode === 'edit'}/>
                                 </Form>
                             )}
                         />
