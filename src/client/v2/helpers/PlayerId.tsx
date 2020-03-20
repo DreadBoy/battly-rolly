@@ -25,6 +25,7 @@ export const PlayerIdProvider: FC = ({children}) => {
         if (!value) return;
         api.defaults.headers.common['Authorization'] = value;
         socket?.emit('join', value);
+        socket?.emit('repeat', 'encounter');
         setInit(true);
     }, [api.defaults.headers.common, socket, value]);
     return (

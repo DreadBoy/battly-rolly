@@ -6,6 +6,11 @@ type Sockets = {
     [userId: string]: Socket,
 };
 const sockets: Sockets = {};
+export const cache: {
+    [userId: string]: {
+        [event: string]: any,
+    },
+} = {};
 
 export function addSocket(userId: string, socket: Socket) {
     sockets[userId] = socket;
@@ -17,8 +22,16 @@ export function removeSocket(userId: string) {
 
 export function broadcastEncounter(encounter: Encounter, users: string[]) {
     const targetUsers = intersection(Object.keys(sockets), users);
-    if (!encounter.active)
-        return targetUsers.forEach(id => sockets[id].emit('encounter', 'null'));
-    const state = JSON.stringify(encounter);
-    targetUsers.forEach(id => sockets[id].emit('encounter', state));
+    const state = !encounter.active ? 'null' : JSON.stringify(encounter);
+    return targetUsers.forEach(id => {
+        sockets[id].emit('encounter', state);
+        cache[id] = cache[id] || {};
+        cache[id]['encounter'] = state;
+    });
+}
+
+export function repeatEvent(userId: string, event: string) {
+    if (!cache[userId] || !cache[userId][event])
+        return;
+    sockets[userId].emit(event, cache[userId][event]);
 }

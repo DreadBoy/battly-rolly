@@ -4,14 +4,14 @@ import bodyParser from 'koa-bodyparser';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {green, gray, white, red} from 'chalk';
+import {gray, green, red, white} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
 import {app as userApi} from './api/user';
 import {app as campaignApi} from './api/campaign';
 import {app as encounterApi} from './api/encounter';
-import {addSocket, removeSocket} from './service/socket';
+import {addSocket, removeSocket, repeatEvent} from './service/socket';
 
 const mount = require('koa-mount');
 
@@ -49,6 +49,13 @@ io.on('connect', socket => {
         console.log(green('  <-- ') + white('SOCKET ') + gray(userId));
         connectedUser = userId;
         addSocket(userId, socket);
+    });
+
+    socket.on('repeat', (event: string) => {
+        if (!connectedUser)
+            return;
+        console.log(`  ${gray('<--')} ${white('SOCKET')} ${gray('repeat')} ${gray(event)}`);
+        repeatEvent(connectedUser, event);
     });
 
     socket.on('disconnect', () => {
