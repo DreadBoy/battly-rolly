@@ -1,6 +1,5 @@
 import {Socket} from 'socket.io';
 import {intersection} from 'lodash';
-import {Encounter} from '../model/encounter';
 
 type Sockets = {
     [userId: string]: Socket,
@@ -20,13 +19,13 @@ export function removeSocket(userId: string) {
     delete sockets[userId];
 }
 
-export function broadcastEncounter(encounter: Encounter, users: string[]) {
+export function broadcastEvent(event: string, data: any, users: string[]) {
     const targetUsers = intersection(Object.keys(sockets), users);
-    const state = !encounter.active ? 'null' : JSON.stringify(encounter);
+    const state = !data ? 'null' : JSON.stringify(data);
     return targetUsers.forEach(id => {
-        sockets[id].emit('encounter', state);
+        sockets[id].emit(event, state);
         cache[id] = cache[id] || {};
-        cache[id]['encounter'] = state;
+        cache[id][event] = state;
     });
 }
 

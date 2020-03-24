@@ -1,9 +1,9 @@
 import Koa from 'koa';
 import Router from '@koa/router';
-import bodyParser from 'koa-bodyparser'
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
 import {validateBody, validateParam} from '../middlewares/validators';
-import {createLog, deleteEncounter, getEncounter, toggleActiveEncounter, updateEncounter} from '../service/encounter';
+import {deleteEncounter, getEncounter, toggleActiveEncounter, updateEncounter} from '../service/encounter';
+import {addFeatures, removeFeatures} from '../service/feature';
 
 const router = new Router<AuthenticatedUser>();
 
@@ -30,12 +30,26 @@ router.post(`/:id/active`, authenticate, async ctx => {
     ctx.status = 204;
 });
 
-router.put(`/:id/action`, bodyParser(), authenticate, async ctx => {
+router.post(`/:id/feature`, authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, ['source', 'target']);
-    await createLog(id, ctx.state.user, body);
+    const body = validateBody(ctx, ['features']);
+    await addFeatures(id, body);
     ctx.status = 204;
 });
+
+router.delete(`/:id/feature`, authenticate, async ctx => {
+    const id = validateParam(ctx, 'id');
+    const body = validateBody(ctx, ['features']);
+    await removeFeatures(id, body);
+    ctx.status = 204;
+});
+
+// router.put(`/:id/action`, bodyParser(), authenticate, async ctx => {
+//     const id = validateParam(ctx, 'id');
+//     const body = validateBody(ctx, ['source', 'target']);
+//     await createLog(id, ctx.state.user, body);
+//     ctx.status = 204;
+// });
 
 const app = new Koa();
 app.use(router.routes());

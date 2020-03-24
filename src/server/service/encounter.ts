@@ -3,7 +3,7 @@ import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick, some} from 'lodash';
-import {broadcastEncounter} from './socket';
+import {broadcastEvent} from './socket';
 import {Log} from '../model/log';
 import {getFeatures} from './feature';
 
@@ -25,7 +25,7 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
 }
 
 export async function getEncounter(id: string): Promise<Encounter> {
-    const encounter = await Encounter.findOne(id, {relations: ['campaign']});
+    const encounter = await Encounter.findOne(id, {relations: ['campaign', 'features']});
     if (!encounter)
         throw new HttpError(404, `Encounter with id ${id} not found`);
     return encounter;
@@ -59,10 +59,10 @@ export async function toggleActiveEncounter(id: string, user: User): Promise<voi
     });
     const off = find(changed, enc => !enc.active);
     if (off)
-        broadcastEncounter(await getEncounter(off.id), encounter.campaign.users.map(u => u.id));
+        broadcastEvent('encounter', off.id, encounter.campaign.users.map(u => u.id));
     const on = find(changed, enc => enc.active);
     if (on)
-        broadcastEncounter(await getEncounter(on.id), encounter.campaign.users.map(u => u.id));
+        broadcastEvent('encounter', on.id, encounter.campaign.users.map(u => u.id));
 }
 
 export async function getActiveEncounter(campaignId: string): Promise<Encounter> {
@@ -71,6 +71,11 @@ export async function getActiveEncounter(campaignId: string): Promise<Encounter>
     if (!encounter)
         throw new HttpError(404, `Campaign with id ${campaignId} doesn't have active encounter`);
     return encounter;
+}
+
+export async function pushEncounterOverSockets(encounterId: string) {
+    const encounter = await getEncounter(encounterId);
+    broadcastEvent('encounter', encounter, encounter.campaign.users.map(u => u.id));
 }
 
 export async function createLog(encounterId: string, user: User, body: { source: string[], target: string[] }) {

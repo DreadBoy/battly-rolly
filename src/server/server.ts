@@ -11,6 +11,7 @@ import {app as probeApi} from './api/probe';
 import {app as userApi} from './api/user';
 import {app as campaignApi} from './api/campaign';
 import {app as encounterApi} from './api/encounter';
+import {app as featureApi} from './api/feature';
 import {addSocket, removeSocket, repeatEvent} from './service/socket';
 
 const mount = require('koa-mount');
@@ -36,6 +37,7 @@ app.use(ensureDatabase);
 app.use(mount('/user', userApi));
 app.use(mount('/campaign', campaignApi));
 app.use(mount('/encounter', encounterApi));
+app.use(mount('/feature', featureApi));
 app.use(mount(probeApi));
 app.use(koaStatic);
 
