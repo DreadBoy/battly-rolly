@@ -11,9 +11,10 @@ type Props = {
 }
 
 export const MonsterList: FC<Props> = ({onAdd}) => {
+    // We intentionally don't set this value to anything other than empty string
     const [value, setValue] = useState<string>('');
 
-    const onClose = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
+    const onChange = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
         const monster = find(monsters, ['name', data.value]) as unknown as Monster;
         if (monster) {
             const feature: Partial<Feature> = {
@@ -33,12 +34,12 @@ export const MonsterList: FC<Props> = ({onAdd}) => {
             <Dropdown
                 search
                 selection
+                selectOnNavigation={false}
                 options={monsters.map(m => ({
                     key: m.name, value: m.name, text: m.name,
                 }))}
-                onClose={onClose}
                 value={value}
-                onChange={(e, d) => setValue(d.value as string)}
+                onChange={onChange}
             />
         </Form.Field>
     );
