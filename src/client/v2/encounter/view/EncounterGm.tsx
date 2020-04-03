@@ -27,21 +27,40 @@ export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) 
                         <Form>
                             <Header>Run {encounter.name}</Header>
                             {encounter.features.length > 0 && (
-                                <>
-                                    <Header size={'tiny'}>Monsters</Header>
-                                    <List>
-                                        {encounter.features.map((f, index) => (
-                                            <List.Item key={index}>
-                                                <List.Icon
-                                                    link
-                                                    name='close'
-                                                    onClick={onRemove(f)}
-                                                />
-                                                <List.Content>{f.reference}</List.Content>
-                                            </List.Item>
-                                        ))}
-                                    </List>
-                                </>
+                                <Grid columns={2}>
+                                    <Grid.Column><Header size={'tiny'}>Monsters</Header>
+                                        <List>
+                                            {encounter.features
+                                                .filter(f => f.type === 'npc')
+                                                .map((f, index) => (
+                                                    <List.Item key={index}>
+                                                        <List.Icon
+                                                            link
+                                                            name='close'
+                                                            onClick={onRemove(f)}
+                                                        />
+                                                        <List.Content>{f.reference}</List.Content>
+                                                    </List.Item>
+                                                ))}
+                                        </List>
+                                    </Grid.Column>
+                                    <Grid.Column><Header size={'tiny'}>Players</Header>
+                                        <List>
+                                            {encounter.features
+                                                .filter(f => f.type === 'player')
+                                                .map((f, index) => (
+                                                    <List.Item key={index}>
+                                                        <List.Icon
+                                                            link
+                                                            name='close'
+                                                            onClick={onRemove(f)}
+                                                        />
+                                                        <List.Content>{f.reference}</List.Content>
+                                                    </List.Item>
+                                                ))}
+                                        </List>
+                                    </Grid.Column>
+                                </Grid>
                             )}
                             <AddFeatures encounter={encounter}/>
                         </Form>

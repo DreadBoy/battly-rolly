@@ -5,7 +5,8 @@ import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick, some} from 'lodash';
 import {broadcastEvent} from './socket';
 import {Log} from '../model/log';
-import {getFeatures} from './feature';
+import {addFeatures, getFeatures, removePlayers} from './feature';
+import {Feature} from '../model/feature';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
     const campaign = await getCampaign(campaignId);
@@ -49,20 +50,40 @@ export async function toggleActiveEncounter(id: string, user: User): Promise<voi
     const encounter = await getEncounter(id);
     if (encounter.campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
-    const before = map(encounter.campaign.encounters, e => pick(e, ['id', 'name', 'active']));
-    encounter.campaign.encounters.forEach(encounter => encounter.active = encounter.id === id && !encounter.active);
-    await encounter.campaign.save();
+    const campaign = await getCampaign(encounter.campaign.id, ['users', 'encounters', 'encounters.features']);
+    const before = map(campaign.encounters, e => pick(e, ['id', 'name', 'active']));
 
-    const changed = filter(encounter.campaign.encounters, a => {
+    const playerIds = campaign.users
+        .filter(user => user.id !== campaign.gm.id)
+        .map(user => user.id);
+    await Promise.all(campaign.encounters.map(async enc => {
+        enc.active = enc.id === id && !enc.active;
+        if (!enc.active) {
+            await removePlayers(enc.id, playerIds);
+        } else {
+            const addedPlayers = campaign.users.filter(u => u.id !== encounter.campaign.gm.id)
+                .map(u => ({
+                    type: 'player',
+                    reference: u.id,
+                    AC: 15,
+                    HP: 10,
+                    initialHP: 10,
+                } as Partial<Feature>));
+            await addFeatures(enc.id, {features: addedPlayers});
+        }
+    }));
+    await campaign.save();
+
+    const changed = filter(campaign.encounters, a => {
         const b = find(before, ['id', a.id]);
         return b?.active !== a.active;
     });
     const off = find(changed, enc => !enc.active);
     if (off)
-        broadcastEvent('encounter', off.id, encounter.campaign.users.map(u => u.id));
+        await pushEncounterOverSockets(off.id);
     const on = find(changed, enc => enc.active);
     if (on)
-        broadcastEvent('encounter', on.id, encounter.campaign.users.map(u => u.id));
+        await pushEncounterOverSockets(on.id);
 }
 
 export async function getActiveEncounter(campaignId: string): Promise<Encounter> {

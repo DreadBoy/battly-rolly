@@ -25,8 +25,8 @@ export const getCampaignsForUser = async (user: User): Promise<Campaign[]> => {
     return user.campaigns;
 };
 
-export const getCampaign = async (id: string): Promise<Campaign> => {
-    const campaign = await Campaign.findOne(id);
+export const getCampaign = async (id: string, relations: string[] = []): Promise<Campaign> => {
+    const campaign = await Campaign.findOne(id, {relations});
     if (!campaign)
         throw new HttpError(404, `Campaign with id ${id} not found`);
     return campaign;

@@ -1,5 +1,5 @@
 import {Feature} from '../model/feature';
-import {assign, map} from 'lodash';
+import {assign, map, pick} from 'lodash';
 import {getConnection} from 'typeorm';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
@@ -19,8 +19,19 @@ export const addFeatures = async (encounterId: string, body: Body): Promise<void
 };
 
 export const removeFeatures = async (encounterId: string, body: Body): Promise<void> => {
-    await getConnection().getRepository(Feature).delete(map(body.features, 'id') as string[]);
+    const ids = map(body.features, 'id') as string[];
+    if(ids.length === 0)
+        return;
+    await getConnection().getRepository(Feature).delete(ids);
     await pushEncounterOverSockets(encounterId);
+};
+
+export const removePlayers = async (encounterId: string, playerIds: string[]): Promise<void> => {
+    const encounter = await getEncounter(encounterId);
+    const removedPlayers = encounter.features
+        .filter(feature => playerIds.includes(feature.reference))
+        .map(u => pick(u, 'id'));
+    await removeFeatures(encounterId, {features: removedPlayers});
 };
 
 export const updateFeature = async (featureId: string, body: Partial<Feature>): Promise<Feature> => {
