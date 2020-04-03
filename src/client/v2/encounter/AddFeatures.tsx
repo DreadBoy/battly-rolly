@@ -21,9 +21,6 @@ export const AddFeatures: FC<Props> = ({encounter}) => {
     const onAdd = useCallback((features: Partial<Feature>[]) => {
         silentLoader.fetch(api.post(`/encounter/${encounter.id}/feature`, {features}), 'add');
     }, [api, encounter.id, silentLoader]);
-    // const onRemove = useCallback((features: Partial<Feature>[]) => {
-    //     silentLoader.fetch(api.delete(`/encounter/${encounter.id}/feature`, {data: {features}}), 'remove');
-    // }, [api, encounter.id, silentLoader]);
 
     return encounter && encounter.campaign.gm.id === playerId ? (
         <Grid columns={2}>

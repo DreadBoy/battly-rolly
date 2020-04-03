@@ -1,13 +1,24 @@
-import React, {FC} from 'react';
+import React, {FC, useCallback} from 'react';
 import {Form, Grid, Header, List} from 'semantic-ui-react';
 import {Layout} from '../../Layout';
 import {Encounter} from '../../../../server/model/encounter';
 import {AddFeatures} from '../AddFeatures';
 import {observer} from 'mobx-react';
+import {Feature} from '../../../../server/model/feature';
+import {useLoader} from '../../helpers/Store';
+import {useBackend} from '../../helpers/BackendProvider';
 
 export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) => {
+    const silentLoader = useLoader();
+    const {api} = useBackend();
+
+    const onRemove = useCallback((feature: Partial<Feature>) => () => {
+        silentLoader.fetch(api.delete(`/encounter/${encounter.id}/feature`, {data: {features: [feature]}}), 'remove');
+    }, [api, encounter.id, silentLoader]);
+
     if (!encounter.features)
         return null;
+
     return (
         <Layout>
             <Grid doubling columns={1}>
@@ -20,7 +31,14 @@ export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) 
                                     <Header size={'tiny'}>Monsters</Header>
                                     <List>
                                         {encounter.features.map((f, index) => (
-                                            <List.Item key={index}>{f.reference}</List.Item>
+                                            <List.Item key={index}>
+                                                <List.Icon
+                                                    link
+                                                    name='close'
+                                                    onClick={onRemove(f)}
+                                                />
+                                                <List.Content>{f.reference}</List.Content>
+                                            </List.Item>
                                         ))}
                                     </List>
                                 </>
