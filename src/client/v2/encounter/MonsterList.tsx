@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useState} from 'react';
-import monsters from '../../../assets/bestiary.json';
+import monsters from '../../../assets/bestiary-v2.json';
 import {Dropdown, DropdownProps, Form} from 'semantic-ui-react';
 import {find} from 'lodash';
 import {Feature} from '../../../server/model/feature';
@@ -15,13 +15,15 @@ export const MonsterList: FC<Props> = ({onAdd}) => {
     const [value, setValue] = useState<string>('');
 
     const onChange = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        const monster = find(monsters, ['name', data.value]) as unknown as Monster;
+        const monster = find(monsters, ['name', data.value]) as Monster;
         if (monster) {
+            const HP = roll(monster.HP);
             const feature: Partial<Feature> = {
                 type: 'npc',
                 reference: monster.name,
                 AC: monster.AC,
-                HP: roll(monster.HP),
+                HP,
+                initialHP: HP,
             };
             onAdd([feature]);
             setValue('')

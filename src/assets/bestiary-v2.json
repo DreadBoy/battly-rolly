@@ -1,0 +1,272 @@
+[
+  {
+    "name": "Bullywug",
+    "HP": [
+      2,
+      8,
+      2
+    ],
+    "AC": 15,
+    "abilitySet": {
+      "strength": 12,
+      "dexterity": 12,
+      "constitution": 13,
+      "intelligence": 7,
+      "wisdom": 10,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              4,
+              1
+            ]
+          ],
+          "damageType": "bludgeoning"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spear melee",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spear ranged",
+        "modifier": 3,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              8,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "save",
+        "name": "acid breath",
+        "DC": 16,
+        "ability": "dexterity",
+        "damageSuccess": {
+          "damageType": "acid",
+          "rolls": [
+            [
+              6,
+              8,
+              0
+            ]
+          ]
+        },
+        "damageFailure": {
+          "damageType": "acid",
+          "rolls": [
+            [
+              12,
+              8,
+              0
+            ]
+          ]
+        },
+        "status": "frightened"
+      }
+    ]
+  },
+  {
+    "name": "Lizardfolk",
+    "HP": [
+      4,
+      8,
+      4
+    ],
+    "AC": 15,
+    "abilitySet": {
+      "strength": 15,
+      "dexterity": 10,
+      "constitution": 13,
+      "intelligence": 7,
+      "wisdom": 12,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "heavy club",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "bludgeoning"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "javelin",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      },
+      {
+        "type": "attack",
+        "name": "spiked shield",
+        "modifier": 4,
+        "damage": {
+          "rolls": [
+            [
+              1,
+              6,
+              2
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Lizard",
+    "HP": [
+      1,
+      4,
+      0
+    ],
+    "AC": 15,
+    "abilitySet": {
+      "strength": 2,
+      "dexterity": 11,
+      "constitution": 10,
+      "intelligence": 1,
+      "wisdom": 8,
+      "charisma": 3
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 0,
+        "damage": {
+          "rolls": [
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "damageType": "piercing"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Cat",
+    "HP": [
+      1,
+      4,
+      0
+    ],
+    "AC": 15,
+    "abilitySet": {
+      "strength": 3,
+      "dexterity": 15,
+      "constitution": 10,
+      "intelligence": 3,
+      "wisdom": 12,
+      "charisma": 7
+    },
+    "savingThrows": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    },
+    "actions": [
+      {
+        "type": "attack",
+        "name": "bite",
+        "modifier": 0,
+        "damage": {
+          "rolls": [
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "damageType": "slashing"
+        }
+      }
+    ]
+  }
+]

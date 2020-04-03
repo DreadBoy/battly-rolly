@@ -25,6 +25,9 @@ export class Feature extends BaseEntity {
     @Column()
     HP!: number;
 
+    @Column()
+    initialHP!: number;
+
     @ManyToMany(() => Log)
     logs!: Log[];
 }
