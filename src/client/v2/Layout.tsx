@@ -19,13 +19,15 @@ export const Layout: FC = ({children}) => {
     const {id} = usePlayerId();
     const {socket} = useBackend();
     const [encounter, setEncounter] = useState<Encounter | null>(null);
+
     useEffect(() => {
-        socket?.on('encounter', (state: string) => {
+        const onEncounter = (state: string) => {
             const encounter = JSON.parse(state) as Encounter;
             setEncounter(encounter);
-        });
+        };
+        socket?.addEventListener('encounter', onEncounter);
         return () => {
-            socket?.off('encounter');
+            socket?.removeEventListener('encounter', onEncounter);
         };
     }, [socket]);
 

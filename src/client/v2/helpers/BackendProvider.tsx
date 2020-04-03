@@ -31,7 +31,7 @@ export const BackendProvider: FC = ({children}) => {
                 console.log('%c  --> %cSOCKET', 'color:red', 'color:white');
                 setSocket(null);
             });
-            s.on('encounter', (state: string) => {
+            s.addEventListener('encounter', (state: string) => {
                 console.log('%c  <-- %cSOCKET %cencounter %o', 'color:gray', 'color:white', 'color:gray', JSON.parse(state));
             });
         });

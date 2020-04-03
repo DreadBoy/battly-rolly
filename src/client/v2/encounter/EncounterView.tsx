@@ -30,12 +30,13 @@ export const EncounterView: FC = observer(() => {
     }, [api, editor, encounter, encounterId]);
 
     useEffect(() => {
-        socket?.on('encounter', (state: string) => {
+        const onEncounter = (state: string) => {
             const encounter = JSON.parse(state) as Encounter;
             assign(editor, encounter);
-        });
+        };
+        socket?.addEventListener('encounter', onEncounter);
         return () => {
-            socket?.off('encounter');
+            socket?.removeEventListener('encounter', onEncounter);
         };
     }, [editor, socket]);
 
