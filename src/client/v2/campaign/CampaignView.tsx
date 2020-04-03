@@ -168,7 +168,7 @@ export const CampaignView: FC = observer(() => {
                         {playerId === data.gm.id && (
                             <Grid.Row>
                                 <Grid.Column>
-                                    <EncounterList encounters={data.encounters} refresh={_refresh}/>
+                                    <EncounterList campaign={data} refresh={_refresh}/>
                                 </Grid.Column>
                             </Grid.Row>
                         )}

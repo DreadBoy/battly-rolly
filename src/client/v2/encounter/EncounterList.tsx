@@ -6,16 +6,18 @@ import {Link, useRouteMatch} from 'react-router-dom';
 import {useLoader} from '../helpers/Store';
 import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../helpers/Stacktrace';
-import {Encounter} from '../../../server/model/encounter';
+import {usePlayerId} from '../helpers/PlayerId';
+import {Campaign} from '../../../server/model/campaign';
 
 type Props = {
-    encounters: Encounter[],
+    campaign: Campaign,
     refresh: () => void,
 };
 
-export const EncounterList: FC<Props> = observer(({encounters, refresh}) => {
+export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}, refresh}) => {
     const {url} = useRouteMatch();
     const {api} = useBackend();
+    const {id: playerId} = usePlayerId();
 
     const _remove = useLoader();
     const remove = useCallback((id: string) => () => {
@@ -59,7 +61,11 @@ export const EncounterList: FC<Props> = observer(({encounters, refresh}) => {
                                     <Stacktrace error={_active.error[enc.id]}/>
                                 )}
                             </Table.Cell>
-                            <Table.Cell>{enc.name}</Table.Cell>
+                            <Table.Cell>{
+                                gm.id === playerId ? (
+                                    <Link to={`${url}/encounter/${enc.id}`}>{enc.name}</Link>
+                                ) : enc.name
+                            }</Table.Cell>
                             <Table.Cell>
                                 <Link
                                     to={`${url}/encounter/${enc.id}/edit`}

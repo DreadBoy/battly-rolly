@@ -75,7 +75,11 @@ export async function getActiveEncounter(campaignId: string): Promise<Encounter>
 
 export async function pushEncounterOverSockets(encounterId: string) {
     const encounter = await getEncounter(encounterId);
-    broadcastEvent('encounter', encounter, encounter.campaign.users.map(u => u.id));
+    broadcastEvent(
+        'encounter',
+        encounter.active ? encounter : null,
+        encounter.campaign.users.map(u => u.id),
+    );
 }
 
 export async function createLog(encounterId: string, user: User, body: { source: string[], target: string[] }) {

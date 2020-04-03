@@ -1,41 +1,51 @@
-import React, {FC, useEffect} from 'react';
-import {Grid, Header} from 'semantic-ui-react';
-import {Layout} from '../Layout';
-import {observer} from 'mobx-react';
-import {LoadingFactory} from '../helpers/Loading';
+import React, {FC, useCallback, useEffect} from 'react';
+import {observer, useLocalStore} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
 import {Encounter} from '../../../server/model/encounter';
 import {useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
-
-const Editor = LoadingFactory<Encounter>();
+import {assign} from 'lodash';
+import {usePlayerId} from '../helpers/PlayerId';
+import {EncounterPlayer} from './view/EncounterPlayer';
+import {EncounterGm} from './view/EncounterGm';
+import {Loader} from 'semantic-ui-react';
+import {Layout} from '../Layout';
 
 export const EncounterView: FC = observer(() => {
     const {params: {encounterId}} = useRouteMatch();
-    const {api} = useBackend();
+    const {api, socket} = useBackend();
+    const {id: playerId} = usePlayerId();
+
+    const empty = useCallback((): Partial<Encounter> => ({
+        name: '',
+    }), []);
+    const editor = useLocalStore<Partial<Encounter>>(empty);
 
     const encounter = useLoader<Encounter>();
     useEffect(() => {
-        encounter.fetch(api.get(`/encounter/${encounterId}`), encounterId);
-    }, [api, encounter, encounterId]);
+        encounter.fetchAsync(api.get(`/encounter/${encounterId}`), encounterId)
+            .then(data => {
+                assign(editor, data);
+            });
+    }, [api, editor, encounter, encounterId]);
 
-    return (
+    useEffect(() => {
+        socket?.on('encounter', (state: string) => {
+            const encounter = JSON.parse(state) as Encounter;
+            assign(editor, encounter);
+        });
+        return () => {
+            socket?.off('encounter');
+        };
+    }, [editor, socket]);
+
+    return encounter.loading[encounterId] ? (
         <Layout>
-            <Grid doubling columns={1}>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Header>Run encounter</Header>
-
-                        <Editor
-                            id={encounterId}
-                            store={encounter}
-                            render={(data) => (
-                                <Header size={'tiny'}>{data.name}</Header>
-                            )}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+            <Loader active size='large' inline={'centered'}/>
         </Layout>
+    ) : editor.campaign?.gm.id === playerId ? (
+        <EncounterGm encounter={editor as Encounter}/>
+    ) : (
+        <EncounterPlayer encounter={editor as Encounter}/>
     );
 });

@@ -29,10 +29,6 @@ export const Layout: FC = ({children}) => {
         };
     }, [socket]);
 
-    useEffect(() => {
-
-    });
-
     return (
         <div className={classes.grid}>
             <Menu>
