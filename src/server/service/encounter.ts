@@ -2,10 +2,9 @@ import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {assign, filter, find, map, pick, some} from 'lodash';
+import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastEvent} from './socket';
-import {Log} from '../model/log';
-import {addFeatures, getFeatures, removePlayers} from './feature';
+import {addFeatures, removePlayers} from './feature';
 import {Feature} from '../model/feature';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
@@ -26,7 +25,7 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
 }
 
 export async function getEncounter(id: string): Promise<Encounter> {
-    const encounter = await Encounter.findOne(id, {relations: ['campaign', 'features']});
+    const encounter = await Encounter.findOne(id, {relations: ['campaign', 'features', 'logs']});
     if (!encounter)
         throw new HttpError(404, `Encounter with id ${id} not found`);
     return encounter;
@@ -101,21 +100,4 @@ export async function pushEncounterOverSockets(encounterId: string) {
         encounter.active ? encounter : null,
         encounter.campaign.users.map(u => u.id),
     );
-}
-
-export async function createLog(encounterId: string, user: User, body: { source: string[], target: string[] }) {
-    const encounter = await getEncounter(encounterId);
-    if (!some(encounter.campaign.users, ['id', user.id]))
-        throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
-    const log = new Log();
-    const source = await getFeatures(body.source);
-    const target = await getFeatures(body.target);
-    assign(log, {
-        source,
-        target,
-    });
-    await log.save();
-    encounter.logs.push(log);
-    await encounter.save();
-    // broadcastEncounter(encounter);
 }
