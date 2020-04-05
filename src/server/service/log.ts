@@ -18,10 +18,11 @@ export async function getLog(id: string, relations: string[] = ['encounter']): P
     return log;
 }
 
-type StartLog = {
+export type StartLog = {
     source: string[],
     target: string[],
     type: LogType,
+    name: string,
 
     attack?: number,
 
@@ -48,6 +49,7 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
         source,
         target,
         type: body.type,
+        name: body.name,
         stage: 'WaitingOnResult',
     } as Partial<Log>);
     if (body.type === 'direct')

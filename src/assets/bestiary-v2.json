@@ -25,7 +25,7 @@
     },
     "actions": [
       {
-        "type": "attack",
+        "type": "direct",
         "name": "bite",
         "modifier": 3,
         "damage": {
@@ -40,7 +40,7 @@
         }
       },
       {
-        "type": "attack",
+        "type": "direct",
         "name": "spear melee",
         "modifier": 3,
         "damage": {
@@ -55,7 +55,7 @@
         }
       },
       {
-        "type": "attack",
+        "type": "direct",
         "name": "spear ranged",
         "modifier": 3,
         "damage": {
@@ -70,7 +70,7 @@
         }
       },
       {
-        "type": "save",
+        "type": "aoe",
         "name": "acid breath",
         "DC": 16,
         "ability": "dexterity",
@@ -124,7 +124,7 @@
     },
     "actions": [
       {
-        "type": "attack",
+        "type": "direct",
         "name": "bite",
         "modifier": 4,
         "damage": {
@@ -139,7 +139,7 @@
         }
       },
       {
-        "type": "attack",
+        "type": "direct",
         "name": "heavy club",
         "modifier": 4,
         "damage": {
@@ -154,7 +154,7 @@
         }
       },
       {
-        "type": "attack",
+        "type": "direct",
         "name": "javelin",
         "modifier": 4,
         "damage": {
@@ -169,7 +169,7 @@
         }
       },
       {
-        "type": "attack",
+        "type": "direct",
         "name": "spiked shield",
         "modifier": 4,
         "damage": {
@@ -211,7 +211,7 @@
     },
     "actions": [
       {
-        "type": "attack",
+        "type": "direct",
         "name": "bite",
         "modifier": 0,
         "damage": {
@@ -253,7 +253,7 @@
     },
     "actions": [
       {
-        "type": "attack",
+        "type": "direct",
         "name": "bite",
         "modifier": 0,
         "damage": {

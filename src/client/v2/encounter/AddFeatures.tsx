@@ -3,7 +3,7 @@ import {useLoader} from '../helpers/Store';
 import {Feature} from '../../../server/model/feature';
 import {usePlayerId} from '../helpers/PlayerId';
 import {Encounter} from '../../../server/model/encounter';
-import {Grid} from 'semantic-ui-react';
+import {Grid, Header} from 'semantic-ui-react';
 import {MonsterList} from './MonsterList';
 import {MonsterParser} from './MonsterParser';
 import {Stacktrace} from '../helpers/Stacktrace';
@@ -14,8 +14,8 @@ type Props = {
 }
 
 export const AddFeatures: FC<Props> = ({encounter}) => {
-    const { id: playerId } = usePlayerId();
-    const { api } = useBackend();
+    const {id: playerId} = usePlayerId();
+    const {api} = useBackend();
 
     const silentLoader = useLoader();
     const onAdd = useCallback((features: Partial<Feature>[]) => {
@@ -23,18 +23,21 @@ export const AddFeatures: FC<Props> = ({encounter}) => {
     }, [api, encounter.id, silentLoader]);
 
     return encounter && encounter.campaign.gm.id === playerId ? (
-        <Grid columns={2}>
-            <Grid.Column>
-                <MonsterList onAdd={onAdd}/>
-            </Grid.Column>
-            <Grid.Column>
-                <MonsterParser onParsed={onAdd}/>
-            </Grid.Column>
-            <Grid.Column>
-                <Stacktrace
-                    error={silentLoader.error['add'] || silentLoader.error['remove']}
-                />
-            </Grid.Column>
-        </Grid>
+        <>
+            <Header size={'small'}>Add entities</Header>
+            <Grid columns={2}>
+                <Grid.Column>
+                    <MonsterList onAdd={onAdd}/>
+                </Grid.Column>
+                <Grid.Column>
+                    <MonsterParser onParsed={onAdd}/>
+                </Grid.Column>
+                <Grid.Column>
+                    <Stacktrace
+                        error={silentLoader.error['add'] || silentLoader.error['remove']}
+                    />
+                </Grid.Column>
+            </Grid>
+        </>
     ) : null;
 };

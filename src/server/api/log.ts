@@ -13,7 +13,7 @@ router.get('/encounter/:id', authenticate, async ctx => {
 
 router.post('/encounter/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, ['source', 'target', 'type'], ['attack', 'stat', 'DC']);
+    const body = validateBody(ctx, ['source', 'target', 'type', 'name'], ['attack', 'stat', 'DC']);
     ctx.body = await startLog(id, ctx.state.user, body);
 });
 

@@ -45,6 +45,9 @@ export class Log extends BaseEntity {
     @Column()
     type!: LogType;
 
+    @Column()
+    name!: string;
+
     @ManyToMany(() => Feature)
     @JoinTable()
     source!: Feature[];
