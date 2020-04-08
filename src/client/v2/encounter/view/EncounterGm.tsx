@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {Form, Grid, Header} from 'semantic-ui-react';
+import {Form, Header} from 'semantic-ui-react';
 import {Layout} from '../../Layout';
 import {Encounter} from '../../../../server/model/encounter';
 import {AddFeatures} from '../AddFeatures';
@@ -14,19 +14,13 @@ export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) 
 
     return (
         <Layout>
-            <Grid doubling columns={1}>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Form>
-                            <Header>Run {encounter.name}</Header>
-                            <AllEntities encounter={encounter}/>
-                            <MakeAttack encounter={encounter}/>
-                            <DealDamage encounter={encounter}/>
-                            <AddFeatures encounter={encounter}/>
-                        </Form>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+            <Header>Run {encounter.name}</Header>
+            <Form>
+                <AllEntities encounter={encounter}/>
+                <MakeAttack encounter={encounter}/>
+                <DealDamage encounter={encounter}/>
+                <AddFeatures encounter={encounter}/>
+            </Form>
         </Layout>
     );
 });

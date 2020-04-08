@@ -33,9 +33,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{
-                                        f.type === 'npc' ? f.reference : `User: ${f.reference}`
-                                    }</List.Content>
+                                    <List.Content>{f.reference}</List.Content>
                                 </List.Item>
                             ))}
                     </List>
@@ -51,9 +49,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{
-                                        f.type === 'npc' ? f.reference : `User: ${f.reference}`
-                                    }</List.Content>
+                                    <List.Content>User: {f.reference}</List.Content>
                                 </List.Item>
                             ))}
                     </List>
