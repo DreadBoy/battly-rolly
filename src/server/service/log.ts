@@ -6,6 +6,7 @@ import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {Ability, Status} from '../../client/common/encounter';
 import {validateObject} from '../middlewares/validators';
+import {DamageType} from '../../client/v2/types/bestiary';
 
 export async function getLogsInEncounter(encounterId: string): Promise<Log[]> {
     return Log.find({where: {encounter: {id: encounterId}}});
@@ -86,25 +87,28 @@ export async function resolveResult(log: Log, body: ResolveResult) {
     if (log.type === 'direct') {
         assign(log, validateObject(body, ['AC']));
         log.success = log.attack > log.AC;
+        if (log.success)
+            log.stage = 'WaitingOnDamage';
+        else
+            log.stage = 'Confirmed';
     } else if (log.type === 'aoe') {
         assign(log, validateObject(body, ['throw']));
         log.success = log.DC > log.throw;
-    }
-    if (log.success)
+        // Sometimes AoE spells will deal damage/status even if target successfully saved
         log.stage = 'WaitingOnDamage';
-    else
-        log.stage = 'Confirmed';
+    }
 
     return log.save();
 }
 
-type DealDamage = {
+export type DealDamage = {
     damage?: number,
+    damageType?: DamageType,
     status?: Status,
 }
 
 export async function dealDamage(log: Log, body: DealDamage) {
-    assign(log, validateObject(body, ['damage'], ['status']));
+    assign(log, validateObject(body, ['damage', 'damageType'], ['status']));
 
     if (log.damage > 0 || !isNil(log.status))
         log.stage = 'WaitingOnConfirmed';

@@ -1,3 +1,6 @@
+import monsters from '../../../assets/bestiary-v2.json';
+import {find} from 'lodash';
+
 export type DamageType =
     'acid'
     | 'bludgeoning'
@@ -85,4 +88,12 @@ export type AbilitySet = {
     intelligence: number,
     wisdom: number,
     charisma: number,
+}
+
+export function findMonster(name: string | undefined): Monster | undefined {
+    return find(monsters, ['name', name]) as Monster;
+}
+
+export function findAction(monsterName: string | undefined, actionName: string | undefined): Action | undefined {
+    return find(findMonster(monsterName)?.actions, ['name', actionName]);
 }

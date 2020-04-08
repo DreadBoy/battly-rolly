@@ -2,6 +2,7 @@ import {BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGen
 import {Encounter} from './encounter';
 import {Feature} from './feature';
 import {Ability, Status} from '../../client/common/encounter';
+import {DamageType} from '../../client/v2/types/bestiary';
 
 export type LogType = 'direct' | 'aoe';
 export type LogStage = 'WaitingOnResult' | 'WaitingOnDamage' | 'WaitingOnConfirmed' | 'Confirmed';
@@ -80,6 +81,8 @@ export class Log extends BaseEntity {
 
     @Column({nullable: true})
     damage!: number;
+    @Column({nullable: true})
+    damageType!: DamageType;
     @Column({nullable: true})
     status!: Status;
 

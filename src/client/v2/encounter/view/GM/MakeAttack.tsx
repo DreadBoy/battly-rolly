@@ -57,7 +57,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         <DndProvider backend={Backend}>
             <Header size={'small'}>Make attack</Header>
             <Grid>
-                <Grid.Column width={2}>
+                <Grid.Column width={8}>
                     <Header size={'tiny'}>Monsters</Header>
                     <List>
                         {encounter.features
@@ -71,7 +71,8 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             ))}
                     </List>
                 </Grid.Column>
-                <Grid.Column><Header size={'tiny'}>Players</Header>
+                <Grid.Column width={8}>
+                    <Header size={'tiny'}>Players</Header>
                     <List>
                         {encounter.features
                             .filter(f => f.type === 'player')
@@ -84,7 +85,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             ))}
                     </List>
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column width={8}>
                     <Header size={'tiny'}>Attackers</Header>
                     <DropTarget
                         type={'source'}
@@ -93,7 +94,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                         canDrop={true}
                     />
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column width={8}>
                     <Header size={'tiny'}>Defenders</Header>
                     <DropTarget
                         type={'target'}
@@ -102,7 +103,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                         canDrop={!isTargetFull}
                     />
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column width={8}>
                     {logSetup.name && (
                         <Form.Field>
                             {logSetup.name} ready!

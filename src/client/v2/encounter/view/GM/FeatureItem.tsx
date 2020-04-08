@@ -4,11 +4,9 @@ import {Feature} from '../../../../../server/model/feature';
 import {createUseStyles} from 'react-jss';
 import {DragTarget} from './DragTarget';
 import {OnDrop} from './MakeAttack';
-import monsters from '../../../../../assets/bestiary-v2.json';
-import {find} from 'lodash';
 import {TargetType} from './DropTarget';
 import {roll} from '../../../../common/roll';
-import {Action, isAoe, isDirect} from '../../../types/bestiary';
+import {Action, findMonster, isAoe, isDirect} from '../../../types/bestiary';
 
 type Props = {
     feature: Feature,
@@ -25,7 +23,8 @@ const useStyles = createUseStyles({
 
 export const FeatureItem: FC<Props> = ({feature, onDrop}) => {
 
-    const monster = find(monsters, ['name', feature.reference]);
+
+    const monster = findMonster(feature.reference);
     const classes = useStyles();
 
     const _onDrop = useCallback((action: Action | null) =>

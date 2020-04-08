@@ -1,14 +1,17 @@
 import {Roll} from './encounter';
-import {sum} from 'lodash';
+import {map, sum, times, isNil} from 'lodash';
 
 export function roll(roll: Roll): number {
     return sum(
-        new Array(roll[0])
-            .fill(0)
-            .map(() => Math.floor(Math.random() * roll[1]) + 1),
+        times(
+            roll[0],
+            () => Math.floor(Math.random() * roll[1]) + 1,
+        ),
     ) + roll[2];
 }
 
-export function rollMultiple(rolls: Roll[]): number {
-    return sum(rolls.map(roll));
+export function rollMulti(rolls: Roll[] | undefined): number {
+    if (isNil(rolls))
+        return 0;
+    return sum(map(rolls, roll));
 }

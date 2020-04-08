@@ -12,7 +12,7 @@ import {DndProvider} from 'react-dnd';
 import Backend from 'react-dnd-html5-backend'
 import {MonsterCard} from './encounter/MonsterCard';
 import {PlayerCard} from './encounter/PlayerCard';
-import {roll, rollMultiple} from '../common/roll';
+import {roll, rollMulti} from '../common/roll';
 import {flatMap} from 'lodash';
 
 const useStyles = createUseStyles({
@@ -63,7 +63,7 @@ export const Encounter: FC = () => {
                     success: false,
                 };
             else {
-                const damage = rollMultiple(action.damage.rolls);
+                const damage = rollMulti(action.damage.rolls);
                 log = {
                     attackerId: monster.id,
                     targetId: playerId,
@@ -82,8 +82,8 @@ export const Encounter: FC = () => {
                 attackerId: monster.id,
                 targetId: playerId,
                 save: action,
-                damageSuccessRoll: action.damageSuccess ? rollMultiple(action.damageSuccess.rolls) : 0,
-                damageFailureRoll: action.damageFailure ? rollMultiple(action.damageFailure.rolls) : 0,
+                damageSuccessRoll: action.damageSuccess ? rollMulti(action.damageSuccess.rolls) : 0,
+                damageFailureRoll: action.damageFailure ? rollMulti(action.damageFailure.rolls) : 0,
                 saveRoll: 0,
                 success: null,
             };

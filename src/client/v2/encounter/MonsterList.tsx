@@ -1,9 +1,8 @@
 import React, {FC, useCallback, useState} from 'react';
 import monsters from '../../../assets/bestiary-v2.json';
 import {Dropdown, DropdownProps, Form} from 'semantic-ui-react';
-import {find} from 'lodash';
 import {Feature} from '../../../server/model/feature';
-import {Monster} from '../types/bestiary';
+import {findMonster} from '../types/bestiary';
 import {roll} from '../../common/roll';
 
 type Props = {
@@ -15,7 +14,7 @@ export const MonsterList: FC<Props> = ({onAdd}) => {
     const [value, setValue] = useState<string>('');
 
     const onChange = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        const monster = find(monsters, ['name', data.value]) as Monster;
+        const monster = findMonster(data.value as any);
         if (monster) {
             const HP = roll(monster.HP);
             const feature: Partial<Feature> = {
