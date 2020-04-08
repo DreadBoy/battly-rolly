@@ -71,22 +71,23 @@ export async function updateLog(logId: string, user: User, body: any) {
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
 
     if (log.stage === 'WaitingOnResult')
-        return resolveResult(log, body);
+        await resolveResult(log, body);
     else if (log.stage === 'WaitingOnDamage')
-        return dealDamage(log, body);
+        await dealDamage(log, body);
     else if (log.stage === 'WaitingOnConfirmed')
-        return confirmDamage(log);
+        await confirmDamage(log);
+    await pushEncounterOverSockets(log.encounter.id);
 }
 
 type ResolveResult = {
-    AC?: number,
+    success?: boolean,
+
     throw?: number,
 }
 
 export async function resolveResult(log: Log, body: ResolveResult) {
     if (log.type === 'direct') {
-        assign(log, validateObject(body, ['AC']));
-        log.success = log.attack > log.AC;
+        assign(log, validateObject(body, ['success']));
         if (log.success)
             log.stage = 'WaitingOnDamage';
         else
