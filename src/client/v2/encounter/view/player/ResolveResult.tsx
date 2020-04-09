@@ -66,7 +66,6 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                     </Modal.Content>
                     <Modal.Actions>
                         <Button
-                            type={'button'}
                             onClick={onResult(false)}
                             loading={_confirm.loading[log.id]}
                             className={classes.action}
@@ -77,7 +76,6 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                             No {coolFace}
                         </Button>
                         <Button
-                            type={'button'}
                             onClick={onResult(true)}
                             loading={_confirm.loading[log.id]}
                             className={classes.action}

@@ -5,6 +5,7 @@ import {Encounter} from '../../../../server/model/encounter';
 import {observer} from 'mobx-react';
 import {MakeAttack} from './player/MakeAttack';
 import {ResolveResult} from './player/ResolveResult';
+import {ConfirmDamage} from './player/ConfirmDamage';
 
 export const EncounterPlayer: FC<{ encounter: Encounter }> = observer(({encounter}) => {
     if (!encounter.features)
@@ -17,6 +18,7 @@ export const EncounterPlayer: FC<{ encounter: Encounter }> = observer(({encounte
                     <Header>Oh no, it's {encounter.name}!</Header>
                     <MakeAttack encounter={encounter}/>
                     <ResolveResult encounter={encounter}/>
+                    <ConfirmDamage encounter={encounter}/>
                 </Grid.Column>
             </Grid>
         </Layout>
