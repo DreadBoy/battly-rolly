@@ -1,8 +1,8 @@
 import Koa from 'koa';
 import Router from '@koa/router';
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
-import {validateBody, validateParam} from '../middlewares/validators';
-import {getLogsInEncounter, startLog, updateLog} from '../service/log';
+import {validateParam} from '../middlewares/validators';
+import {confirmDamage, dealDamage, getLogsInEncounter, resolveResult, startLog} from '../service/log';
 
 const router = new Router<AuthenticatedUser>();
 
@@ -13,13 +13,22 @@ router.get('/encounter/:id', authenticate, async ctx => {
 
 router.post('/encounter/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, ['source', 'target', 'type', 'name'], ['attack', 'stat', 'DC']);
-    ctx.body = await startLog(id, ctx.state.user, body);
+    ctx.body = await startLog(id, ctx.state.user, ctx.request.body);
 });
 
-router.put('/:id', authenticate, async ctx => {
+router.put('/:id/resolve-result', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    ctx.body = await updateLog(id, ctx.state.user, ctx.request.body);
+    ctx.body = await resolveResult(id, ctx.state.user, ctx.request.body);
+});
+
+router.put('/:id/deal-damage', authenticate, async ctx => {
+    const id = validateParam(ctx, 'id');
+    ctx.body = await dealDamage(id, ctx.state.user, ctx.request.body);
+});
+
+router.put('/:id/confirm-damage', authenticate, async ctx => {
+    const id = validateParam(ctx, 'id');
+    ctx.body = await confirmDamage(id, ctx.state.user);
 });
 
 const app = new Koa();

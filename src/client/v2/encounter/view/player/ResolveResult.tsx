@@ -33,14 +33,14 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
     const onResult = useCallback((success: boolean) => () => {
         if (!log)
             return;
-        _confirm.fetch(api.put(`/log/${log.id}`, {success}), log.id);
+        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {success}), log.id);
     }, [_confirm, api, log]);
 
     const save = useNumber();
     const onSave = useCallback(() => {
         if (!log || !save.isValid)
             return;
-        _confirm.fetch(api.put(`/log/${log.id}`, {throw: save.number}), log.id);
+        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {throw: save.number}), log.id);
     }, [_confirm, api, log, save.isValid, save.number]);
 
     const formId = Math.ceil(Math.random() * 1000).toString();

@@ -1,6 +1,6 @@
-import {Log, LogType} from '../model/log';
+import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
-import {assign, difference, map, pick, some, isNil} from 'lodash';
+import {assign, difference, isNil, map, pick, some} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
@@ -43,6 +43,7 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     if (notInCampaign.length > 0)
         throw new HttpError(403, `Features ${notInCampaign.join(', ')} aren't part of this campaign!`);
 
+    body = validateObject(body, ['source', 'target', 'type', 'name']);
     const log = new Log();
     const source = await getFeatures(body.source);
     const target = await getFeatures(body.target);
@@ -65,18 +66,13 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     return log;
 }
 
-export async function updateLog(logId: string, user: User, body: any) {
+async function getVerifyLog(logId: string, userId: string, expectedStage: LogStage): Promise<Log> {
     const log = await getLog(logId, ['encounter', 'encounter.campaign']);
-    if (!some(log.encounter.campaign.users, ['id', user.id]))
+    if (!some(log.encounter.campaign.users, ['id', userId]))
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
-
-    if (log.stage === 'WaitingOnResult')
-        await resolveResult(log, body);
-    else if (log.stage === 'WaitingOnDamage')
-        await dealDamage(log, body);
-    else if (log.stage === 'WaitingOnConfirmed')
-        await confirmDamage(log);
-    await pushEncounterOverSockets(log.encounter.id);
+    if (log.stage !== expectedStage)
+        throw new HttpError(401, `Log is expected to be in ${expectedStage} but is in ${log.stage}`);
+    return log;
 }
 
 type ResolveResult = {
@@ -85,7 +81,9 @@ type ResolveResult = {
     throw?: number,
 }
 
-export async function resolveResult(log: Log, body: ResolveResult) {
+export async function resolveResult(logId: string, user: User, body: ResolveResult) {
+    const log = await getVerifyLog(logId, user.id, 'WaitingOnResult');
+
     if (log.type === 'direct') {
         assign(log, validateObject(body, ['success']));
         if (log.success)
@@ -99,7 +97,8 @@ export async function resolveResult(log: Log, body: ResolveResult) {
         log.stage = 'WaitingOnDamage';
     }
 
-    return log.save();
+    await log.save();
+    await pushEncounterOverSockets(log.encounter.id);
 }
 
 export type DealDamage = {
@@ -108,7 +107,9 @@ export type DealDamage = {
     status?: Status,
 }
 
-export async function dealDamage(log: Log, body: DealDamage) {
+export async function dealDamage(logId: string, user: User, body: DealDamage) {
+    const log = await getVerifyLog(logId, user.id, 'WaitingOnDamage');
+
     assign(log, validateObject(body, ['damage', 'damageType'], ['status']));
 
     if (log.damage > 0 || !isNil(log.status))
@@ -116,11 +117,15 @@ export async function dealDamage(log: Log, body: DealDamage) {
     else
         log.stage = 'Confirmed';
 
-    return log.save();
+    await log.save();
+    await pushEncounterOverSockets(log.encounter.id);
 }
 
-export async function confirmDamage(log: Log) {
+export async function confirmDamage(logId: string, user: User) {
+    const log = await getVerifyLog(logId, user.id, 'WaitingOnConfirmed');
+
     log.stage = 'Confirmed';
 
-    return log.save();
+    await log.save();
+    await pushEncounterOverSockets(log.encounter.id);
 }
