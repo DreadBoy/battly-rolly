@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="develop" type="Multirun" factoryName="Multirun" separateTabs="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
-    <runConfiguration name="client:start" type="npm" />
+  <configuration default="false" name="develop" type="Multirun" factoryName="Multirun" separateTabs="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="true" delayTime="0">
     <runConfiguration name="server:start" type="npm" />
+    <runConfiguration name="client:start" type="npm" />
     <method v="2" />
   </configuration>
 </component>
