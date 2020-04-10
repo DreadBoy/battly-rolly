@@ -1,7 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Form, Header, Input, Modal} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {find, isNil} from 'lodash';
+import {find, isNil, includes, map} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {coolFace, sadFace} from '../../../../common/emojis';
 import {createUseStyles} from 'react-jss';
@@ -10,6 +10,7 @@ import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
 import {useNumber} from '../../../../common/form-helpers';
 import {abilityShort, featureToDisplay} from '../../../helpers/display-helpers';
+import {usePlayerId} from '../../../helpers/PlayerId';
 
 type Props = {
     encounter: Encounter,
@@ -25,9 +26,12 @@ const useStyles = createUseStyles({
 
 export const ResolveResult: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
+    const {id: playerId} = usePlayerId();
     const classes = useStyles();
 
-    const log = find(encounter.logs, ['stage', 'WaitingOnResult']);
+    const log = find(encounter.logs, l =>
+        l.stage === 'WaitingOnResult' &&
+        includes(map(l.target, 'reference'), playerId));
 
     const _confirm = useLoader();
     const onResult = useCallback((success: boolean) => () => {

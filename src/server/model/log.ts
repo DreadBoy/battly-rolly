@@ -1,4 +1,13 @@
-import {BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import {Encounter} from './encounter';
 import {Feature} from './feature';
 import {Ability, Status} from '../../client/common/encounter';
@@ -72,9 +81,6 @@ export class Log extends BaseEntity {
     @Column({nullable: true})
     success!: boolean;
 
-    // If type === direct
-    @Column({nullable: true})
-    AC!: number;
     // If type === aoe
     @Column({nullable: true})
     throw!: number;
@@ -88,4 +94,7 @@ export class Log extends BaseEntity {
 
     @ManyToOne(() => Encounter, encounter => encounter.logs)
     encounter!: Encounter;
+
+    @CreateDateColumn()
+    createdAt!: Date;
 }

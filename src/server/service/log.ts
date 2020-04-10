@@ -1,6 +1,6 @@
 import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
-import {assign, difference, isNil, map, pick, some} from 'lodash';
+import {assign, difference, isNil, map, pick, some, isEmpty} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
@@ -43,7 +43,11 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     if (notInCampaign.length > 0)
         throw new HttpError(403, `Features ${notInCampaign.join(', ')} aren't part of this campaign!`);
 
-    body = validateObject(body, ['source', 'target', 'type', 'name']);
+    validateObject(body, ['source', 'target', 'type', 'name']);
+    if (isEmpty(body.source))
+        throw new HttpError(401, `Source array is empty, something went wrong on your side!`);
+    if (isEmpty(body.target))
+        throw new HttpError(401, `Target array is empty, something went wrong on your side!`);
     const log = new Log();
     const source = await getFeatures(body.source);
     const target = await getFeatures(body.target);

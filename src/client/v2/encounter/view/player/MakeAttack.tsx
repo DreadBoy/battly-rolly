@@ -3,7 +3,7 @@ import {Button, Checkbox, CheckboxProps, Dropdown, Form, Grid, Header, List} fro
 import {Feature} from '../../../../../server/model/feature';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../../server/service/log';
-import {assign, filter, includes, isEmpty, pull} from 'lodash';
+import {assign, filter, find, includes, isEmpty, pull} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
@@ -11,6 +11,7 @@ import {Stacktrace} from '../../../helpers/Stacktrace';
 import {onDropdown, onNumber, onText} from '../../../hooks/use-form';
 import {abilities} from '../../../../common/encounter';
 import {LogType} from '../../../../../server/model/log';
+import {usePlayerId} from '../../../helpers/PlayerId';
 
 type Props = {
     encounter: Encounter,
@@ -18,13 +19,15 @@ type Props = {
 
 export const MakeAttack: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
+    const {id: playerId} = usePlayerId();
+    const playerFeature = find(encounter.features, ['reference', playerId]);
 
     const empty = useCallback(() => ({
-        source: [],
+        source: [playerFeature?.id],
         target: [],
         type: 'direct',
         name: '',
-    } as StartLog), []);
+    } as StartLog), [playerFeature]);
     const logSetup = useLocalStore<StartLog>(empty);
 
     const setType = useCallback((type: LogType) => () => {
