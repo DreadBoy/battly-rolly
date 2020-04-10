@@ -7,6 +7,7 @@ import {observer} from 'mobx-react';
 import {MakeAttack} from './GM/MakeAttack';
 import {AllEntities} from './GM/AllEntitits';
 import {DealDamage} from './GM/DealDamage';
+import {AllLogs} from './GM/AllLogs';
 
 export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) => {
     if (!encounter.features)
@@ -18,8 +19,10 @@ export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) 
             <Form>
                 <AllEntities encounter={encounter}/>
                 <MakeAttack encounter={encounter}/>
-                <DealDamage encounter={encounter}/>
+                <AllLogs encounter={encounter}/>
                 <AddFeatures encounter={encounter}/>
+
+                <DealDamage encounter={encounter}/>
             </Form>
         </Layout>
     );
