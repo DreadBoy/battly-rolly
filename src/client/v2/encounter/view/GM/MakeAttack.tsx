@@ -25,7 +25,13 @@ export type OnDrop = {
 export const MakeAttack: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
 
-    const logSetup = useLocalStore<StartLog>(() => ({source: [], target: [], type: 'direct', name: ''}));
+    const empty = useCallback(() => ({
+        source: [],
+        target: [],
+        type: 'direct',
+        name: '',
+    } as StartLog), []);
+    const logSetup = useLocalStore<StartLog>(empty);
     const isTargetFull = logSetup.type === 'direct' && logSetup.target.length > 0;
     const onDrop = useCallback((id: string) => ({target, action}: OnDrop) => {
         if (target === 'target' && !isTargetFull && !includes(logSetup.target, id))
@@ -46,8 +52,10 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
 
     const _confirm = useLoader();
     const onConfirm = useCallback(() => {
-        _confirm.fetch(api.post(`/log/encounter/${encounter.id}`, logSetup), encounter.id);
-    }, [_confirm, api, encounter.id, logSetup]);
+        _confirm.fetchAsync(api.post(`/log/encounter/${encounter.id}`, logSetup), encounter.id)
+            .then(() => assign(logSetup, empty()))
+            .catch(e => e);
+    }, [_confirm, api, empty, encounter.id, logSetup]);
 
     const featuresById = useCallback((ids: string[]): Feature[] => {
         return ids.map(id => find(encounter.features, ['id', id])).filter(Boolean) as Feature[];
