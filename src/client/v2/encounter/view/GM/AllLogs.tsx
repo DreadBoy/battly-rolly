@@ -50,7 +50,8 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                                 <br/>
                                 {l.status}
                             </Table.Cell>
-                            <Table.Cell>{multiline(l.confirmed, success)}</Table.Cell>
+                            <Table.Cell>{multiline(l.confirmed, (c, index) =>
+                                l.success[index] ? success(c) : '')}</Table.Cell>
                             <Table.Cell>{l.stage}</Table.Cell>
                         </Table.Row>
                     ))}

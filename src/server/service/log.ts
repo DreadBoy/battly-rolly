@@ -90,7 +90,7 @@ function validateTarget(log: Log, featureId: string) {
     return index;
 }
 
-type ResolveResult = {
+export type ResolveResult = {
     featureId: string,
 
     success?: boolean,
@@ -139,7 +139,7 @@ export async function dealDamage(logId: string, user: User, body: DealDamage) {
     await pushEncounterOverSockets(log.encounter.id);
 }
 
-type ConfirmDamage = {
+export type ConfirmDamage = {
     featureId: string,
 }
 

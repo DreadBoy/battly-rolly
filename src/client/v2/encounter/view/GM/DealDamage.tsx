@@ -28,6 +28,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
         }));
         const {true: valid, false: invalid} = groupBy(
             map(actions, ({action, log}): { action?: Action, log: Log, body?: DealDamageBody } => {
+                // This is error state, it shouldn't happen if bestiary is complete
                 if (!action)
                     return {
                         action,
