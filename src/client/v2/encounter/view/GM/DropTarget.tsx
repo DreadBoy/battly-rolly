@@ -2,6 +2,7 @@ import React, {FC, useCallback} from 'react';
 import {useDrop} from 'react-dnd';
 import {Feature} from '../../../../../server/model/feature';
 import {List} from 'semantic-ui-react';
+import {featureToDisplay} from '../../../helpers/display-helpers';
 
 export type TargetType = 'source' | 'target';
 
@@ -38,10 +39,7 @@ export const DropTarget: FC<Props> = ({type, features, onClear, canDrop}) => {
                                     name='close'
                                     onClick={_onClear(f.id)}
                                 />
-                                <List.Content>{
-                                    f.type === 'npc' ? f.reference : `User: ${f.reference}`
-                                }
-                                </List.Content>
+                                <List.Content>{featureToDisplay(f)}</List.Content>
                             </List.Item>
                         )) : (
                         <List.Item>

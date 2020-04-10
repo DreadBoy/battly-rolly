@@ -5,6 +5,7 @@ import {Encounter} from '../../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Feature} from '../../../../../server/model/feature';
+import {featureToDisplay} from '../../../helpers/display-helpers';
 
 type Props = {
     encounter: Encounter,
@@ -33,7 +34,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{f.reference}</List.Content>
+                                    <List.Content>{featureToDisplay(f)}</List.Content>
                                 </List.Item>
                             ))}
                     </List>
@@ -49,7 +50,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>User: {f.reference}</List.Content>
+                                    <List.Content>{featureToDisplay(f)}</List.Content>
                                 </List.Item>
                             ))}
                     </List>

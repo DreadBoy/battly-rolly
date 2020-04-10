@@ -7,6 +7,7 @@ import {sadFace} from '../../../../common/emojis';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
+import {featureToDisplay, possessive} from '../../../helpers/display-helpers';
 
 type Props = {
     encounter: Encounter,
@@ -24,10 +25,6 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
         _confirm.fetch(api.put(`/log/${log.id}/confirm-damage`), log.id);
     }, [_confirm, api, log]);
 
-    const possessive = useCallback((str: string) => {
-        return `${str}'${str.endsWith('s') ? '' : 's'}`;
-    }, []);
-
     return (
         <Modal
             open={!isNil(log)}
@@ -42,13 +39,13 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
                     <Modal.Content>
                         {log.type === 'direct' ? (
                             <Header size={'small'}>
-                                {log.source[0].reference} hit you with {log.name}!
+                                {featureToDisplay(log.source[0])} hit you with {log.name}!
                                 <br/>
                                 Take {log.damage} {log.damageType} damage.
                             </Header>
                         ) : (
                             <Header size={'small'}>
-                                You failed to avoid {possessive(log.source[0].reference)} {log.name}!
+                                You failed to avoid {possessive(featureToDisplay(log.source[0]))} {log.name}!
                                 <br/>
                                 Take {log.damage} {log.damageType} damage.
                                 {log.status && (

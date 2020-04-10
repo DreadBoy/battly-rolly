@@ -7,6 +7,7 @@ import {OnDrop} from './MakeAttack';
 import {TargetType} from './DropTarget';
 import {roll} from '../../../../common/roll';
 import {Action, findMonster, isAoe, isDirect} from '../../../types/bestiary';
+import {featureToDisplay} from '../../../helpers/display-helpers';
 
 type Props = {
     feature: Feature,
@@ -60,10 +61,10 @@ export const FeatureItem: FC<Props> = ({feature, onDrop}) => {
     return (
         <List.Item>
             {feature.type === 'player' ? (
-                <DragTarget onDrop={_onDrop(null)}>User: {feature.reference}</DragTarget>
+                <DragTarget onDrop={_onDrop(null)}>{featureToDisplay(feature)}</DragTarget>
             ) : (
                 <>
-                    <DragTarget onDrop={_onDrop(null)}>{feature.reference}</DragTarget>
+                    <DragTarget onDrop={_onDrop(null)}>{featureToDisplay(feature)}</DragTarget>
                     <List.List className={classes.list}>
                         {monster?.actions.map(action => (
                             <List.Item key={action.name}>

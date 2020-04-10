@@ -9,7 +9,7 @@ import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
 import {useNumber} from '../../../../common/form-helpers';
-import {abilityShort} from '../../../../common/encounter';
+import {abilityShort, featureToDisplay} from '../../../helpers/display-helpers';
 
 type Props = {
     encounter: Encounter,
@@ -58,7 +58,7 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                 <>
                     <Modal.Content>
                         <Header size={'small'}>
-                            {log.source[0].reference} attacked you with {log.name}.
+                            {featureToDisplay(log.source[0])} attacked you with {log.name}.
                             <br/>
                             Did {log.attack} hit you?
                         </Header>
@@ -91,7 +91,7 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                     <Modal.Content>
                         <Form onSubmit={onSave} id={formId}>
                             <Header size={'small'}>
-                                {log.source[0].reference} attacked you with {log.name}.
+                                {featureToDisplay(log.source[0])} attacked you with {log.name}.
                                 <br/>
                                 Make {log.stat} saving throw!</Header>
                             <Input
