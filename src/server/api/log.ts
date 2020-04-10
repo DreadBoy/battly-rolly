@@ -28,7 +28,7 @@ router.put('/:id/deal-damage', authenticate, async ctx => {
 
 router.put('/:id/confirm-damage', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    ctx.body = await confirmDamage(id, ctx.state.user);
+    ctx.body = await confirmDamage(id, ctx.state.user, ctx.request.body);
 });
 
 const app = new Koa();

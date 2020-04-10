@@ -1,6 +1,6 @@
 import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
-import {assign, difference, isNil, map, pick, some, isEmpty} from 'lodash';
+import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
@@ -54,9 +54,12 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     assign(log, {
         source,
         target,
+        success: times(target.length, constant(null)),
+        throw: times(target.length, constant(null)),
         type: body.type,
         name: body.name,
         stage: 'WaitingOnResult',
+        confirmed: times(target.length, constant(null)),
     } as Partial<Log>);
     if (body.type === 'direct')
         assign(log, pick(body, ['attack']));
@@ -71,15 +74,25 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
 }
 
 async function getVerifyLog(logId: string, userId: string, expectedStage: LogStage): Promise<Log> {
-    const log = await getLog(logId, ['encounter', 'encounter.campaign']);
-    if (!some(log.encounter.campaign.users, ['id', userId]))
+    const log = await getLog(logId, ['encounter', 'encounter.campaign', 'source', 'target']);
+    if (!some(log.encounter.campaign.users, ['id', userId])) {
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
+    }
     if (log.stage !== expectedStage)
         throw new HttpError(401, `Log is expected to be in ${expectedStage} but is in ${log.stage}`);
     return log;
 }
 
+function validateTarget(log: Log, featureId: string) {
+    const index = findIndex(log.target, ['id', featureId])
+    if (index === -1)
+        throw new HttpError(401, `${featureId} isn't among targets in this attack!`);
+    return index;
+}
+
 type ResolveResult = {
+    featureId: string,
+
     success?: boolean,
 
     throw?: number,
@@ -87,18 +100,19 @@ type ResolveResult = {
 
 export async function resolveResult(logId: string, user: User, body: ResolveResult) {
     const log = await getVerifyLog(logId, user.id, 'WaitingOnResult');
-
+    const index = validateTarget(log, validateObject(body, ['featureId']).featureId);
     if (log.type === 'direct') {
-        assign(log, validateObject(body, ['success']));
-        if (log.success)
+        log.success[index] = validateObject(body, ['success']).success;
+        if (log.success[index])
             log.stage = 'WaitingOnDamage';
         else
             log.stage = 'Confirmed';
     } else if (log.type === 'aoe') {
-        assign(log, validateObject(body, ['throw']));
-        log.success = log.DC > log.throw;
-        // Sometimes AoE spells will deal damage/status even if target successfully saved
-        log.stage = 'WaitingOnDamage';
+        log.throw[index] = validateObject(body, ['throw']).throw;
+        log.success[index] = log.DC > (log.throw[index] as number);
+        if (every(log.success, negate(isNil)))
+            // Sometimes AoE spells will deal damage/status even if target successfully saved
+            log.stage = 'WaitingOnDamage';
     }
 
     await log.save();
@@ -125,10 +139,17 @@ export async function dealDamage(logId: string, user: User, body: DealDamage) {
     await pushEncounterOverSockets(log.encounter.id);
 }
 
-export async function confirmDamage(logId: string, user: User) {
-    const log = await getVerifyLog(logId, user.id, 'WaitingOnConfirmed');
+type ConfirmDamage = {
+    featureId: string,
+}
 
-    log.stage = 'Confirmed';
+export async function confirmDamage(logId: string, user: User, body: ConfirmDamage) {
+    const log = await getVerifyLog(logId, user.id, 'WaitingOnConfirmed');
+    const index = validateTarget(log, validateObject(body, ['featureId']).featureId);
+
+    log.confirmed[index] = true;
+    if (every(log.confirmed, Boolean))
+        log.stage = 'Confirmed';
 
     await log.save();
     await pushEncounterOverSockets(log.encounter.id);

@@ -1,7 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Form, Header, Input, Modal} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {find, isNil, includes, map} from 'lodash';
+import {find, isNil, includes, map, findIndex, nth} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {coolFace, sadFace} from '../../../../common/emojis';
 import {createUseStyles} from 'react-jss';
@@ -32,26 +32,35 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
     const log = find(encounter.logs, l =>
         l.stage === 'WaitingOnResult' &&
         includes(map(l.target, 'reference'), playerId));
+    const targetIndex = findIndex(log?.target, ['reference', playerId]);
+    const stillWaiting = isNil(nth(log?.success, targetIndex));
+    const feature = find(log?.target, ['reference', playerId]);
 
     const _confirm = useLoader();
     const onResult = useCallback((success: boolean) => () => {
         if (!log)
             return;
-        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {success}), log.id);
-    }, [_confirm, api, log]);
+        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {
+            featureId: feature?.id,
+            success,
+        }), log.id);
+    }, [_confirm, api, feature, log]);
 
     const save = useNumber();
     const onSave = useCallback(() => {
         if (!log || !save.isValid)
             return;
-        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {throw: save.number}), log.id);
-    }, [_confirm, api, log, save.isValid, save.number]);
+        _confirm.fetch(api.put(`/log/${log.id}/resolve-result`, {
+            featureId: feature?.id,
+            throw: save.number,
+        }), log.id);
+    }, [_confirm, api, feature, log, save.isValid, save.number]);
 
     const formId = Math.ceil(Math.random() * 1000).toString();
 
     return (
         <Modal
-            open={!isNil(log)}
+            open={!isNil(log) && stillWaiting}
             dimmer={'blurring'}
         >
             <Header icon='exclamation circle' content='You are being attacked!'>

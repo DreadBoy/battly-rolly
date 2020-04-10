@@ -16,6 +16,22 @@ import {DamageType} from '../../client/v2/types/bestiary';
 export type LogType = 'direct' | 'aoe';
 export type LogStage = 'WaitingOnResult' | 'WaitingOnDamage' | 'WaitingOnConfirmed' | 'Confirmed';
 
+const Transformers = {
+    boolean: {
+        to: (input: boolean[]) => `[${input.join(',')}]`,
+        from: (value: string) =>
+            value.replace(/[[\]]/g, '').split(',').map((p: string) =>
+                p === 'true' ? true : p === 'false' ? false : null),
+    },
+    number: {
+        to: (input: boolean[]) => `[${input.join(',')}]`,
+        from: (value: string) => value.replace(/[[\]]/g, '').split(',').map((p: string) => {
+            const num = parseInt(p);
+            return isNaN(num) ? null : num;
+        }),
+    },
+}
+
 /***
  Flow of direct attack:
  | ATT           |                      | DEF            |
@@ -78,12 +94,16 @@ export class Log extends BaseEntity {
     @Column({nullable: true})
     stat!: Ability;
 
-    @Column({nullable: true})
-    success!: boolean;
+    @Column('text', {
+        transformer: Transformers.boolean,
+    })
+    success!: (boolean | null)[];
 
     // If type === aoe
-    @Column({nullable: true})
-    throw!: number;
+    @Column('text', {
+        transformer: Transformers.number,
+    })
+    throw!: (number | null)[];
 
     @Column({nullable: true})
     damage!: number;
@@ -91,6 +111,11 @@ export class Log extends BaseEntity {
     damageType!: DamageType;
     @Column({nullable: true})
     status!: Status;
+
+    @Column('text', {
+        transformer: Transformers.boolean,
+    })
+    confirmed!: (boolean | null)[];
 
     @ManyToOne(() => Encounter, encounter => encounter.logs)
     encounter!: Encounter;

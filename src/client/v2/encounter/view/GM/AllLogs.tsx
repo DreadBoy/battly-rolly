@@ -2,8 +2,8 @@ import React, {FC} from 'react';
 import {Header, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
-import {isEmpty, map, toArray, sortBy} from 'lodash';
-import {featureToDisplay, success} from '../../../helpers/display-helpers';
+import {isEmpty, map, nth, sortBy, toArray} from 'lodash';
+import {featureToDisplay, multiline, success} from '../../../helpers/display-helpers';
 
 type Props = {
     encounter: Encounter,
@@ -23,10 +23,11 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                         <Table.HeaderCell>Attacker</Table.HeaderCell>
                         <Table.HeaderCell>Type</Table.HeaderCell>
                         <Table.HeaderCell>Target</Table.HeaderCell>
-                        <Table.HeaderCell>Stage</Table.HeaderCell>
                         <Table.HeaderCell>Attack</Table.HeaderCell>
                         <Table.HeaderCell>Result</Table.HeaderCell>
                         <Table.HeaderCell>Damage</Table.HeaderCell>
+                        <Table.HeaderCell>Confirmed</Table.HeaderCell>
+                        <Table.HeaderCell>Stage</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -35,31 +36,22 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                             <Table.Cell>{l.name}</Table.Cell>
                             <Table.Cell>{featureToDisplay(l.source[0])}</Table.Cell>
                             <Table.Cell>{l.type}</Table.Cell>
-                            <Table.Cell>{map(l.target, featureToDisplay).join(', ')}</Table.Cell>
-                            <Table.Cell>{l.stage}</Table.Cell>
+                            <Table.Cell>{multiline(l.target, featureToDisplay)}</Table.Cell>
                             {l.type === 'direct' ? (
-                                <Table.Cell>{l.attack}</Table.Cell>
+                                <Table.Cell>{l.attack} to hit</Table.Cell>
                             ) : (
                                 <Table.Cell>{l.DC} {l.stat}</Table.Cell>
                             )}
-                            {l.type === 'direct' ? (
-                                <Table.Cell>{success(l.success)}</Table.Cell>
-                            ) : (
-                                <Table.Cell>
-                                    {success(l.success)}
-                                    {l.success && (
-                                        <>
-                                            <br/>
-                                            {l.throw} {l.stat}
-                                        </>
-                                    )}
-                                </Table.Cell>
-                            )}
+                            <Table.Cell>{multiline(l.success, (s, index) =>
+                                l.type === 'direct' ? success(s) : <>{success(s)} {nth(l.throw, index)}</>,
+                            )}</Table.Cell>
                             <Table.Cell>
                                 {l.damage} {l.damageType}
                                 <br/>
                                 {l.status}
                             </Table.Cell>
+                            <Table.Cell>{multiline(l.confirmed, success)}</Table.Cell>
+                            <Table.Cell>{l.stage}</Table.Cell>
                         </Table.Row>
                     ))}
                 </Table.Body>
