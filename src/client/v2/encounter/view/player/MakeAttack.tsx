@@ -1,9 +1,9 @@
 import React, {FC, useCallback} from 'react';
-import {Button, Checkbox, CheckboxProps, Dropdown, Form, Grid, Header, List} from 'semantic-ui-react';
+import {Button, Checkbox, CheckboxProps, Dropdown, Form, Grid, Header, Icon, List} from 'semantic-ui-react';
 import {Feature} from '../../../../../server/model/feature';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../../server/service/log';
-import {assign, filter, find, includes, isEmpty, pull} from 'lodash';
+import {assign, filter, find, includes, isEmpty, map, pull} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
@@ -12,12 +12,22 @@ import {onDropdown, onNumber, onText} from '../../../hooks/use-form';
 import {abilities} from '../../../../common/encounter';
 import {LogType} from '../../../../../server/model/log';
 import {usePlayerId} from '../../../helpers/PlayerId';
+import {createUseStyles} from 'react-jss';
+import classNames from 'classnames';
+import {featureToDisplay} from '../../../helpers/display-helpers';
 
 type Props = {
     encounter: Encounter,
 }
 
+const useStyles = createUseStyles({
+    strike: {
+        textDecoration: 'line-through',
+    },
+});
+
 export const MakeAttack: FC<Props> = observer(({encounter}) => {
+    const classes = useStyles();
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
     const playerFeature = find(encounter.features, ['reference', playerId]);
@@ -127,13 +137,22 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header size={'tiny'}>Monsters</Header>
                     {!isEmpty(monsters) && (
                         <List>
-                            {monsters.map(f => (
+                            {map(monsters, f => (
                                 <List.Item key={f.id}>
                                     <Checkbox
-                                        label={f.reference}
                                         onChange={onChecked(f)}
                                         checked={includes(logSetup.target, f.id)}
+                                        label={(
+                                            <label className={classNames({[classes.strike]: f.HP <= 0})}>
+                                                {featureToDisplay(f)}
+                                                {f.HP > 0 && f.HP <= f.initialHP / 2 && (
+                                                    <Icon name={'tint'} color={'red'}/>
+                                                )}
+                                            </label>
+                                        )}
                                     />
+
+
                                 </List.Item>
                             ))}
                         </List>
@@ -143,10 +162,10 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header size={'tiny'}>Players</Header>
                     {!isEmpty(players) && (
                         <List>
-                            {players.map(f => (
+                            {map(players, f => (
                                 <List.Item key={f.id}>
                                     <Checkbox
-                                        label={`User: ${f.reference}`}
+                                        label={featureToDisplay(f)}
                                         onChange={onChecked(f)}
                                         checked={includes(logSetup.target, f.id)}
                                     />
