@@ -7,8 +7,9 @@ import {observer} from 'mobx-react';
 import {AllEntities} from './GM/AllEntitits';
 import {MakeAttack} from './GM/MakeAttack';
 import {AllLogs} from './GM/AllLogs';
-import {DealDamage} from './GM/DealDamage';
 import {ResolveResult} from './GM/ResolveResult';
+import {DealDamage} from './GM/DealDamage';
+import {ConfirmDamage} from './GM/ConfirmDamage';
 
 export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) => {
     if (!encounter.features)
@@ -25,6 +26,7 @@ export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) 
 
                 <ResolveResult encounter={encounter}/>
                 <DealDamage encounter={encounter}/>
+                <ConfirmDamage encounter={encounter}/>
             </Form>
         </Layout>
     );

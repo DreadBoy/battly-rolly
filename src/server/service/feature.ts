@@ -1,5 +1,5 @@
 import {Feature} from '../model/feature';
-import {assign, map, pick} from 'lodash';
+import {assign, filter, find, forEach, isArray, map, pick, uniq, isEmpty} from 'lodash';
 import {getConnection} from 'typeorm';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
@@ -20,7 +20,7 @@ export const addFeatures = async (encounterId: string, body: Body): Promise<void
 
 export const removeFeatures = async (encounterId: string, body: Body): Promise<void> => {
     const ids = map(body.features, 'id') as string[];
-    if(ids.length === 0)
+    if (ids.length === 0)
         return;
     await getConnection().getRepository(Feature).delete(ids);
     await pushEncounterOverSockets(encounterId);
@@ -35,15 +35,34 @@ export const removePlayers = async (encounterId: string, playerIds: string[]): P
 };
 
 export const updateFeature = async (featureId: string, body: Partial<Feature>): Promise<Feature> => {
-    const feature = await Feature.findOne(featureId, {relations: ['encounter']});
-    if (!feature)
-        throw new HttpError(404, `Feature with id ${featureId} not found`);
+    const feature = await getFeature(featureId, ['encounter']);
     assign(feature, body);
     await feature.save();
     await pushEncounterOverSockets(feature.encounter.id);
     return feature;
 };
 
-export const getFeatures = async (ids: string[]): Promise<Feature[]> => {
-    return Feature.findByIds(ids);
+export const updateFeatures = async (body: [Partial<Feature>]): Promise<Feature[]> => {
+    if (!isArray(body))
+        throw new HttpError(400, 'Request body expected to be array!');
+    const ids = filter(map(body, 'id')) as string[];
+    const features = await getFeatures(ids, ['encounter']);
+    if (isEmpty(features))
+        throw new HttpError(400, 'Didn\'t find any feature matching ids in body!');
+    forEach(features, f => assign(f, find(body, ['id', f.id])));
+    await Feature.save(features);
+    await Promise.all(map(uniq(map(features, 'encounter.id')),
+        pushEncounterOverSockets));
+    return features;
+};
+
+export const getFeatures = async (ids: string[], relations: string[] = []): Promise<Feature[]> => {
+    return Feature.findByIds(ids, {relations});
+};
+
+export const getFeature = async (id: string, relations: string[] = []): Promise<Feature> => {
+    const feature = await Feature.findOne(id, {relations});
+    if (!feature)
+        throw new HttpError(404, `Feature with id ${id} not found`);
+    return feature;
 };
