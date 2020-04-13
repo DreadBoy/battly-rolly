@@ -50,13 +50,25 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
                             <Header size={'small'}>
                                 {featureToDisplay(log.source[0])} hit you with {log.name}!
                                 <br/>
-                                Take {log.damage} {log.damageType} damage.
+                                Take {log.damageSuccess} {log.damageType} damage.
                             </Header>
-                        ) : (
+                        ) : log.success[targetIndex] ? (
                             <Header size={'small'}>
                                 You failed to avoid {possessive(featureToDisplay(log.source[0]))} {log.name}!
                                 <br/>
-                                Take {log.damage} {log.damageType} damage.
+                                Take {log.damageSuccess} {log.damageType} damage.
+                                {log.status && (
+                                    <>
+                                        <br/>
+                                        You are also {log.status}.
+                                    </>
+                                )}
+                            </Header>
+                        ) : (
+                            <Header size={'small'}>
+                                You managed to avoid {possessive(featureToDisplay(log.source[0]))} {log.name}!
+                                <br/>
+                                But still take {log.damageFailure} {log.damageType} damage.
                                 {log.status && (
                                     <>
                                         <br/>

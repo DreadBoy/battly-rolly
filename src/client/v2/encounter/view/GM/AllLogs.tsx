@@ -46,7 +46,11 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                                 l.type === 'direct' ? success(s) : <>{success(s)} {nth(l.throw, index)}</>,
                             )}</Table.Cell>
                             <Table.Cell>
-                                {l.damage} {l.damageType}
+                                {l.type === 'direct' ? (
+                                    <>{l.damageSuccess} {l.damageType}</>
+                                ) : (
+                                    <>{l.damageSuccess}/{l.damageFailure} {l.damageType}</>
+                                )}
                                 <br/>
                                 {l.status}
                             </Table.Cell>

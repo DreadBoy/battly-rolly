@@ -120,17 +120,19 @@ export async function resolveResult(logId: string, user: User, body: ResolveResu
 }
 
 export type DealDamage = {
-    damage?: number,
+    damageSuccess?: number,
+    damageFailure?: number,
     damageType?: DamageType,
     status?: Status,
 }
 
 export async function dealDamage(logId: string, user: User, body: DealDamage) {
     const log = await getVerifyLog(logId, user.id, 'WaitingOnDamage');
+    body = validateObject(body, ['damageSuccess', 'damageType'], ['damageFailure', 'status']);
 
-    assign(log, validateObject(body, ['damage', 'damageType'], ['status']));
+    assign(log, body);
 
-    if (log.damage > 0 || !isNil(log.status))
+    if (log.damageFailure > 0 || log.damageSuccess > 0 || !isNil(log.status))
         log.stage = 'WaitingOnConfirmed';
     else
         log.stage = 'Confirmed';

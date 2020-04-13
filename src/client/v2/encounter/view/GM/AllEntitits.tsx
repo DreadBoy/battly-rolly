@@ -34,7 +34,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{featureToDisplay(f)}</List.Content>
+                                    <List.Content>{featureToDisplay(f)} {f.HP} / {f.initialHP}</List.Content>
                                 </List.Item>
                             ))}
                     </List>
@@ -50,7 +50,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{featureToDisplay(f)}</List.Content>
+                                    <List.Content>{featureToDisplay(f)} {f.HP} / {f.initialHP}</List.Content>
                                 </List.Item>
                             ))}
                     </List>

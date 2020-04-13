@@ -105,8 +105,13 @@ export class Log extends BaseEntity {
     })
     throw!: (number | null)[];
 
+    // If type === direct, this is simply damage
+    // If type === aoe, this is damage if player failed to save and took full damage
     @Column({nullable: true})
-    damage!: number;
+    damageSuccess!: number;
+    // If type === aoe, this is damage if player saved but still took same damage (doesn't happen always)
+    @Column({nullable: true})
+    damageFailure!: number;
     @Column({nullable: true})
     damageType!: DamageType;
     @Column({nullable: true})

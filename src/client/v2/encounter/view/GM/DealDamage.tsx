@@ -37,7 +37,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                 if (isDirect(action) && log.success) {
                     return {
                         action, log, body: {
-                            damage: rollMulti(action.damage.rolls),
+                            damageSuccess: rollMulti(action.damage.rolls),
                             damageType: action.damage.damageType,
                         },
                     };
@@ -47,21 +47,16 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                     throw new Error('Encountered invalid state, went into panic mode!')
                 }
                 if (isAoe(action)) {
-                    if (log.success)
-                        return {
-                            action, log, body: {
-                                damage: rollMulti(action.damageSuccess?.rolls),
-                                damageType: action.damageSuccess?.damageType,
-                                status: action.status,
-                            },
-                        };
-                    else
-                        return {
-                            action, log, body: {
-                                damage: rollMulti(action.damageFailure?.rolls),
-                                damageType: action.damageFailure?.damageType,
-                            },
-                        };
+                    return {
+                        action, log, body: {
+                            // action.damageSuccess means damage if target saves aka attack fails
+                            // but log.damageSuccess means damage if attack succeeds aka target fails to save
+                            damageSuccess: rollMulti(action.damageFailure?.rolls),
+                            damageFailure: rollMulti(action.damageSuccess?.rolls),
+                            damageType: action.damageSuccess?.damageType,
+                            status: action.status,
+                        },
+                    };
                 }
                 return {
                     action,
