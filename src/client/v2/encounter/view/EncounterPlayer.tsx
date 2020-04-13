@@ -5,6 +5,7 @@ import {Encounter} from '../../../../server/model/encounter';
 import {observer} from 'mobx-react';
 import {MakeAttack} from './player/MakeAttack';
 import {ResolveResult} from './player/ResolveResult';
+import {DealDamage} from './player/DealDamage';
 import {ConfirmDamage} from './player/ConfirmDamage';
 
 export const EncounterPlayer: FC<{ encounter: Encounter }> = observer(({encounter}) => {
@@ -18,6 +19,7 @@ export const EncounterPlayer: FC<{ encounter: Encounter }> = observer(({encounte
                     <Header>Oh no, it's {encounter.name}!</Header>
                     <MakeAttack encounter={encounter}/>
                     <ResolveResult encounter={encounter}/>
+                    <DealDamage encounter={encounter}/>
                     <ConfirmDamage encounter={encounter}/>
                 </Grid.Column>
             </Grid>

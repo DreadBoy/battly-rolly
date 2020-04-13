@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {Header, Table} from 'semantic-ui-react';
+import {Header, Icon, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
 import {isEmpty, map, nth, sortBy, toArray} from 'lodash';
@@ -46,7 +46,9 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                                 l.type === 'direct' ? success(s) : <>{success(s)} {nth(l.throw, index)}</>,
                             )}</Table.Cell>
                             <Table.Cell>
-                                {l.type === 'direct' ? (
+                                {!l.damageSuccess ? (
+                                    <Icon name='spinner' color='blue' loading/>
+                                ) : !l.damageFailure ? (
                                     <>{l.damageSuccess} {l.damageType}</>
                                 ) : (
                                     <>{l.damageSuccess}/{l.damageFailure} {l.damageType}</>

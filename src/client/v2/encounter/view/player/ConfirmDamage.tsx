@@ -39,7 +39,7 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
             open={!isNil(log) && stillWaiting}
             dimmer={'blurring'}
         >
-            <Header icon='bullseye' content='You were attacked!'>
+            <Header icon='exclamation circle' content='You were attacked!'>
             </Header>
             {isNil(log) ? (
                 <></>
