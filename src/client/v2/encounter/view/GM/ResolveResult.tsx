@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
 import {filter, flatMap, isEmpty, isNil, map, negate, some} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
-import {findMonster} from '../../../types/bestiary';
+import {findMonster, statToModifier} from '../../../types/bestiary';
 import {ResolveResult as ResolveResultBody} from '../../../../../server/service/log';
 import {roll} from '../../../../common/roll';
 import {useBackend} from '../../../helpers/BackendProvider';
@@ -42,7 +42,7 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                 return {
                     log,
                     featureId: feature.id,
-                    throw: roll([1, 20, monster.abilitySet[log.stat]]),
+                    throw: roll([1, 20, statToModifier(monster.abilitySet[log.stat])]),
                 } as Result;
             }
         })), negate(isNil)) as Result[];

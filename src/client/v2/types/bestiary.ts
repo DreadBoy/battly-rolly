@@ -97,3 +97,7 @@ export function findMonster(name: string | undefined): Monster | undefined {
 export function findAction(monsterName: string | undefined, actionName: string | undefined): Action | undefined {
     return find(findMonster(monsterName)?.actions, ['name', actionName]);
 }
+
+export function statToModifier(stat: number) {
+    return Math.floor(stat / 2) - 5
+}
