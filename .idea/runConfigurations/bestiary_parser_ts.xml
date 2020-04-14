@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="bestiary-parser.ts" type="NodeJSConfigurationType" nameIsGenerated="true" node-parameters="--require ts-node/register" path-to-js-file="src/bestiary-parser.ts" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="TS_NODE_PROJECT" value="tsconfig.server.json" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

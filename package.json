@@ -1,6 +1,19 @@
 {
   "name": "battly-rolly",
   "version": "1.0.0",
+  "scripts": {
+    "client:start": "react-scripts start",
+    "client:build": "react-scripts build",
+    "client:test": "react-scripts test",
+    "server:start": "nodemon --inspect=3002",
+    "server:build": "rimraf build && tsc --project tsconfig.server.json",
+    "server:test": "echo \"Error: no test specified\" && exit 1",
+    "create-migration": "npm run server:build && node build/db-tools/create-migration.js",
+    "apply-migrations": "npm run server:build && node build/db-tools/apply-migrations.js",
+    "build": "npm run client:build && npm run server:build",
+    "test": "npm run client:test && npm run server:test",
+    "start": "node build/server.js"
+  },
   "dependencies": {
     "@koa/router": "^8.0.6",
     "@testing-library/jest-dom": "^5.1.0",
@@ -38,6 +51,7 @@
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",
     "nodemon": "^2.0.2",
+    "ohm-js": "^0.14.0",
     "pg": "^7.18.2",
     "qrcode": "^1.4.4",
     "react": "^16.12.0",
@@ -59,19 +73,6 @@
     "ts-node": "^8.6.2",
     "typeorm": "^0.2.22",
     "typescript": "~3.7.5"
-  },
-  "scripts": {
-    "client:start": "react-scripts start",
-    "client:build": "react-scripts build",
-    "client:test": "react-scripts test",
-    "server:start": "nodemon --inspect=3002",
-    "server:build": "rimraf build && tsc --project tsconfig.server.json",
-    "server:test": "echo \"Error: no test specified\" && exit 1",
-    "create-migration": "npm run server:build && node build/db-tools/create-migration.js",
-    "apply-migrations": "npm run server:build && node build/db-tools/apply-migrations.js",
-    "build": "npm run client:build && npm run server:build",
-    "test": "npm run client:test && npm run server:test",
-    "start": "node build/server.js"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,0 +1,17 @@
+Action {
+    direct = directStart" "directHit
+    directStart = attackType modifier " to hit, reach " number " ft." (" or range "number"/"number" ft.") ?", one " target "."
+    attackType = "Melee or Ranged Weapon Attack: "     -- meleeRanged
+    | "Melee Weapon Attack: "                -- melee
+    directHit = "Hit: "damage" plus "damage"."          -- extraType
+    | "Hit: "damage"."                                  -- simpleType
+    damage = roll" "letter+" damage"
+    roll = number" ("number"d"number" "modifier")" -- withModifier
+    | number" ("number"d"number")"                      -- noModifier
+    | number                                            -- simple
+    target = "target"|"creature"
+    modifier = sign(" ")?number
+    sign = "+" | "-"
+    number = digit+
+  }
+

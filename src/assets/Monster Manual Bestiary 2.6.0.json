@@ -85,7 +85,7 @@
       },
       {
         "name": "Tail",
-        "text": "Melee Weapon Attack: +9 to hit, reach 10 ft. one target. Hit: 15 (3d6 + 5) bludgeoning damage.",
+        "text": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 15 (3d6 + 5) bludgeoning damage.",
         "attack": "Tail|9|3d6+5"
       },
       {
@@ -458,7 +458,7 @@
       },
       {
         "name": "Bite",
-        "text": "Melee Weapon Attack: +11 to hit, reach,.0 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
+        "text": "Melee Weapon Attack: +11 to hit, reach 0 ft., one target. Hit: 17 (2d10 + 6) piercing damage.",
         "attack": "Bite|11|2d10+6"
       },
       {
@@ -1157,7 +1157,7 @@
       },
       {
         "name": "Tail",
-        "text": "Melee Weapon Attack: +15 to hit, reach 20 ft ., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
+        "text": "Melee Weapon Attack: +15 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage.",
         "attack": "Tail|15|2d8+8"
       },
       {
@@ -2720,7 +2720,7 @@
       },
       {
         "name": "Claw",
-        "text": "Melee Weapon Attack: +6 to hit, reach 5 ft ., one target. Hit: 6 (1d6 + 3) piercing damage.",
+        "text": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
         "attack": "Claw|6|1d6+3"
       },
       {
@@ -3934,7 +3934,7 @@
       },
       {
         "name": "Spear",
-        "text": "Melee or Ranged Weapon Attack: +7 to hit, reach 5 ft. or range 20/60 ft ., one target. Hit: 7 (1d6 + 4) piercing damage, or 8 (1d8 + 4) piercing damage if used with two hands to make a melee attack, plus 3 (1d6) fire damage.",
+        "text": "Melee or Ranged Weapon Attack: +7 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 7 (1d6 + 4) piercing damage, or 8 (1d8 + 4) piercing damage if used with two hands to make a melee attack, plus 3 (1d6) fire damage.",
         "attack": [
           "One Handed|7|1d6+4+1d6",
           "Two Handed|7|1d8+4+1d6"
@@ -7879,7 +7879,7 @@
     "action": [
       {
         "name": "Slam",
-        "text": "Melee Weapon Attack: +8 to hit, reach 5 ft ., one target. Hit: 12 (2d6 + 5) bludgeoning damage.",
+        "text": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) bludgeoning damage.",
         "attack": "Slam|8|2d6+5"
       },
       {
@@ -11574,7 +11574,7 @@
     "action": [
       {
         "name": "Sting (Bite in Beast Form)",
-        "text": "Melee Weapon Attack: +5 to hit, reach 5 ft ., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must make on a DC 11 Constitution saving throw, taking 10 (3d6) poison damage on a failed save, or half as much damage on a successful one.",
+        "text": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must make on a DC 11 Constitution saving throw, taking 10 (3d6) poison damage on a failed save, or half as much damage on a successful one.",
         "attack": "Sting/Bite|5|1d4+3"
       },
       {
@@ -15762,7 +15762,7 @@
     "action": [
       {
         "name": "Claw (Bite in Beast Form)",
-        "text": "Melee Weapon Attack: +4 to hit, reach 5 ft ., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must succeed on a DC 10 Constitution saving throw or take 5 (2d4) poison damage and become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
+        "text": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) piercing damage, and the target must succeed on a DC 10 Constitution saving throw or take 5 (2d4) poison damage and become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
         "attack": "Claw/Bite|4|1d4+3"
       },
       {
@@ -17499,7 +17499,7 @@
       },
       {
         "name": "Tail Spine",
-        "text": "Ranged Weapon Attack: +4 to hit, range 20/80 ft ., one target. Hit: 4 (1d4 + 2) piercing damage plus 3 (1d6) fire damage.",
+        "text": "Ranged Weapon Attack: +4 to hit, range 20/80 ft., one target. Hit: 4 (1d4 + 2) piercing damage plus 3 (1d6) fire damage.",
         "attack": "Tail Spine|4|1d4+2+1d6"
       }
     ]
@@ -19104,12 +19104,12 @@
       },
       {
         "name": "Hooves",
-        "text": "Melee Weapon Attack: +7 to hit, reach 5 ft ., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
+        "text": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage.",
         "attack": "Hooves|7|2d6+4"
       },
       {
         "name": "Horn",
-        "text": "Melee Weapon Attack: +7 to hit, reach 5 ft ., one target. Hit: 8 (1d8 + 4) piercing damage.",
+        "text": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage.",
         "attack": "Horn|7|1d8+4"
       },
       {
