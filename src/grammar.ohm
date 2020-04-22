@@ -1,10 +1,16 @@
 Action {
-    direct = directStart" "directHit
-    directStart = attackType modifier " to hit, reach " number " ft." (" or range "number"/"number" ft.") ?", one " target "."
-    attackType = "Melee or Ranged Weapon Attack: "     -- meleeRanged
-    | "Melee Weapon Attack: "                -- melee
-    directHit = "Hit: "damage" plus "damage"."          -- extraType
-    | "Hit: "damage"."                                  -- simpleType
+    action = melee | ranged | meleeRanged | aoe
+
+    aoe = aoeStart dc
+    aoeStart = (letter|space)+ digit+ "-foot line that is " digit+ " feet wide. "
+    dc = "Each creature in that line must make a DC " number " " letter+ " saving throw, taking " damage " on a failed save, or half as much damage on a successful one."
+
+    meleeRanged = "Melee or Ranged Weapon Attack: "modifier " to hit, reach " number " ft. or range "number"/"number" ft., one " target ". "hit
+    melee = "Melee Weapon Attack: "modifier " to hit, reach " number " ft., one " target ". "hit
+    ranged = "Ranged Weapon Attack: "modifier " to hit, range "number"/"number" ft., one " target ". " hit
+
+    hit = "Hit: "damage" plus "damage"."          -- extraType
+    | "Hit: "damage"."                            -- simpleType
     damage = roll" "letter+" damage"
     roll = number" ("number"d"number" "modifier")" -- withModifier
     | number" ("number"d"number")"                      -- noModifier

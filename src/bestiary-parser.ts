@@ -1,6 +1,6 @@
 import {ActionDict, grammar as ohm} from 'ohm-js';
-import {Direct, Damage, DamageType, Roll} from './client/v2/types/bestiary';
-import {difference, filter, flatMap, isString} from 'lodash';
+import {Direct, Damage, DamageType, Roll, Effect, AoE, Ability} from './client/v2/types/bestiary';
+import {difference, filter, flatMap, isString, map} from 'lodash';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 
@@ -14,33 +14,62 @@ const noText = filter(actions, (a: any) => !isString(a.text));
 rest = difference(rest, noText);
 console.log('noText', noText.length);
 
+const multiAttack = filter(actions, ['name', 'Multiattack']);
+rest = difference(rest, multiAttack);
+console.log('multiAttack', multiAttack.length);
+
 const grammar = ohm(readFileSync(join(__dirname, 'grammar.ohm'), 'utf8'));
 const semantic = grammar.createSemantics();
 semantic.addOperation(
     'eval',
     {
-        direct: function (start, _, hit): Partial<Direct> {
+        aoe: function (start, dc): Partial<AoE> {
+            return {
+                type: 'aoe',
+                // ...dc.eval(),
+            }
+        },
+        aoeStart: function(_1, digit, _2, digit2, _3) {
+          return this.sourceString;
+        },
+        dc: function ( _1, dc, _2, ability, _3, damage, _4): Effect {
+            const dmg: Damage = damage.eval();
+            return {
+                DC: dc.eval(),
+                ability: ability.sourceString as Ability,
+                damageSuccess: dmg,
+            }
+        },
+        meleeRanged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, _9, _10, hit): Partial<Direct> {
             return {
                 type: 'direct',
-                modifier: start.eval(),
+                modifier: modifier.eval(),
                 damage: hit.eval(),
             }
         },
-        directStart: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12): number {
-            return modifier.eval();
+        melee: function (_1, modifier, _2, _3, _4, _5, _6, hit): Partial<Direct> {
+            return {
+                type: 'direct',
+                modifier: modifier.eval(),
+                damage: hit.eval(),
+            }
         },
-        attackType: function (_) {
-            return _.sourceString;
+        ranged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, hit): Partial<Direct> {
+            return {
+                type: 'direct',
+                modifier: modifier.eval(),
+                damage: hit.eval(),
+            }
         },
-        directHit_extraType: function (s1, damage, s2, plus, s3): Damage[] {
+        hit_extraType: function (s1, damage, s2, plus, s3): Damage[] {
             return [damage.eval(), plus.eval()];
         },
-        directHit_simpleType: function (s1, damage, s2): Damage {
+        hit_simpleType: function (s1, damage, s2): Damage {
             return damage.eval();
         },
         damage: function (roll, s1, type, s2): Damage {
             return {
-                rolls: [roll.eval()],
+                roll: roll.eval(),
                 damageType: type.sourceString as any as DamageType,
             }
         },
@@ -67,15 +96,9 @@ semantic.addOperation(
         },
     } as ActionDict,
 )
-let direct = filter(rest, a => {
-    const match = grammar.match(a.text);
-    if (match.failed())
-        return false;
-    const result = semantic(match).eval();
-
-});
-rest = difference(rest, direct);
-console.log('direct', direct.length);
+let parsed = filter(rest, a => grammar.match(a.text).succeeded());
+rest = difference(rest, parsed);
+console.log('parsed', parsed.length);
 
 console.log('rest', rest.length);
 console.log('*************');
@@ -86,10 +109,11 @@ function gr(text: string) {
     console.log(grammar.match(text).succeeded());
     const result = semantic(match).eval();
     console.log(result);
+    // console.log(grammar.trace(text).toString());
 }
 
-// gr('Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8 + 1) acid damage.');
+gr('The dragon exhales lightning in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one.');
 
 
 // export const fake = 1;
-// console.log(direct.slice(0, 10));
+// console.log(rest.slice(50, 60));
