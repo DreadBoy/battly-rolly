@@ -8449,6 +8449,11 @@ passthrough-counter@^1.0.0:
   resolved "https://registry.yarnpkg.com/passthrough-counter/-/passthrough-counter-1.0.0.tgz#1967d9e66da572b5c023c787db112a387ab166fa"
   integrity sha1-GWfZ5m2lcrXAI8eH2xEqOHqxZvo=
 
+password-meter@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/password-meter/-/password-meter-3.2.0.tgz#b36f39075853d4a39efc35ae448ff37d746ce393"
+  integrity sha512-BnaIh3yNk6/a+wGz74b4MlKCRbJrz89gBwWStpBaRHL8JjSHSBeij1DUszWvJ4BUdriVLQnQWGDRK4ZY/3dVNQ==
+
 path-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.1.tgz#e6c4ddd7ed3aa27c68a20cc4e50e1a4ee83bbc4a"
