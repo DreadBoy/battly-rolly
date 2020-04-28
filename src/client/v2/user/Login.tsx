@@ -1,55 +1,41 @@
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Container, Form, Grid, Icon, Input, Progress, SemanticCOLORS} from 'semantic-ui-react';
+import {Button, Container, Form, Grid, Icon, Input} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
-import bg from '../../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
+import bg from '../../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import {Message} from '../../common/Message';
 import {Link} from 'react-router-dom';
 import {Splash} from '../Splash';
 import {onText} from '../hooks/use-form';
-import {PasswordMeter} from 'password-meter';
 import {isEmpty} from 'lodash';
-import { root } from '../v2';
+import {root} from '../v2';
 
 type FormModel = {
     email: string,
-    displayName: string,
     password: string,
 }
 
-const strengthToColour: { [strength: string]: SemanticCOLORS } = {
-    veryWeak: 'red',
-    weak: 'red',
-    medium: 'orange',
-    strong: 'yellow',
-    veryStrong: 'olive',
-    perfect: 'green',
-}
-
-export const Register: FC = observer(() => {
+export const Login: FC = observer(() => {
 
     const form = useLocalStore<FormModel>(() => ({
         email: '',
-        displayName: '',
         password: '',
     }));
-    const passwordStrength = new PasswordMeter().getResult(form.password);
 
     const [passVisible, setPassVisible] = useState<boolean>(false);
     const togglePassVisible = useCallback(() => {
         setPassVisible(!passVisible)
     }, [passVisible]);
 
-    const valid = !isEmpty(form.email) && !isEmpty(form.displayName) && !isEmpty(form.password);
+    const valid = !isEmpty(form.email) && !isEmpty(form.password);
 
     return (
-        <Splash bg={bg} position={'88% center'}>
+        <Splash bg={bg}>
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Message>Welcome to Battly Rolly</Message>
+                        <Message>Log In</Message>
                         <p>
-                            Run encounters. Create custom monsters. Do it all with Battly Rolly.
-                            Already have an account? <Link to={root()}>Log in</Link>
+                            Need a Battly Rolly account? <Link to={root('/register')}>Create an account</Link>
                         </p>
                         <Form onSubmit={() => alert('submit')}>
                             <Form.Input
@@ -58,13 +44,6 @@ export const Register: FC = observer(() => {
                                 type={'email'}
                                 value={form.email}
                                 onChange={onText(form, 'email')}
-                                required
-                            />
-                            <Form.Input
-                                label={'Display name'}
-                                id={'display_name'}
-                                value={form.displayName}
-                                onChange={onText(form, 'displayName')}
                                 required
                             />
                             <Form.Field>
@@ -84,14 +63,8 @@ export const Register: FC = observer(() => {
                                     required
                                 >
                                 </Input>
-                                {passwordStrength.status !== 'Empty' && (
-                                    <Progress
-                                        percent={passwordStrength.percent}
-                                        attached={'bottom'}
-                                        color={strengthToColour[passwordStrength.status]}/>
-                                )}
                             </Form.Field>
-                            <Button basic primary disabled={!valid}>Sign up</Button>
+                            <Button basic fluid primary disabled={!valid}>Log In</Button>
                         </Form>
                     </Grid.Column>
                 </Grid>

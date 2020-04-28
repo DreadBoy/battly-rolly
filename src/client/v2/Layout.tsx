@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import {usePlayerId} from './helpers/PlayerId';
 import {useBackend} from './helpers/BackendProvider';
 import {Encounter} from '../../server/model/encounter';
+import {root} from './v2';
 
 const useStyles = createUseStyles({
     grid: {
@@ -35,14 +36,14 @@ export const Layout: FC = ({children}) => {
         <div className={classes.grid}>
             <Menu>
                 <Container>
-                    <Link to={'/v2'} className={'header item'}>
+                    <Link to={root()} className={'header item'}>
                         <img src={icon} alt={'icon'}/>
                     </Link>
                     {encounter && (
                         <Menu.Item>
                             <span>
                             <Icon fitted name={'attention'} color={'orange'}/>
-                            <Link to={`/v2/campaign/${encounter.campaign.id}/encounter/${encounter.id}`}
+                            <Link to={root(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
                             > {encounter.name} </Link>
                             <Icon fitted name={'attention'} color={'orange'}/>
                             </span>
@@ -50,7 +51,7 @@ export const Layout: FC = ({children}) => {
                     )}
                     <Menu.Item position={'right'}>
                         {/*TODO Use some logic to create this link*/}
-                        <Link to={`/v2/user/${id}/edit`}>
+                        <Link to={root(`/user/${id}/edit`)}>
                             <Icon name='user outline'/>
                         </Link>
                     </Menu.Item>
