@@ -57,7 +57,7 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                                 {l.status}
                             </Table.Cell>
                             <Table.Cell>{multiline(l.confirmed, (c, index) =>
-                                l.success[index] ? success(c) : '')}</Table.Cell>
+                                (l.success[index] || l.damageFailure) ? success(c) : '')}</Table.Cell>
                             <Table.Cell>{l.stage}</Table.Cell>
                         </Table.Row>
                     ))}

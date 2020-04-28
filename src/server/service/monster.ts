@@ -29,7 +29,7 @@ export async function updateMonster(id: string, user: User, body: Partial<Monste
     const monster = await getMonster(id);
     if (monster.owner.id !== user.id)
         throw new HttpError(403, 'You are not author of this monster, you can\'t change it!');
-    body = validateObject(body, ['name', 'HP', 'AC', 'abilitySet', 'savingThrows'], ['actions']);
+    body = validateObject(body, [], ['name', 'HP', 'AC', 'abilitySet', 'savingThrows', 'actions']);
     assign(monster, body);
     return monster.save();
 }
