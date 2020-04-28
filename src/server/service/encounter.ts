@@ -24,7 +24,13 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
 }
 
 export async function getEncounter(id: string): Promise<Encounter> {
-    const encounter = await Encounter.findOne(id, {relations: ['campaign', 'features', 'logs', 'logs.source', 'logs.target']});
+    const encounter = await Encounter.findOne(id, {
+        relations: [
+            'campaign',
+            'features', 'features.monster', 'features.player',
+            'logs', 'logs.source', 'logs.target',
+        ],
+    });
     if (!encounter)
         throw new HttpError(404, `Encounter with id ${id} not found`);
     return encounter;

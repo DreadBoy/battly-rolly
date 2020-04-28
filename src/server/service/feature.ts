@@ -17,7 +17,7 @@ type AddFeatures = {
 
 export const addFeatures = async (encounterId: string, body: AddFeatures): Promise<void> => {
     const encounter = await getEncounter(encounterId);
-    const groups = groupBy(pick(body.features, ['reference', 'type']), 'type');
+    const groups = groupBy(map(body.features, o => pick(o, ['reference', 'type'])), 'type');
     const references = {
         npc: await getMonsters(uniq(map(groups['npc'], 'reference'))),
         player: await getUsers(uniq(map(groups['player'], 'reference'))),
