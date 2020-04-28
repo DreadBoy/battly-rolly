@@ -1,7 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Header, Modal} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {find, isNil, includes, map, findIndex, nth} from 'lodash';
+import {find, findIndex, isNil, nth, some} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {sadFace} from '../../../../common/emojis';
 import {useLoader} from '../../../helpers/Store';
@@ -9,6 +9,7 @@ import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
 import {featureToDisplay, possessive} from '../../../helpers/display-helpers';
 import {usePlayerId} from '../../../helpers/PlayerId';
+import {hasPlayer} from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -20,10 +21,10 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
 
     const log = find(encounter.logs,  l =>
         l.stage === 'WaitingOnConfirmed' &&
-        includes(map(l.target, 'reference'), playerId));
-    const targetIndex = findIndex(log?.target, ['reference', playerId]);
+        some(l.target, hasPlayer(playerId)));
+    const targetIndex = findIndex(log?.target, hasPlayer(playerId));
     const stillWaiting = isNil(nth(log?.confirmed, targetIndex));
-    const feature = find(log?.target, ['reference', playerId]);
+    const feature = find(log?.target, hasPlayer(playerId));
 
     const _confirm = useLoader();
     const onConfirm = useCallback(() => {

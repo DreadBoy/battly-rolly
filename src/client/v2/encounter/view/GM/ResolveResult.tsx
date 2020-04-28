@@ -8,6 +8,7 @@ import {ResolveResult as ResolveResultBody} from '../../../../../server/service/
 import {roll} from '../../../../common/roll';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Log} from '../../../../../server/model/log';
+import {type} from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -20,14 +21,14 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
     const logs = filter(encounter.logs, l =>
         l.stage === 'WaitingOnResult' &&
         some(map(l.target, (f, index) => ({target: f, success: l.success[index]})),
-            ({target, success}) => target.type === 'npc' && isNil(success)));
+            ({target, success}) => type(target) === 'npc' && isNil(success)));
     useEffect(() => {
         const isLoading = some(Object.values(_loader.loading), Boolean);
         if (isLoading || isEmpty(logs))
             return;
         type Result = { log: Log } & ResolveResultBody;
         const results = filter(flatMap(logs, (log) => map(log.target, feature => {
-            if (feature.type !== 'npc')
+            if (type(feature) !== 'npc')
                 return;
             const monster = feature.monster;
             if (!monster)

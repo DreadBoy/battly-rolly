@@ -6,7 +6,7 @@ import {DragTarget} from './DragTarget';
 import {OnDrop} from './MakeAttack';
 import {TargetType} from './DropTarget';
 import {roll} from '../../../../common/roll';
-import {isAoe, isDirect} from '../../../../../server/model/helpers';
+import {isAoe, isDirect, type} from '../../../../../server/model/helpers';
 import {Action} from '../../../../../server/model/action';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 
@@ -61,7 +61,7 @@ export const FeatureItem: FC<Props> = ({feature, onDrop}) => {
 
     return (
         <List.Item>
-            {feature.type === 'player' ? (
+            {type(feature) === 'player' ? (
                 <DragTarget onDrop={_onDrop(null)}>{featureToDisplay(feature)}</DragTarget>
             ) : (
                 <>

@@ -3,11 +3,12 @@ import {Icon} from 'semantic-ui-react';
 import {Feature} from '../../../server/model/feature';
 import {Ability} from '../../common/encounter';
 import {isNil, map} from 'lodash';
+import { type } from '../../../server/model/helpers';
 
 export function featureToDisplay(feature?: Feature): string {
     if (isNil(feature))
         return '';
-    if (feature.type === 'player')
+    if (type(feature) === 'player')
         return feature.player?.name ?? '';
     return feature.monster?.name ?? '';
 }

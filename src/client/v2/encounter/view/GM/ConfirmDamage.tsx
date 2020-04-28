@@ -5,6 +5,7 @@ import {filter, find, findIndex, flatMap, isEmpty, isNil, map, negate, pick, som
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Feature} from '../../../../../server/model/feature';
+import { type } from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -18,14 +19,14 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
     const logs = filter(encounter.logs, l =>
         l.stage === 'WaitingOnConfirmed' &&
         some(map(l.target, (f, index) => ({target: f, success: l.success[index], confirmed: l.confirmed[index]})),
-            ({target, confirmed}) => target.type === 'npc' && isNil(confirmed)));
+            ({target, confirmed}) => type(target) === 'npc' && isNil(confirmed)));
     useEffect(() => {
         const isLoading = some(Object.values(_update.loading), Boolean) ||
             some(Object.values(_confirm.loading), Boolean);
         if (isLoading || isEmpty(logs))
             return;
         const features = filter(flatMap(logs, (log) => map(log.target, feature => {
-            if (feature.type !== 'npc')
+            if (type(feature) !== 'npc')
                 return;
             const index = findIndex(log.target, ['id', feature.id]);
             let damage = 0;

@@ -7,6 +7,7 @@ import {useBackend} from '../../../helpers/BackendProvider';
 import {Feature} from '../../../../../server/model/feature';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {filter, map} from 'lodash';
+import { type } from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -27,7 +28,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                 <Grid.Column><Header size={'tiny'}>Monsters</Header>
                     <List>
                         {map(
-                            filter(encounter.features, f => f.type === 'npc'),
+                            filter(encounter.features, f => type(f) === 'npc'),
                             (f, index) => (
                                 <List.Item key={index}>
                                     <List.Icon
@@ -44,7 +45,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                 <Grid.Column><Header size={'tiny'}>Players</Header>
                     <List>
                         {map(
-                            filter(encounter.features, f => f.type === 'player'),
+                            filter(encounter.features, f => type(f) === 'player'),
                             (f, index) => (
                                 <List.Item key={index}>
                                     <List.Icon

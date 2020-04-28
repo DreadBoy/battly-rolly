@@ -1,7 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Form, Header, Input, Modal} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {find, isNil, includes, map, findIndex, nth} from 'lodash';
+import {find, findIndex, isNil, nth, some} from 'lodash';
 import {Encounter} from '../../../../../server/model/encounter';
 import {coolFace, sadFace} from '../../../../common/emojis';
 import {createUseStyles} from 'react-jss';
@@ -11,6 +11,7 @@ import {Stacktrace} from '../../../helpers/Stacktrace';
 import {useNumber} from '../../../../common/form-helpers';
 import {abilityShort, featureToDisplay} from '../../../helpers/display-helpers';
 import {usePlayerId} from '../../../helpers/PlayerId';
+import {hasPlayer} from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -31,10 +32,10 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
 
     const log = find(encounter.logs, l =>
         l.stage === 'WaitingOnResult' &&
-        includes(map(l.target, 'reference'), playerId));
-    const targetIndex = findIndex(log?.target, ['reference', playerId]);
+        some(l.target, hasPlayer(playerId)));
+    const targetIndex = findIndex(log?.target, hasPlayer(playerId));
     const stillWaiting = isNil(nth(log?.success, targetIndex));
-    const feature = find(log?.target, ['reference', playerId]);
+    const feature = find(log?.target, hasPlayer(playerId));
 
     const _confirm = useLoader();
     const onResult = useCallback((success: boolean) => () => {

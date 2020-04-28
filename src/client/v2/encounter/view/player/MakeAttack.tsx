@@ -15,6 +15,7 @@ import {usePlayerId} from '../../../helpers/PlayerId';
 import {createUseStyles} from 'react-jss';
 import classNames from 'classnames';
 import {featureToDisplay} from '../../../helpers/display-helpers';
+import {hasPlayer, type} from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -30,7 +31,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
     const classes = useStyles();
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
-    const playerFeature = find(encounter.features, ['reference', playerId]);
+    const playerFeature = find(encounter.features, hasPlayer(playerId));
 
     const empty = useCallback(() => ({
         source: [playerFeature?.id],
@@ -75,8 +76,8 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
     }, [_confirm, api, empty, encounter.id, logSetup]);
 
 
-    const monsters = filter(encounter.features, ['type', 'npc']);
-    const players = filter(encounter.features, ['type', 'player']);
+    const monsters = filter(encounter.features, f => type(f) === 'npc');
+    const players = filter(encounter.features, f => type(f) === 'player');
     return (
         <Form onSubmit={onConfirm}>
             <Grid>

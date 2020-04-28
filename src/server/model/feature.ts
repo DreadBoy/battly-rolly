@@ -3,7 +3,6 @@ import {Encounter} from './encounter';
 import {Log} from './log';
 import {Monster} from './monster';
 import {User} from './user';
-import {isNil} from 'lodash';
 
 export type FeatureType = 'npc' | 'player';
 
@@ -33,10 +32,4 @@ export class Feature extends BaseEntity {
 
     @ManyToMany(() => Log)
     logs!: Log[];
-
-    get type(): FeatureType {
-        if (!isNil(this.player))
-            return 'player'
-        return 'npc';
-    }
 }

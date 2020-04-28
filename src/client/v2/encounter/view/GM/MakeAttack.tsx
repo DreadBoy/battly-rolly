@@ -12,6 +12,7 @@ import {Encounter} from '../../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
+import { type } from '../../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -69,7 +70,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header size={'tiny'}>Monsters</Header>
                     <List>
                         {encounter.features
-                            .filter(f => f.type === 'npc')
+                            .filter(f => type(f) === 'npc')
                             .map((f) => (
                                 <FeatureItem
                                     key={f.id}
@@ -83,7 +84,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header size={'tiny'}>Players</Header>
                     <List>
                         {encounter.features
-                            .filter(f => f.type === 'player')
+                            .filter(f => type(f) === 'player')
                             .map((f) => (
                                 <FeatureItem
                                     key={f.id}

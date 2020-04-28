@@ -1,4 +1,6 @@
 import {Action, IAoE, IDirect} from './action';
+import {isNil} from 'lodash';
+import {Feature, FeatureType} from './feature';
 
 // @ts-ignore
 export function isDirect(action: Action): action is IDirect {
@@ -8,4 +10,14 @@ export function isDirect(action: Action): action is IDirect {
 // @ts-ignore
 export function isAoe(action: Action): action is IAoE {
     return action.type === 'aoe';
+}
+
+export function type(feature: Feature): FeatureType {
+    if (!isNil(feature.player))
+        return 'player'
+    return 'npc';
+}
+
+export function hasPlayer(playerId: string) {
+    return (feature: Feature) => feature.player?.id === playerId;
 }
