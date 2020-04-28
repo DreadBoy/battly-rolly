@@ -4,10 +4,12 @@ import {Feature} from '../../../server/model/feature';
 import {Ability} from '../../common/encounter';
 import {isNil, map} from 'lodash';
 
-export function featureToDisplay(feature?: Feature) {
+export function featureToDisplay(feature?: Feature): string {
     if (isNil(feature))
-        return undefined;
-    return feature.type === 'npc' ? feature.reference : `User: ${feature.reference}`
+        return '';
+    if (feature.type === 'player')
+        return feature.player?.name ?? '';
+    return feature.monster?.name ?? '';
 }
 
 export function abilityShort(ability: Ability) {

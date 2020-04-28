@@ -1,6 +1,6 @@
 import React, {FC, useCallback} from 'react';
 import {DndProvider} from 'react-dnd';
-import {Button, Grid, Header, List, Form} from 'semantic-ui-react';
+import {Button, Form, Grid, Header, List} from 'semantic-ui-react';
 import {Feature} from '../../../../../server/model/feature';
 import {DropTarget, TargetType} from './DropTarget';
 import {observer, useLocalStore} from 'mobx-react';

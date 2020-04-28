@@ -1,6 +1,9 @@
 import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Encounter} from './encounter';
 import {Log} from './log';
+import {Monster} from './monster';
+import {User} from './user';
+import {isNil} from 'lodash';
 
 export type FeatureType = 'npc' | 'player';
 
@@ -10,11 +13,11 @@ export class Feature extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
-    type!: FeatureType;
+    @ManyToOne(() => Monster, {eager: true})
+    monster?: Monster;
 
-    @Column()
-    reference!: string;
+    @ManyToOne(() => User, {eager: true})
+    player?: User;
 
     @ManyToOne(() => Encounter, encounter => encounter.features)
     encounter!: Encounter;
@@ -30,4 +33,10 @@ export class Feature extends BaseEntity {
 
     @ManyToMany(() => Log)
     logs!: Log[];
+
+    get type(): FeatureType {
+        if (!isNil(this.player))
+            return 'player'
+        return 'npc';
+    }
 }

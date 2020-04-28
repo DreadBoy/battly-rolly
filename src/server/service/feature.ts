@@ -1,8 +1,10 @@
 import {Feature, FeatureType} from '../model/feature';
-import {assign, filter, find, forEach, isArray, isEmpty, map, pick, uniq} from 'lodash';
+import {assign, filter, find, forEach, groupBy, isArray, isEmpty, map, pick, uniq} from 'lodash';
 import {getConnection} from 'typeorm';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
+import {getMonsters} from './monster';
+import {getUsers} from './user';
 
 export type AddFeature = Pick<Feature, 'AC' | 'HP' | 'initialHP'> &
     {
@@ -15,10 +17,19 @@ type AddFeatures = {
 
 export const addFeatures = async (encounterId: string, body: AddFeatures): Promise<void> => {
     const encounter = await getEncounter(encounterId);
+    const groups = groupBy(pick(body.features, ['reference', 'type']), 'type');
+    const references = {
+        npc: await getMonsters(uniq(map(groups['npc'], 'reference'))),
+        player: await getUsers(uniq(map(groups['player'], 'reference'))),
+    }
     const features = body.features.map(obj => {
         const feature = new Feature();
         assign(feature, obj);
         feature.encounter = encounter;
+        if (obj.type === 'npc')
+            feature.monster = find(references.npc, ['id', obj.reference]);
+        if (obj.type === 'player')
+            feature.player = find(references.player, ['id', obj.reference]);
         return feature;
     });
     await getConnection().getRepository(Feature).save(features);
@@ -40,7 +51,7 @@ export const removeFeatures = async (encounterId: string, body: RemoveFeatures):
 export const removePlayers = async (encounterId: string, playerIds: string[]): Promise<void> => {
     const encounter = await getEncounter(encounterId);
     const removedPlayers = encounter.features
-        .filter(feature => playerIds.includes(feature.reference))
+        .filter(feature => playerIds.includes(feature?.player?.id ?? ''))
         .map(u => pick(u, 'id'));
     await removeFeatures(encounterId, {features: removedPlayers});
 };

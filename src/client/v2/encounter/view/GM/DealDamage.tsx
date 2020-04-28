@@ -1,7 +1,7 @@
 import {FC, useEffect, useRef} from 'react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
-import {filter, groupBy, isEmpty, map, isNil} from 'lodash';
+import {filter, groupBy, isEmpty, isNil, map} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
 import {findAction} from '../../../types/bestiary';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
@@ -25,7 +25,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
         if (!!promise.current || isEmpty(logs))
             return;
         const actions = map(logs, log => ({
-            action: findAction(log.source[0].reference, log.name),
+            action: findAction(log.source[0].monster, log.name),
             log,
         }));
         const {true: valid, false: invalid} = groupBy(

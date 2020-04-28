@@ -23,7 +23,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
 
     const log = find(encounter.logs, l =>
         l.stage === 'WaitingOnDamage' &&
-        l.source[0].reference === playerId);
+        l.source[0]?.player?.id === playerId);
 
     const damageSuccess = useNumber();
     const damageFailure = useNumber();

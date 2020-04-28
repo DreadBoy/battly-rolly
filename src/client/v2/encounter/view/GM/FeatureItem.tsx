@@ -6,7 +6,6 @@ import {DragTarget} from './DragTarget';
 import {OnDrop} from './MakeAttack';
 import {TargetType} from './DropTarget';
 import {roll} from '../../../../common/roll';
-import {findMonster} from '../../../types/bestiary';
 import {isAoe, isDirect} from '../../../../../server/model/helpers';
 import {Action} from '../../../../../server/model/action';
 import {featureToDisplay} from '../../../helpers/display-helpers';
@@ -27,7 +26,7 @@ const useStyles = createUseStyles({
 export const FeatureItem: FC<Props> = ({feature, onDrop}) => {
 
 
-    const monster = findMonster(feature.reference);
+    const monster = feature.monster;
     const classes = useStyles();
 
     const _onDrop = useCallback((action: Action | null) =>
