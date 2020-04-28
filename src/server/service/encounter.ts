@@ -4,8 +4,7 @@ import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastEvent} from './socket';
-import {addFeatures, removePlayers} from './feature';
-import {Feature} from '../model/feature';
+import {AddFeature, addFeatures, removePlayers} from './feature';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
     const campaign = await getCampaign(campaignId);
@@ -67,7 +66,7 @@ export async function toggleActiveEncounter(id: string, user: User): Promise<voi
                     AC: 15,
                     HP: 10,
                     initialHP: 10,
-                } as Partial<Feature>));
+                } as AddFeature));
             await addFeatures(enc.id, {features: addedPlayers});
         }
     }));

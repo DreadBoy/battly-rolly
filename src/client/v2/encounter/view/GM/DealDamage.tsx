@@ -1,13 +1,15 @@
 import {FC, useEffect, useRef} from 'react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
-import {filter, groupBy, isEmpty, map} from 'lodash';
+import {filter, groupBy, isEmpty, map, isNil} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
-import {Action, findAction, isAoe, isDirect} from '../../../types/bestiary';
+import {findAction} from '../../../types/bestiary';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
-import {rollMulti} from '../../../../common/roll';
+import {roll} from '../../../../common/roll';
 import {Log} from '../../../../../server/model/log';
 import {fakeRequest, useBackend} from '../../../helpers/BackendProvider';
+import {isAoe, isDirect} from '../../../../../server/model/helpers';
+import {Action} from '../../../../../server/model/action';
 
 type Props = {
     encounter: Encounter,
@@ -36,8 +38,10 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                     };
                 if (isDirect(action) && log.success) {
                     return {
-                        action, log, body: {
-                            damageSuccess: rollMulti(action.damage.rolls),
+                        action,
+                        log,
+                        body: {
+                            damageSuccess: roll(action.damage.roll),
                             damageType: action.damage.damageType,
                         },
                     };
@@ -47,13 +51,15 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                     throw new Error('Encountered invalid state, went into panic mode!')
                 }
                 if (isAoe(action)) {
+                    const damage = isNil(action.damage) ? undefined : roll(action.damage.roll);
                     return {
                         action, log, body: {
                             // action.damageSuccess means damage if target saves aka attack fails
                             // but log.damageSuccess means damage if attack succeeds aka target fails to save
-                            damageSuccess: rollMulti(action.damageFailure?.rolls),
-                            damageFailure: rollMulti(action.damageSuccess?.rolls),
-                            damageType: action.damageSuccess?.damageType,
+                            damageSuccess: damage,
+                            damageFailure: action.takeHalfOnFailure && !isNil(damage) ?
+                                Math.floor(damage / 2) : undefined,
+                            damageType: action.damage?.damageType,
                             status: action.status,
                         },
                     };

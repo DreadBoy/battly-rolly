@@ -9,11 +9,15 @@ export const createUser = async (body: Partial<User>): Promise<User> => {
     return user;
 };
 
-export const getUser = async (id: string, relations: Array<keyof User> = []): Promise<User> => {
+export const getUser = async (id: string, relations: string[] = []): Promise<User> => {
     const user = await User.findOne(id, {relations});
     if (!user)
         throw new HttpError(404, `User with id ${id} not found`);
     return user;
+};
+
+export const getUsers = async (ids: string[], relations: string[] = []): Promise<User[]> => {
+    return User.findByIds(ids, {relations});
 };
 
 export const updateUser = async (id: string, body: Partial<User>): Promise<User> => {

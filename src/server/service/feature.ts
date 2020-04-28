@@ -1,12 +1,19 @@
-import {Feature} from '../model/feature';
-import {assign, filter, find, forEach, isArray, map, pick, uniq, isEmpty} from 'lodash';
+import {Feature, FeatureType} from '../model/feature';
+import {assign, filter, find, forEach, isArray, isEmpty, map, pick, uniq} from 'lodash';
 import {getConnection} from 'typeorm';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
 
-type Body = { features: Partial<Feature>[] };
+export type AddFeature = Pick<Feature, 'AC' | 'HP' | 'initialHP'> &
+    {
+        reference: string,
+        type: FeatureType,
+    };
+type AddFeatures = {
+    features: AddFeature[],
+};
 
-export const addFeatures = async (encounterId: string, body: Body): Promise<void> => {
+export const addFeatures = async (encounterId: string, body: AddFeatures): Promise<void> => {
     const encounter = await getEncounter(encounterId);
     const features = body.features.map(obj => {
         const feature = new Feature();
@@ -18,7 +25,11 @@ export const addFeatures = async (encounterId: string, body: Body): Promise<void
     await pushEncounterOverSockets(encounterId);
 };
 
-export const removeFeatures = async (encounterId: string, body: Body): Promise<void> => {
+type RemoveFeatures = {
+    features: Partial<Feature>[]
+};
+
+export const removeFeatures = async (encounterId: string, body: RemoveFeatures): Promise<void> => {
     const ids = map(body.features, 'id') as string[];
     if (ids.length === 0)
         return;
@@ -56,11 +67,11 @@ export const updateFeatures = async (body: [Partial<Feature>]): Promise<Feature[
     return features;
 };
 
-export const getFeatures = async (ids: string[], relations: string[] = []): Promise<Feature[]> => {
+export const getFeatures = async (ids: string[], relations: string[] = ['monster', 'player']): Promise<Feature[]> => {
     return Feature.findByIds(ids, {relations});
 };
 
-export const getFeature = async (id: string, relations: string[] = []): Promise<Feature> => {
+export const getFeature = async (id: string, relations: string[] = ['monster', 'player']): Promise<Feature> => {
     const feature = await Feature.findOne(id, {relations});
     if (!feature)
         throw new HttpError(404, `Feature with id ${id} not found`);

@@ -11,7 +11,7 @@ import {damageTypes} from '../../../../common/encounter';
 import {useDropdown, useNumber} from '../../../../common/form-helpers';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
-import {DamageType} from '../../../types/bestiary';
+import {DamageType} from '../../../../../server/model/action';
 
 type Props = {
     encounter: Encounter,

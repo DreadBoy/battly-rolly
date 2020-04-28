@@ -8,6 +8,12 @@ export function validateParam(ctx: ParameterizedContext, param: string) {
     return ctx.params[param];
 }
 
+export function validateQuery(ctx: ParameterizedContext, param: string) {
+    if (!ctx.query[param])
+        throw new HttpError(400, `Missing required query <${param}>!`);
+    return ctx.query[param];
+}
+
 export function validateBody(ctx: ParameterizedContext, required: string[], optional: string[] = []): any {
     const body = ctx.request.body;
     if (!body)

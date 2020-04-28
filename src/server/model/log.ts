@@ -11,26 +11,11 @@ import {
 import {Encounter} from './encounter';
 import {Feature} from './feature';
 import {Ability, Status} from '../../client/common/encounter';
-import {DamageType} from '../../client/v2/types/bestiary';
+import {DamageType} from './action';
+import {Transformers} from './transformers';
 
 export type LogType = 'direct' | 'aoe';
 export type LogStage = 'WaitingOnResult' | 'WaitingOnDamage' | 'WaitingOnConfirmed' | 'Confirmed';
-
-const Transformers = {
-    boolean: {
-        to: (input: boolean[]) => `[${input.join(',')}]`,
-        from: (value: string) =>
-            value.replace(/[[\]]/g, '').split(',').map((p: string) =>
-                p === 'true' ? true : p === 'false' ? false : null),
-    },
-    number: {
-        to: (input: boolean[]) => `[${input.join(',')}]`,
-        from: (value: string) => value.replace(/[[\]]/g, '').split(',').map((p: string) => {
-            const num = parseInt(p);
-            return isNaN(num) ? null : num;
-        }),
-    },
-}
 
 /***
  Flow of direct attack:

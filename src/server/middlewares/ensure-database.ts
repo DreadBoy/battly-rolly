@@ -7,6 +7,8 @@ import {Campaign} from '../model/campaign';
 import {Encounter} from '../model/encounter';
 import {Feature} from '../model/feature';
 import {Log} from '../model/log';
+import {Monster} from '../model/monster';
+import {Action} from '../model/action';
 
 let connection: Connection;
 
@@ -17,7 +19,7 @@ async function connect() {
     let config = getConfig(process.env.DATABASE_URL);
     config = {
       ...config,
-        entities: [User, Campaign, Encounter, Feature, Log],
+        entities: [User, Campaign, Encounter, Feature, Log, Monster, Action],
         migrations: [],
         synchronize: true,
     };

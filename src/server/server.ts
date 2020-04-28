@@ -13,6 +13,7 @@ import {app as campaignApi} from './api/campaign';
 import {app as encounterApi} from './api/encounter';
 import {app as featureApi} from './api/feature';
 import {app as logApi} from './api/log';
+import {app as monsterApi} from './api/monster';
 import {addSocket, removeSocket, repeatEvent} from './service/socket';
 
 const mount = require('koa-mount');
@@ -40,6 +41,7 @@ app.use(mount('/campaign', campaignApi));
 app.use(mount('/encounter', encounterApi));
 app.use(mount('/feature', featureApi));
 app.use(mount('/log', logApi));
+app.use(mount('/monster', monsterApi));
 app.use(mount(probeApi));
 app.use(koaStatic);
 

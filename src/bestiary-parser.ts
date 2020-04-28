@@ -1,8 +1,8 @@
 import {ActionDict, grammar as ohm} from 'ohm-js';
-import {Direct, Damage, DamageType, Roll, Effect, AoE, Ability} from './client/v2/types/bestiary';
-import {difference, filter, flatMap, isString, map} from 'lodash';
+import {difference, filter, flatMap, isString} from 'lodash';
 import {readFileSync} from 'fs';
 import {join} from 'path';
+import {Ability, Damage, DamageType, IAoE, IDirect, Roll} from './server/model/action';
 
 const bestiary = require('./assets/Monster Manual Bestiary 2.6.0.json');
 const actions = filter(flatMap(bestiary, 'action'), Boolean);
@@ -23,7 +23,7 @@ const semantic = grammar.createSemantics();
 semantic.addOperation(
     'eval',
     {
-        aoe: function (start, dc): Partial<AoE> {
+        aoe: function (start, dc): Partial<IAoE> {
             return {
                 type: 'aoe',
                 // ...dc.eval(),
@@ -32,29 +32,29 @@ semantic.addOperation(
         aoeStart: function(_1, digit, _2, digit2, _3) {
           return this.sourceString;
         },
-        dc: function ( _1, dc, _2, ability, _3, damage, _4): Effect {
+        dc: function ( _1, dc, _2, ability, _3, damage, _4): Partial<IAoE> {
             const dmg: Damage = damage.eval();
             return {
                 DC: dc.eval(),
                 ability: ability.sourceString as Ability,
-                damageSuccess: dmg,
+                damage: dmg,
             }
         },
-        meleeRanged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, _9, _10, hit): Partial<Direct> {
+        meleeRanged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, _9, _10, hit): Partial<IDirect> {
             return {
                 type: 'direct',
                 modifier: modifier.eval(),
                 damage: hit.eval(),
             }
         },
-        melee: function (_1, modifier, _2, _3, _4, _5, _6, hit): Partial<Direct> {
+        melee: function (_1, modifier, _2, _3, _4, _5, _6, hit): Partial<IDirect> {
             return {
                 type: 'direct',
                 modifier: modifier.eval(),
                 damage: hit.eval(),
             }
         },
-        ranged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, hit): Partial<Direct> {
+        ranged: function (_1, modifier, _2, _3, _4, _5, _6, _7, _8, hit): Partial<IDirect> {
             return {
                 type: 'direct',
                 modifier: modifier.eval(),

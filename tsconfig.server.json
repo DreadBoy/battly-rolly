@@ -19,7 +19,8 @@
     "jsx": "react",
     "outDir": "build",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "downlevelIteration": true
   },
   "include": [
     "src/server/**/*.ts"

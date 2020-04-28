@@ -6,7 +6,9 @@ import {DragTarget} from './DragTarget';
 import {OnDrop} from './MakeAttack';
 import {TargetType} from './DropTarget';
 import {roll} from '../../../../common/roll';
-import {Action, findMonster, isAoe, isDirect} from '../../../types/bestiary';
+import {findMonster} from '../../../types/bestiary';
+import {isAoe, isDirect} from '../../../../../server/model/helpers';
+import {Action} from '../../../../../server/model/action';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 
 type Props = {
