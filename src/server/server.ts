@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
+import mount from 'koa-mount';
 import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
@@ -8,6 +9,7 @@ import {gray, green, red, white} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
+import {app as authApi} from './api/auth';
 import {app as userApi} from './api/user';
 import {app as campaignApi} from './api/campaign';
 import {app as encounterApi} from './api/encounter';
@@ -15,14 +17,14 @@ import {app as featureApi} from './api/feature';
 import {app as logApi} from './api/log';
 import {app as monsterApi} from './api/monster';
 import {addSocket, removeSocket, repeatEvent} from './service/socket';
-
-const mount = require('koa-mount');
+import {configureJWT} from './auth';
 
 const app = new Koa();
 const koaStatic = KoaStatic({
     rootDir: __dirname,
     notFoundFile: 'index.html',
 });
+configureJWT();
 
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
@@ -36,12 +38,13 @@ app.use(async (ctx, next) => {
 app.use(logger());
 app.use(bodyParser());
 app.use(ensureDatabase);
-app.use(mount('/user', userApi));
-app.use(mount('/campaign', campaignApi));
-app.use(mount('/encounter', encounterApi));
-app.use(mount('/feature', featureApi));
-app.use(mount('/log', logApi));
-app.use(mount('/monster', monsterApi));
+app.use(mount('/api/auth', authApi));
+app.use(mount('/api/user', userApi));
+app.use(mount('/api/campaign', campaignApi));
+app.use(mount('/api/encounter', encounterApi));
+app.use(mount('/api/feature', featureApi));
+app.use(mount('/api/log', logApi));
+app.use(mount('/api/monster', monsterApi));
 app.use(mount(probeApi));
 app.use(koaStatic);
 

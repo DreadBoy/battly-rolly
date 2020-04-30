@@ -12,6 +12,13 @@ export const errorMiddleware: Koa.Middleware = async (ctx, next) => {
             };
             return;
         }
+        if (error.name === 'UnauthorizedError') {
+            ctx.status = error.statusCode;
+            ctx.body = {
+                message: error.message,
+            };
+            return;
+        }
         ctx.status = 500;
         ctx.body = {
             message: 'Internal server error',

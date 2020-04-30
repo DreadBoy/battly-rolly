@@ -37,7 +37,7 @@ export const BackendProvider: FC = ({children}) => {
         });
 
         const api = Axios.create({
-            baseURL: origin,
+            baseURL: `${origin}/api`,
         });
         setApi(() => api);
 

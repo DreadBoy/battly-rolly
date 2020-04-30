@@ -9,12 +9,7 @@ import {onText} from '../hooks/use-form';
 import {PasswordMeter} from 'password-meter';
 import {isEmpty} from 'lodash';
 import { root } from '../v2';
-
-type FormModel = {
-    email: string,
-    displayName: string,
-    password: string,
-}
+import {Register as FormModel} from '../../../server/service/auth';
 
 const strengthToColour: { [strength: string]: SemanticCOLORS } = {
     veryWeak: 'red',

@@ -2,9 +2,11 @@
 	"env": {
 		"NODE_ENV": "development",
 		"DATABASE_URL": "",
-		"PORT": "3000"
+		"PORT": "3000",
+		"TS_NODE_PROJECT": "tsconfig.server.json",
+		"JWT_KEY": ""
 	},
 	"watch": ["src/server/**/*.ts"],
 	"ext": "ts",
-	"exec": "\"ts-node\" --project tsconfig.server.json src/server/server.ts"
+	"exec": "node --inspect=3002 -r \"ts-node/register\" src/server/server.ts"
 }

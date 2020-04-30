@@ -8,11 +8,7 @@ import {Splash} from '../Splash';
 import {onText} from '../hooks/use-form';
 import {isEmpty} from 'lodash';
 import {root} from '../v2';
-
-type FormModel = {
-    email: string,
-    password: string,
-}
+import {Login as FormModel} from '../../../server/service/auth';
 
 export const Login: FC = observer(() => {
 

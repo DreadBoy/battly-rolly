@@ -9,7 +9,10 @@ export class User extends BaseEntity {
     id!: string;
 
     @Column()
-    name!: string;
+    email!: string;
+
+    @Column()
+    displayName!: string;
 
     @ManyToMany(() => Campaign, campaign => campaign.users)
     campaigns!: Campaign[];

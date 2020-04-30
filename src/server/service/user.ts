@@ -1,11 +1,13 @@
 import {User} from '../model/user';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign} from 'lodash';
+import {validateObject} from '../middlewares/validators';
 
 export const createUser = async (body: Partial<User>): Promise<User> => {
+    const {password, ...body2} = validateObject(body, ['email', 'displayName', 'password'])
     const user = new User();
-    assign(user, body);
-    await user.save();
+    assign(user, body2);
+    // await user.save();
     return user;
 };
 
