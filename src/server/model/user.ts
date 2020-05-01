@@ -14,6 +14,12 @@ export class User extends BaseEntity {
     @Column()
     displayName!: string;
 
+    @Column()
+    password!: string;
+
+    @Column({default: false})
+    invalidate!: boolean;
+
     @ManyToMany(() => Campaign, campaign => campaign.users)
     campaigns!: Campaign[];
 

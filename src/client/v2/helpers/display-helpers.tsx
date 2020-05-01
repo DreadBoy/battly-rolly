@@ -9,7 +9,7 @@ export function featureToDisplay(feature?: Feature): string {
     if (isNil(feature))
         return '';
     if (type(feature) === 'player')
-        return feature.player?.name ?? '';
+        return feature.player?.displayName ?? '';
     return feature.monster?.name ?? '';
 }
 

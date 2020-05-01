@@ -128,7 +128,7 @@ export const CampaignView: FC = observer(() => {
                         <Grid.Row>
                             <Grid.Column>
                                 <Header size={'tiny'}>Dungeon master</Header>
-                                {data.gm.name}
+                                {data.gm.displayName}
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -144,7 +144,7 @@ export const CampaignView: FC = observer(() => {
                                     <Table.Body>
                                         {data.users.filter(user => user.id !== id).map(user => (
                                             <Table.Row key={user.id}>
-                                                <Table.Cell>{user.name || user.id}</Table.Cell>
+                                                <Table.Cell>{user.displayName}</Table.Cell>
                                                 {playerId === data.gm.id && (
                                                     <Table.Cell>
                                                         {user.id !== data.gm.id && (

@@ -3,12 +3,20 @@ import {HttpError} from '../middlewares/error-middleware';
 import {assign} from 'lodash';
 import {validateObject} from '../middlewares/validators';
 
-export const createUser = async (body: Partial<User>): Promise<User> => {
-    const {password, ...body2} = validateObject(body, ['email', 'displayName', 'password'])
+export type CreateUser = {
+    email: string,
+    displayName: string,
+    password: string;
+}
+
+export const createUser = async (body: CreateUser): Promise<User> => {
+    body = validateObject(body, ['email', 'displayName', 'password'])
+    const existing = await User.findOne({where: {email: body.email}});
+    if (existing)
+        throw new HttpError(400, `User with this email already exists!`);
     const user = new User();
-    assign(user, body2);
-    // await user.save();
-    return user;
+    assign(user, body);
+    return user.save();
 };
 
 export const getUser = async (id: string, relations: string[] = []): Promise<User> => {

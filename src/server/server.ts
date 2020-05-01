@@ -17,14 +17,12 @@ import {app as featureApi} from './api/feature';
 import {app as logApi} from './api/log';
 import {app as monsterApi} from './api/monster';
 import {addSocket, removeSocket, repeatEvent} from './service/socket';
-import {configureJWT} from './auth';
 
 const app = new Koa();
 const koaStatic = KoaStatic({
     rootDir: __dirname,
     notFoundFile: 'index.html',
 });
-configureJWT();
 
 app.use(errorMiddleware);
 app.use(async (ctx, next) => {
