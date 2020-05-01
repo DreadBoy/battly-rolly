@@ -14,7 +14,7 @@ export const UserEdit: FC = observer(() => {
     const {params: {userId}} = useRouteMatch();
     const user = useLoader<User>();
     const empty = useCallback(() => ({
-        name: '',
+        displayName: '',
     }), []);
     const {submit, id, FormButtons, textControl} = useEditor<User>(user, 'user', userId, empty);
 
@@ -30,8 +30,8 @@ export const UserEdit: FC = observer(() => {
                             render={() => (
                                 <Form onSubmit={submit}>
                                     <Form.Input
-                                        label={'Character\'s name'}
-                                        {...textControl('name')}
+                                        label={'Display name'}
+                                        {...textControl('displayName')}
                                         required
                                     />
                                     <FormButtons removeButton={false}/>

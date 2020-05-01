@@ -1,34 +1,31 @@
 import React, {createContext, FC, useCallback, useContext, useEffect, useState} from 'react';
 import {useLocalStorage} from '../../common/use-local-storage';
 import {useBackend} from './BackendProvider';
-import {User} from '../../../server/model/user';
-import {Login} from '../user/Login';
+import {Login, OnLogin} from '../user/Login';
 
 const playerIdContext = createContext<{ id: string }>(undefined as any);
 
 export const PlayerIdProvider: FC = ({children}) => {
     const [init, setInit] = useState(false);
-    const {value, set} = useLocalStorage('playerId');
+    const {value, set} = useLocalStorage('player');
+    const data = value ? JSON.parse(value) as OnLogin : null;
     const {api, socket} = useBackend();
-    const connect = useCallback(() => {
-        api.post<User>('/user', {name: 'Temporary name'})
-            .then(res => {
-                set(res.data.id)
-            })
-            .catch(e => alert(e));
-    }, [api, set]);
 
     useEffect(() => {
-        if (!value) return;
-        api.defaults.headers.common['Authorization'] = value;
-        socket?.emit('join', value);
+        if (!data) return;
+        api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+        socket?.emit('join', data.user.id);
         socket?.emit('repeat', 'encounter');
         setInit(true);
-    }, [api.defaults.headers.common, socket, value]);
+    }, [api.defaults.headers.common, data, socket]);
+
+    const onLogin = useCallback((onLogin: OnLogin) => {
+        set(JSON.stringify(onLogin));
+    }, [set]);
     return (
-        <playerIdContext.Provider value={{id: value || ''}}>
+        <playerIdContext.Provider value={{id: data?.user?.id ?? ''}}>
             {init ? children : (
-                <Login/>
+                <Login onLogin={onLogin}/>
             )}
         </playerIdContext.Provider>
     )

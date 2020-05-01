@@ -9,9 +9,24 @@ import {onText} from '../hooks/use-form';
 import {isEmpty} from 'lodash';
 import {root} from '../v2';
 import {Login as FormModel} from '../../../server/service/auth';
+import {useBackend} from '../helpers/BackendProvider';
+import {toJS} from 'mobx';
+import {useLoader} from '../helpers/Store';
+import {Stacktrace} from '../helpers/Stacktrace';
+import {User} from '../../../server/model/user';
 
-export const Login: FC = observer(() => {
+type Props = {
+    onLogin: (onLogin: OnLogin) => void,
+};
 
+export type OnLogin = {
+    user: User,
+    accessToken: string,
+    refreshToken: string,
+}
+
+export const Login: FC<Props> = observer(({onLogin}) => {
+    const {api} = useBackend();
     const form = useLocalStore<FormModel>(() => ({
         email: '',
         password: '',
@@ -24,6 +39,14 @@ export const Login: FC = observer(() => {
 
     const valid = !isEmpty(form.email) && !isEmpty(form.password);
 
+    const loader = useLoader<OnLogin>();
+    const loaderId = 'login';
+    const login = useCallback(() => {
+        loader.fetchAsync(api.put('/auth', toJS(form)), loaderId)
+            .then(onLogin)
+            .catch(e => e);
+    }, [api, form, loader, onLogin]);
+
     return (
         <Splash bg={bg}>
             <Container>
@@ -33,7 +56,7 @@ export const Login: FC = observer(() => {
                         <p>
                             Need a Battly Rolly account? <Link to={root('/register')}>Create an account</Link>
                         </p>
-                        <Form onSubmit={() => alert('submit')}>
+                        <Form onSubmit={login}>
                             <Form.Input
                                 label={'Email'}
                                 id={'email'}
@@ -42,7 +65,7 @@ export const Login: FC = observer(() => {
                                 onChange={onText(form, 'email')}
                                 required
                             />
-                            <Form.Field>
+                            <Form.Field required>
                                 <label htmlFor={'password'}>Password</label>
                                 <Input
                                     id={'password'}
@@ -60,7 +83,14 @@ export const Login: FC = observer(() => {
                                 >
                                 </Input>
                             </Form.Field>
-                            <Button basic fluid primary disabled={!valid}>Log In</Button>
+                            <Stacktrace error={loader.error[loaderId]}/>
+                            <Button
+                                basic
+                                fluid
+                                primary
+                                disabled={!valid}
+                                loading={loader.loading[loaderId]}
+                            >Log In</Button>
                         </Form>
                     </Grid.Column>
                 </Grid>
