@@ -71,7 +71,7 @@ export async function refresh(body: any) {
 function createTokens(user: User) {
     return {
         accessToken: sign(user, 15 * 60),
-        refreshToken: sign(user, 7 * 24 * 60),
+        refreshToken: sign(user, 7 * 24 * 60 * 60),
     };
 }
 

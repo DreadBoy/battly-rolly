@@ -1,30 +1,71 @@
-import React, {createContext, FC, useCallback, useContext, useEffect, useState} from 'react';
-import {useLocalStorage} from '../../common/use-local-storage';
+import React, {createContext, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {useBackend} from './BackendProvider';
 import {Login, OnLogin} from '../user/Login';
+import {useLocalStorage} from '../hooks/use-local-storage';
+import {toJS} from 'mobx';
+import {User} from '../../../server/model/user';
+import {AxiosRequestConfig} from 'axios';
 
-const playerIdContext = createContext<{ id: string }>(undefined as any);
+const playerIdContext = createContext<{ id: string, user?: User, onLogin: (onLogin: OnLogin | null) => void }>(undefined as any);
 
 export const PlayerIdProvider: FC = ({children}) => {
-    const [init, setInit] = useState(false);
-    const {value, set} = useLocalStorage('player');
-    const data = value ? JSON.parse(value) as OnLogin : null;
     const {api, socket} = useBackend();
 
+    const [init, setInit] = useState<boolean>(false);
+    const {value, set} = useLocalStorage<OnLogin>('player');
+    const accessToken = useRef<string>();
+    const userId = value?.user?.id;
+    const data = useRef<OnLogin | null>(null);
     useEffect(() => {
-        if (!data) return;
-        api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-        socket?.emit('join', data.user.id);
+        data.current = value;
+    }, [value])
+
+    const onLogin = useCallback((onLogin: OnLogin | null) => {
+        set(onLogin);
+        accessToken.current = onLogin?.accessToken;
+        console.log(toJS(onLogin));
+    }, [set]);
+
+    const setHeader = useCallback((config: AxiosRequestConfig) => {
+        config.headers['Authorization'] = `Bearer ${accessToken.current}`;
+        config.headers['Accept'] = 'application/json';
+        config.headers['Content-Type'] = 'application/json';
+        return config;
+    }, []);
+
+    useEffect(() => {
+        if (init)
+            return;
+        api.interceptors.request.use(setHeader);
+        api.interceptors.response.use(undefined, async error => {
+            const shouldRepeat = error.response?.status === 401 && !error.config?._retry && !!data.current?.refreshToken;
+            if (!shouldRepeat) {
+                throw error;
+            }
+            error.config._retry = true;
+            try {
+                const res = await api.put<OnLogin>('/auth/refresh', {refreshToken: data.current?.refreshToken});
+                if (res?.status !== 200) {
+                    onLogin(null);
+                } else {
+                    onLogin(res.data);
+                    error.config = setHeader(error.config);
+                    return api(error.config);
+                }
+            } catch (e) {
+                throw error;
+            }
+        });
+
+        socket?.emit('join', userId);
         socket?.emit('repeat', 'encounter');
         setInit(true);
-    }, [api.defaults.headers.common, data, socket]);
+    }, [api, init, onLogin, setHeader, socket, userId])
 
-    const onLogin = useCallback((onLogin: OnLogin) => {
-        set(JSON.stringify(onLogin));
-    }, [set]);
+    const valid = !!value;
     return (
-        <playerIdContext.Provider value={{id: data?.user?.id ?? ''}}>
-            {init ? children : (
+        <playerIdContext.Provider value={{id: userId ?? '', user: value?.user, onLogin}}>
+            {init && valid ? children : (
                 <Login onLogin={onLogin}/>
             )}
         </playerIdContext.Provider>
