@@ -14,13 +14,16 @@ import {some} from 'lodash';
 import {Stacktrace} from '../helpers/Stacktrace';
 import {ConfirmButton} from '../helpers/ConfirmButton';
 import {EncounterList} from '../encounter/EncounterList';
+import {useShare} from '../hooks/use-share';
 
 const Editor = LoadingFactory<Campaign>();
 
+
+export const qrCodeStyle = {
+    marginBottom: '.5em',
+};
 const useStyles = createUseStyles({
-    img: {
-        marginBottom: '.5em',
-    },
+    img: qrCodeStyle,
 });
 
 export const CampaignView: FC = observer(() => {
@@ -44,16 +47,10 @@ export const CampaignView: FC = observer(() => {
         campaign.fetch(promise, id, refresh > 0 ? 'silent' : undefined);
     }, [api, campaign, id, refresh, url]);
 
-    const canShare = navigator.share && navigator.canShare;
-    const share = useCallback(() => {
-        if (!navigator.share || !navigator.canShare) return;
-        const data = {
-            title: campaign.data[id].name,
-            url: window.location.href,
-        };
-        if (navigator.canShare(data))
-            navigator.share(data).catch((e) => console.error(e));
-    }, [campaign.data, id]);
+    const {canShare, share} = useShare({
+        title: campaign.data[id]?.name,
+        url: window.location.href,
+    });
 
     const _join = useLoader();
     const join = useCallback(() => {
