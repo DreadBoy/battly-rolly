@@ -46,7 +46,7 @@ export const CampaignList: FC = observer(() => {
                             store={campaigns}
                             render={(data) => (
                                 <>
-                                    <Header size={'tiny'}>Joined campaigns</Header>
+                                    <Header sub>Joined campaigns</Header>
                                     <Table fixed celled unstackable>
                                         <Table.Header>
                                             <Table.Row>

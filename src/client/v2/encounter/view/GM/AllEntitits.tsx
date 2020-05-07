@@ -25,7 +25,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
         <>
             <Header size={'small'}>All entities</Header>
             <Grid columns={2}>
-                <Grid.Column><Header size={'tiny'}>Monsters</Header>
+                <Grid.Column><Header sub>Monsters</Header>
                     <List>
                         {map(
                             filter(encounter.features, f => type(f) === 'npc'),
@@ -42,7 +42,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                         )}
                     </List>
                 </Grid.Column>
-                <Grid.Column><Header size={'tiny'}>Players</Header>
+                <Grid.Column><Header sub>Players</Header>
                     <List>
                         {map(
                             filter(encounter.features, f => type(f) === 'player'),

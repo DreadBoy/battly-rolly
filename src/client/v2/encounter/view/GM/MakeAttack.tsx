@@ -67,7 +67,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
             <Header size={'small'}>Make attack</Header>
             <Grid>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Monsters</Header>
+                    <Header sub>Monsters</Header>
                     <List>
                         {encounter.features
                             .filter(f => type(f) === 'npc')
@@ -81,7 +81,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     </List>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Players</Header>
+                    <Header sub>Players</Header>
                     <List>
                         {encounter.features
                             .filter(f => type(f) === 'player')
@@ -95,7 +95,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     </List>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Attackers</Header>
+                    <Header sub>Attackers</Header>
                     <DropTarget
                         type={'source'}
                         onClear={onClear('source')}
@@ -104,7 +104,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     />
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Defenders</Header>
+                    <Header sub>Defenders</Header>
                     <DropTarget
                         type={'target'}
                         onClear={onClear('target')}

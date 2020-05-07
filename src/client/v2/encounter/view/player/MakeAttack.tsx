@@ -135,7 +135,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     )}
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Monsters</Header>
+                    <Header sub>Monsters</Header>
                     {!isEmpty(monsters) && (
                         <List>
                             {map(monsters, f => (
@@ -160,7 +160,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     )}
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header size={'tiny'}>Players</Header>
+                    <Header sub>Players</Header>
                     {!isEmpty(players) && (
                         <List>
                             {map(players, f => (

@@ -65,12 +65,12 @@ export const UserView: FC = observer(() => {
                         <>
                             <Grid.Row>
                                 <Grid.Column>
-                                    <Header size={'tiny'}>Email</Header>
+                                    <Header sub>Email</Header>
                                     {data.email}
                                     <br/>
                                     <Button basic size={'mini'}>Change</Button>
 
-                                    <Header size={'tiny'}>Password</Header>
+                                    <Header sub>Password</Header>
                                     <span onClick={toggleHunter}>{hunter ? 'hunter2' : '*********'}</span>
                                     <br/>
                                     <Button basic size={'mini'}>Reset</Button>

@@ -76,7 +76,7 @@ export const CampaignView: FC = observer(() => {
                 id={id}
                 store={campaign}
                 render={(data) => (
-                    <Grid columns={2}>
+                    <Grid doubling columns={2}>
                         <Grid.Row>
                             <Grid.Column width={16}>
                                 <Header>{data.name}</Header>
@@ -84,13 +84,13 @@ export const CampaignView: FC = observer(() => {
                         </Grid.Row>
                         <Grid.Row>
                             <Grid.Column>
-                                <Header size={'tiny'}>Share campaign</Header>
+                                <Header sub>Share campaign</Header>
                                 <Image src={code} alt={'QR code'} className={classes.img}/>
                                 {canShare && <Button basic primary onClick={share}>Share</Button>}
                             </Grid.Column>
                             {!some(data.users, ['id', playerId]) ? (
                                 <Grid.Column>
-                                    <Header size={'tiny'}>Join campaign</Header>
+                                    <Header sub>Join campaign</Header>
                                     <Button
                                         basic
                                         primary
@@ -102,7 +102,7 @@ export const CampaignView: FC = observer(() => {
                                 </Grid.Column>
                             ) : data.gm.id !== playerId ? (
                                 <Grid.Column>
-                                    <Header size={'tiny'}>Leave campaign</Header>
+                                    <Header sub>Leave campaign</Header>
                                     <Button
                                         basic
                                         color={'red'}
@@ -114,7 +114,7 @@ export const CampaignView: FC = observer(() => {
                                 </Grid.Column>
                             ) : (
                                 <Grid.Column>
-                                    <Header size={'tiny'}>Edit campaign</Header>
+                                    <Header sub>Edit campaign</Header>
                                     <Link className={'ui button basic blue'} to={`${url}/edit`}>
                                         Edit
                                     </Link>
@@ -124,13 +124,13 @@ export const CampaignView: FC = observer(() => {
                         </Grid.Row>
                         <Grid.Row>
                             <Grid.Column>
-                                <Header size={'tiny'}>Dungeon master</Header>
+                                <Header sub>Dungeon master</Header>
                                 {data.gm.displayName}
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column width={16}>
-                                <Header size={'tiny'}>Joined users</Header>
+                            <Grid.Column>
+                                <Header sub>Joined users</Header>
                                 <Table fixed celled unstackable>
                                     <Table.Header>
                                         <Table.Row>
@@ -147,7 +147,7 @@ export const CampaignView: FC = observer(() => {
                                                         {user.id !== data.gm.id && (
                                                             <ConfirmButton
                                                                 basic
-                                                                size={'tiny'}
+                                                                size={'mini'}
                                                                 onClick={kick(user.id)}
                                                                 loading={_kick.loading[user.id]}
                                                                 disabled={_kick.loading[user.id]}
@@ -161,14 +161,12 @@ export const CampaignView: FC = observer(() => {
                                     </Table.Body>
                                 </Table>
                             </Grid.Column>
-                        </Grid.Row>
-                        {playerId === data.gm.id && (
-                            <Grid.Row>
+                            {playerId === data.gm.id && (
                                 <Grid.Column>
                                     <EncounterList campaign={data} refresh={_refresh}/>
                                 </Grid.Column>
-                            </Grid.Row>
-                        )}
+                            )}
+                        </Grid.Row>
                     </Grid>
                 )}
             />

@@ -35,7 +35,7 @@ export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}, r
 
     return (
         <>
-            <Header size={'tiny'}>Encounters</Header>
+            <Header sub>Encounters</Header>
             <Table celled unstackable>
                 <Table.Header>
                     <Table.Row>
