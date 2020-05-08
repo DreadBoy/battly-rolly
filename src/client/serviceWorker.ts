@@ -77,10 +77,12 @@ function registerValidSW(swUrl: string, config?: Config) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              console.log(
-                'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
+              const confirmed = window.confirm(
+                'New content is available and will be used when all tabs for this page are closed. '
+                + 'Confirm to close the app or decline to keep using older version.'
               );
+              if(confirmed)
+                window.close();
 
               // Execute callback
               if (config && config.onUpdate) {
