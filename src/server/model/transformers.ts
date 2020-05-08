@@ -1,5 +1,5 @@
-import {abilities} from '../../client/v2/types/bestiary';
-import {AbilitySet, Damage, DamageType, Roll} from './action';
+
+import {abilities, AbilitySet, Damage, DamageType, Roll} from './action';
 
 export const Transformers = {
     boolean: {

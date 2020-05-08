@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Card, Icon} from 'semantic-ui-react';
-import {Monster} from '../../common/encounter';
+import {Monster} from '../../../server/encounter';
 import {createUseStyles} from 'react-jss';
 import classNames from 'classnames';
 

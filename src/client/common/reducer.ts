@@ -1,5 +1,5 @@
 import {cloneDeep, filter, find, first, sum} from 'lodash';
-import {Encounter, isAttackLog, isSaveLog, Player, SaveLog} from './encounter';
+import {Encounter, isAttackLog, isSaveLog, Player, SaveLog} from '../../server/encounter';
 import {Attack, ConfirmLog, QueueAction, ResolveSave, SetStats, StartEncounter} from './actions';
 import {roll} from './roll';
 

@@ -1,5 +1,5 @@
 import bestiary from '../../assets/bestiary.json';
-import {Monster} from '../common/encounter';
+import {Monster} from '../../server/encounter';
 import {roll} from '../common/roll';
 import {cloneDeep} from 'lodash';
 import {generateId} from '../common/generate-id';

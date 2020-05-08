@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Checkbox} from 'semantic-ui-react';
-import {Monster} from '../../common/encounter';
+import {Monster} from '../../../server/encounter';
 import {createUseStyles} from 'react-jss';
 import {MonsterCard} from './MonsterCard';
 

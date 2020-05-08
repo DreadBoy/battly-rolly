@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {abilityShort, isSave, Save as DnDSave} from '../../common/encounter';
+import {abilityShort, isSave, Save as DnDSave} from '../../../server/encounter';
 import {useDrag} from './use-drag';
 import {nameToDisplay, rollToDisplay} from './Attack';
 

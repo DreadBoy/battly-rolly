@@ -9,13 +9,13 @@ import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Stacktrace} from '../../../helpers/Stacktrace';
 import {onDropdown, onNumber, onText} from '../../../hooks/use-form';
-import {abilities} from '../../../../common/encounter';
 import {LogType} from '../../../../../server/model/log';
 import {usePlayerId} from '../../../helpers/PlayerId';
 import {createUseStyles} from 'react-jss';
 import classNames from 'classnames';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {hasPlayer, type} from '../../../../../server/model/helpers';
+import {abilities} from '../../../../../server/encounter';
 
 type Props = {
     encounter: Encounter,

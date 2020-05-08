@@ -1,4 +1,4 @@
-import {Monster} from './encounter';
+import {Monster} from '../../server/encounter';
 
 export function parseMonster(str: string): Monster {
     return JSON.parse(str) as Monster;

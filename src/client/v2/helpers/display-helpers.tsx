@@ -1,7 +1,7 @@
 import React, {createElement, Fragment, ReactElement} from 'react';
 import {Icon} from 'semantic-ui-react';
 import {Feature} from '../../../server/model/feature';
-import {Ability} from '../../common/encounter';
+import {Ability} from '../../../server/encounter';
 import {isNil, map} from 'lodash';
 import { type } from '../../../server/model/helpers';
 

@@ -1,7 +1,7 @@
 import React, {FC, FormEventHandler, useCallback} from 'react';
 import {Button, Form, TextArea} from 'semantic-ui-react';
 import {useTextArea} from '../common/form-helpers';
-import {Monster} from '../common/encounter';
+import {Monster} from '../../server/encounter';
 import {parseMonster} from '../common/monster-parser';
 
 type Props = {

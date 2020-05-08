@@ -4,7 +4,7 @@ import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, neg
 import {HttpError} from '../middlewares/error-middleware';
 import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
-import {Ability, Status} from '../../client/common/encounter';
+import {Ability, Status} from '../encounter';
 import {validateObject} from '../middlewares/validators';
 import {DamageType} from '../model/action';
 

@@ -8,7 +8,7 @@ import {State} from '../common/reducer';
 import {usePlayerId} from './PlayerId';
 import {MonsterCard} from './encounter/MonsterCard';
 import {filter, find, first, groupBy, size} from 'lodash';
-import {isAttackLog, isSaveLog, SaveLog} from '../common/encounter';
+import {isAttackLog, isSaveLog, SaveLog} from '../../server/encounter';
 import {useSocket} from '../common/Socket';
 import {ConfirmLog, ResolveSave as ResolveSaveDispatch} from '../common/actions';
 import {PhaseProps} from './encounter/phase';

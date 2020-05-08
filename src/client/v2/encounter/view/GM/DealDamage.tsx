@@ -3,13 +3,12 @@ import {observer} from 'mobx-react';
 import {Encounter} from '../../../../../server/model/encounter';
 import {filter, groupBy, isEmpty, isNil, map} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
-import {findAction} from '../../../types/bestiary';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
 import {roll} from '../../../../common/roll';
 import {Log} from '../../../../../server/model/log';
 import {fakeRequest, useBackend} from '../../../helpers/BackendProvider';
 import {isAoe, isDirect} from '../../../../../server/model/helpers';
-import {Action} from '../../../../../server/model/action';
+import {Action, findAction} from '../../../../../server/model/action';
 
 type Props = {
     encounter: Encounter,

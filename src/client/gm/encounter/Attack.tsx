@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {Attack as DnDAttack, isAttack, Roll} from '../../common/encounter';
+import {Attack as DnDAttack, isAttack, Roll} from '../../../server/encounter';
 import {useDrag} from './use-drag';
 
 type Props = {

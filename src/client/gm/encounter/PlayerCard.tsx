@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Card, List, Icon} from 'semantic-ui-react';
-import {abilityShort, isAttackLog, isSaveLog, Monster, Player} from '../../common/encounter';
+import {abilityShort, isAttackLog, isSaveLog, Monster, Player} from '../../../server/encounter';
 import {useDrop} from 'react-dnd';
 import {nameToDisplay} from './Attack';
 

@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import {State} from '../../common/reducer';
 import {Attack} from './Attack';
 import {Button} from 'semantic-ui-react';
-import {ActionLog, ActionType} from '../../common/encounter';
+import {ActionLog, ActionType} from '../../../server/encounter';
 import {useSocket} from '../../common/Socket';
 import {QueueAction} from '../../common/actions';
 import {Save} from './Save';

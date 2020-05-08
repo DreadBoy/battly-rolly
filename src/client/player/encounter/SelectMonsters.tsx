@@ -4,7 +4,7 @@ import {State} from '../../common/reducer';
 import {Button, Form, Grid} from 'semantic-ui-react';
 import {Select} from './Select';
 import {createUseStyles} from 'react-jss';
-import {ActionType, Monster} from '../../common/encounter';
+import {ActionType, Monster} from '../../../server/encounter';
 import {useHistory} from 'react-router';
 
 

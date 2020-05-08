@@ -7,7 +7,7 @@ import {createStore} from 'redux';
 import {reducer, State} from '../common/reducer';
 import {Provider as StoreProvider} from 'react-redux';
 import {fakeMonster} from './faker';
-import {Attack, AttackLog, SaveLog} from '../common/encounter';
+import {Attack, AttackLog, SaveLog} from '../../server/encounter';
 
 // const preloadedState: State = {
 //     players: {},

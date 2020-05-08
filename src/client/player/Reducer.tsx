@@ -7,7 +7,7 @@ import {Splash} from '../common/Splash';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {Message} from '../common/Message';
 import {useLocalStorage} from '../common/use-local-storage';
-import {PlayerStats} from '../common/encounter';
+import {PlayerStats} from '../../server/encounter';
 import {sadFace} from '../common/emojis';
 
 export const Reducer: FC = ({children}) => {

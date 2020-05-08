@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {State} from '../common/reducer';
 import {Creator} from './Creator';
 import {Message} from '../common/Message';
-import {Action, AttackLog, isAttack, isSave, Monster, phases, SaveLog} from '../common/encounter';
+import {Action, AttackLog, isAttack, isSave, Monster, phases, SaveLog} from '../../server/encounter';
 import {DndProvider} from 'react-dnd';
 import Backend from 'react-dnd-html5-backend'
 import {MonsterCard} from './encounter/MonsterCard';

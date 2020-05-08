@@ -31,6 +31,7 @@ export const getUsers = async (ids: string[], relations: string[] = []): Promise
 };
 
 export const updateUser = async (id: string, body: Partial<User>): Promise<User> => {
+    body = validateObject(body, ['displayName']);
     const user = await getUser(id);
     assign(user, body);
     await user.save();

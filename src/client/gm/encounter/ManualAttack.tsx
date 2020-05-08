@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useState} from 'react';
-import {Action as DnDAction} from '../../common/encounter';
+import {Action as DnDAction} from '../../../server/encounter';
 import {DragSourceMonitor, useDrag} from 'react-dnd';
 import {Modal} from './ManualAttackModal';
 

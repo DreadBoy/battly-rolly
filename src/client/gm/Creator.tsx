@@ -4,7 +4,7 @@ import {Splash} from '../common/Splash';
 import {Message} from '../common/Message';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {Button, Grid, Icon, List} from 'semantic-ui-react';
-import {Monster} from '../common/encounter';
+import {Monster} from '../../server/encounter';
 import {MonsterParser} from './MonsterParser';
 import {useDispatch} from 'react-redux';
 import {MonsterList} from './MonsterList';

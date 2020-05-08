@@ -7,11 +7,11 @@ import {useLoader} from '../../../helpers/Store';
 import {Stacktrace} from '../../../helpers/Stacktrace';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {usePlayerId} from '../../../helpers/PlayerId';
-import {damageTypes} from '../../../../common/encounter';
 import {useDropdown, useNumber} from '../../../../common/form-helpers';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
 import {DamageType} from '../../../../../server/model/action';
+import {damageTypes} from '../../../../../server/encounter';
 
 type Props = {
     encounter: Encounter,

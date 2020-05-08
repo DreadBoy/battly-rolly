@@ -1,6 +1,6 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Form, Modal} from 'semantic-ui-react';
-import {abilityShort, SaveLog} from '../../common/encounter';
+import {abilityShort, SaveLog} from '../../../server/encounter';
 import {useNumber} from '../../common/form-helpers';
 import {capitalize} from 'lodash';
 

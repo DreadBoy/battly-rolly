@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {Attack, DamageType, damageTypes, Roll} from '../../common/encounter';
+import {Attack, DamageType, damageTypes, Roll} from '../../../server/encounter';
 import {Button, Dropdown, Form, Modal as SModal} from 'semantic-ui-react';
 import {useNumber, useText} from '../../common/form-helpers';
 

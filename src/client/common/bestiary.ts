@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 import bestiary from '../../assets/Monster Manual Bestiary 2.6.0.json';
-import {AbilitySet, Attack, Damage, DamageType, Monster, Roll} from './encounter';
-import {flatMap, uniq, chain} from 'lodash';
+import {AbilitySet, Attack, Damage, DamageType, Monster, Roll} from '../../server/encounter';
+import {chain} from 'lodash';
 
 const mapper: { [short: string]: keyof AbilitySet } = {
     Str: 'strength',

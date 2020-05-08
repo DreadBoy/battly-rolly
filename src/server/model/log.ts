@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import {Encounter} from './encounter';
 import {Feature} from './feature';
-import {Ability, Status} from '../../client/common/encounter';
+import {Ability, Status} from '../encounter';
 import {DamageType} from './action';
 import {Transformers} from './transformers';
 

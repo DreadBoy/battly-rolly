@@ -1,4 +1,4 @@
-import {Roll} from './encounter';
+import {Roll} from '../../server/encounter';
 import {map, sum, times, isNil} from 'lodash';
 
 export function roll(roll: Roll): number {

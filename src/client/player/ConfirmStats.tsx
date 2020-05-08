@@ -6,7 +6,7 @@ import {Splash} from '../common/Splash';
 import {useSocket} from '../common/Socket';
 import {useLocalStorage} from '../common/use-local-storage';
 import {useHistory} from 'react-router';
-import {PlayerStats} from '../common/encounter';
+import {PlayerStats} from '../../server/encounter';
 import {SetStats} from '../common/actions';
 import {usePlayerId} from './PlayerId';
 

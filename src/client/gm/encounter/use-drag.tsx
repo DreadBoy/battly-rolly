@@ -1,4 +1,4 @@
-import {BaseAction} from '../../common/encounter';
+import {BaseAction} from '../../../server/encounter';
 import {DragSourceMonitor, useDrag as _useDrag} from 'react-dnd';
 
 export function useDrag<T extends BaseAction = BaseAction>(action: T, onAttack: (playerId: string, action: T) => void) {

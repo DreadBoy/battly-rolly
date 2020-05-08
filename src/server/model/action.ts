@@ -1,6 +1,8 @@
 import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Transformers} from './transformers';
 import {Monster} from './monster';
+import {User} from './user';
+import {find} from 'lodash';
 
 export type Roll = [number, number, number];
 export type Damage = {
@@ -100,3 +102,15 @@ export interface IAoE {
     status?: Status,
 }
 
+export const abilities: Ability[] = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+
+export function findAction(monster: Monster | User | undefined, actionName: string | undefined): Action | undefined {
+    // TODO What if GM make attack from player to player, we should also be expecting User in here.
+    // This case isn't likely o happen but it's possible
+    // @ts-ignore
+    return find(monster?.actions, ['name', actionName]);
+}
+
+export function statToModifier(stat: number) {
+    return Math.floor(stat / 2) - 5
+}

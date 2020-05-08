@@ -1,7 +1,7 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
 import {Button, Card, Dropdown, Form, Input} from 'semantic-ui-react';
-import {Attack as AttackModel, AttackLog, DamageType, damageTypes, Monster} from '../../common/encounter';
+import {Attack as AttackModel, AttackLog, DamageType, damageTypes, Monster} from '../../../server/encounter';
 import {MonsterCard} from './MonsterCard';
 import {useNumber, useText} from '../../common/form-helpers';
 import {usePlayerId} from '../PlayerId';

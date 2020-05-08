@@ -1,7 +1,7 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
 import {Button, Card, Dropdown, Form, Input} from 'semantic-ui-react';
-import {abilities, Ability, abilityShort, Monster, Save as SaveModel, SaveLog} from '../../common/encounter';
+import {abilities, Ability, abilityShort, Monster, Save as SaveModel, SaveLog} from '../../../server/encounter';
 import {useNumber, useText} from '../../common/form-helpers';
 import {usePlayerId} from '../PlayerId';
 

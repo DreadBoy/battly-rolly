@@ -13,7 +13,7 @@ export const PlayerIdProvider: FC = ({children}) => {
 
     const [init, setInit] = useState<boolean>(false);
     const {value, set} = useLocalStorage<OnLogin>('player');
-    const accessToken = useRef<string>();
+    const accessToken = useRef<string | undefined>(value?.accessToken);
     const userId = value?.user?.id;
     const data = useRef<OnLogin | null>(null);
     useEffect(() => {

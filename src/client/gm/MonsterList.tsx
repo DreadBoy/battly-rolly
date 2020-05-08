@@ -2,7 +2,7 @@ import {createUseStyles} from 'react-jss';
 import React, {FC, useCallback, useState} from 'react';
 import monsters from '../../assets/bestiary.json';
 import {Dropdown, Form} from 'semantic-ui-react';
-import {Monster} from '../common/encounter';
+import {Monster} from '../../server/encounter';
 import {DropdownProps} from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown';
 import {find} from 'lodash';
 

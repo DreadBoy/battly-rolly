@@ -1,5 +1,5 @@
 import {Action} from './reducer';
-import {ActionLog, Encounter, PlayerStats} from './encounter';
+import {ActionLog, Encounter, PlayerStats} from '../../server/encounter';
 
 export type StartEncounter = Action & {
     payload: Encounter,

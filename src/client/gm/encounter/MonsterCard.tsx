@@ -3,14 +3,10 @@ import React, {FC} from 'react';
 import {Card, List} from 'semantic-ui-react';
 import {
     abilityShort,
-    Action as DnDAction,
-    isAttack,
-    isAttackLog,
-    isSave,
-    isSaveLog,
+    Action as DnDAction, isAttack, isAttackLog, isSave, isSaveLog,
     Monster,
     Player,
-} from '../../common/encounter';
+} from '../../../server/encounter';
 import {Attack, nameToDisplay} from './Attack';
 import classNames from 'classnames';
 import {ManualAttack} from './ManualAttack';
