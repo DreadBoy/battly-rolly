@@ -10,20 +10,14 @@ export const V2: FC = () => {
     const {path} = useRouteMatch();
     return (
         <BackendProvider>
-            <Switch>
-                <Route path={`${path}/register`} component={Register}/>
-                <Route path={`${path}/campaign`}>
-                    <PlayerIdProvider>
-                        <Campaign/>
-                    </PlayerIdProvider>
-                </Route>
-                <Route path={`${path}/user`}>
-                    <PlayerIdProvider>
-                        <User/>
-                    </PlayerIdProvider>
-                </Route>
-                <Route path={'*'}> <Redirect to={`${path}/campaign`}/> </Route>
-            </Switch>
+            <PlayerIdProvider>
+                <Switch>
+                    <Route path={`${path}/register`} component={Register}/>
+                    <Route path={`${path}/campaign`} component={Campaign}/>
+                    <Route path={`${path}/user`} component={User}/>
+                    <Route path={'*'}> <Redirect to={`${path}/campaign`}/> </Route>
+                </Switch>
+            </PlayerIdProvider>
         </BackendProvider>
     );
 };

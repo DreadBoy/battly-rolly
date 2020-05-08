@@ -14,7 +14,7 @@ import {useLoader} from '../helpers/Store';
 import {toJS} from 'mobx';
 import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../helpers/Stacktrace';
-import {useLocalStorage} from '../../common/use-local-storage';
+import {usePlayerId} from '../helpers/PlayerId';
 import {OnLogin} from './Login';
 
 const strengthToColour: { [strength: string]: SemanticCOLORS } = {
@@ -29,7 +29,7 @@ const strengthToColour: { [strength: string]: SemanticCOLORS } = {
 export const Register: FC = observer(() => {
     const {api} = useBackend();
     const {push} = useHistory();
-    const {set} = useLocalStorage('player');
+    const {onLogin} = usePlayerId();
 
     const form = useLocalStore<FormModel>(() => ({
         email: '',
@@ -50,12 +50,12 @@ export const Register: FC = observer(() => {
     const register = useCallback(() => {
         loader.fetchAsync(api.post('/auth', toJS(form)), loaderId)
             .then(data => {
-                set(JSON.stringify(data));
+                onLogin(data);
                 push(root('/campaign'));
             })
             .catch(e => e)
         ;
-    }, [api, form, loader, push, set]);
+    }, [api, form, loader, onLogin, push]);
 
     return (
         <Splash bg={bg} position={'88% center'}>

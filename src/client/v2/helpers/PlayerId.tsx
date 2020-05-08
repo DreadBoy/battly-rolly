@@ -5,6 +5,8 @@ import {useLocalStorage} from '../hooks/use-local-storage';
 import {toJS} from 'mobx';
 import {User} from '../../../server/model/user';
 import {AxiosRequestConfig} from 'axios';
+import {useLocation} from 'react-router';
+import {root} from '../v2';
 
 const playerIdContext = createContext<{ id: string, user?: User, onLogin: (onLogin: OnLogin | null) => void }>(undefined as any);
 
@@ -64,9 +66,12 @@ export const PlayerIdProvider: FC = ({children}) => {
     }, [api, init, onLogin, setHeader, socket, userId])
 
     const valid = !!value;
+
+    const {pathname} = useLocation();
+    const showRegister = pathname === root('/register');
     return (
         <playerIdContext.Provider value={{id: userId ?? '', user: value?.user, onLogin}}>
-            {init && valid ? children : (
+            {(init && valid) || showRegister ? children : (
                 <Login onLogin={onLogin}/>
             )}
         </playerIdContext.Provider>
