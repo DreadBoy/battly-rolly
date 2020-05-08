@@ -16,6 +16,7 @@ import {app as encounterApi} from './api/encounter';
 import {app as featureApi} from './api/feature';
 import {app as logApi} from './api/log';
 import {app as monsterApi} from './api/monster';
+import {app as emailApi} from './api/email';
 import {addSocket, removeSocket, repeatEvent} from './service/socket';
 
 const app = new Koa();
@@ -43,6 +44,7 @@ app.use(mount('/api/encounter', encounterApi));
 app.use(mount('/api/feature', featureApi));
 app.use(mount('/api/log', logApi));
 app.use(mount('/api/monster', monsterApi));
+app.use(mount('/api/email', emailApi));
 app.use(mount(probeApi));
 app.use(koaStatic);
 
