@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
+import koaSsl, {xForwardedProtoResolver} from 'koa-sslify'
 import mount from 'koa-mount';
 import Io from 'socket.io'
 import {createServer} from 'http';
@@ -35,6 +36,8 @@ app.use(async (ctx, next) => {
     await next();
 });
 app.use(logger());
+if (process.env.NODE_ENV !== 'development')
+    app.use(koaSsl({resolver: xForwardedProtoResolver}));
 app.use(bodyParser());
 app.use(ensureDatabase);
 app.use(mount('/api/auth', authApi));
