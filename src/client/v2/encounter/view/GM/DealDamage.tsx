@@ -8,7 +8,8 @@ import {roll} from '../../../../common/roll';
 import {Log} from '../../../../../server/model/log';
 import {fakeRequest, useBackend} from '../../../helpers/BackendProvider';
 import {isAoe, isDirect} from '../../../../../server/model/helpers';
-import {Action, findAction} from '../../../../../server/model/action';
+import {Action} from '../../../../../server/model/action';
+import {findAction} from '../../../../../server/model/action-types';
 
 type Props = {
     encounter: Encounter,

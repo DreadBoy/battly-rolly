@@ -1,5 +1,4 @@
-
-import {abilities, AbilitySet, Damage, DamageType, Roll} from './action';
+import {abilities, AbilitySet, Damage, DamageType, Roll} from './action-types';
 
 export const Transformers = {
     boolean: {

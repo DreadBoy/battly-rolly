@@ -6,7 +6,7 @@ import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {Ability, Status} from '../encounter';
 import {validateObject} from '../middlewares/validators';
-import {DamageType} from '../model/action';
+import {DamageType} from '../model/action-types';
 
 export async function getLogsInEncounter(encounterId: string): Promise<Log[]> {
     return Log.find({where: {encounter: {id: encounterId}}});

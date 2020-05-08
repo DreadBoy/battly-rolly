@@ -1,6 +1,7 @@
-import {Action, IAoE, IDirect} from './action';
+import {Action} from './action';
 import {isNil} from 'lodash';
 import {Feature, FeatureType} from './feature';
+import {IAoE, IDirect} from './action-types';
 
 // @ts-ignore
 export function isDirect(action: Action): action is IDirect {

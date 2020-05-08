@@ -2,7 +2,7 @@ import {ActionDict, grammar as ohm} from 'ohm-js';
 import {difference, filter, flatMap, isString} from 'lodash';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import {Ability, Damage, DamageType, IAoE, IDirect, Roll} from './server/model/action';
+import {Ability, Damage, DamageType, IAoE, IDirect, Roll} from './server/model/action-types';
 
 const bestiary = require('./assets/Monster Manual Bestiary 2.6.0.json');
 const actions = filter(flatMap(bestiary, 'action'), Boolean);

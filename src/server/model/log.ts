@@ -11,8 +11,8 @@ import {
 import {Encounter} from './encounter';
 import {Feature} from './feature';
 import {Ability, Status} from '../encounter';
-import {DamageType} from './action';
 import {Transformers} from './transformers';
+import {DamageType} from './action-types';
 
 export type LogType = 'direct' | 'aoe';
 export type LogStage = 'WaitingOnResult' | 'WaitingOnDamage' | 'WaitingOnConfirmed' | 'Confirmed';

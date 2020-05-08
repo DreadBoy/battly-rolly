@@ -10,8 +10,8 @@ import {usePlayerId} from '../../../helpers/PlayerId';
 import {useDropdown, useNumber} from '../../../../common/form-helpers';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {DealDamage as DealDamageBody} from '../../../../../server/service/log';
-import {DamageType} from '../../../../../server/model/action';
 import {damageTypes} from '../../../../../server/encounter';
+import {DamageType} from '../../../../../server/model/action-types';
 
 type Props = {
     encounter: Encounter,

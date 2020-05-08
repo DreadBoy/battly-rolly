@@ -1,7 +1,8 @@
 import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {Transformers} from './transformers';
-import {AbilitySet, Action, Roll} from './action';
+import {Action} from './action';
 import {User} from './user';
+import {AbilitySet, Roll} from './action-types';
 
 
 @Entity()

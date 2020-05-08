@@ -8,7 +8,7 @@ import {roll} from '../../../../common/roll';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Log} from '../../../../../server/model/log';
 import {type} from '../../../../../server/model/helpers';
-import {statToModifier} from '../../../../../server/model/action';
+import {statToModifier} from '../../../../../server/model/action-types';
 
 type Props = {
     encounter: Encounter,
