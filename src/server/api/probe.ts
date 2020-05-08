@@ -6,9 +6,6 @@ const router = new Router();
 router.get('/probe', async ctx => {
     ctx.response.status = 204;
 });
-router.get('/', async ctx => {
-    ctx.response.status = 204;
-});
 
 const app = new Koa();
 app.use(router.routes());
