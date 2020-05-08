@@ -53,6 +53,7 @@ export const PlayerIdProvider: FC = ({children}) => {
                     return api(error.config);
                 }
             } catch (e) {
+                onLogin(null);
                 throw error;
             }
         });
