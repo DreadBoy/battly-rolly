@@ -1,8 +1,7 @@
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Container, Form, Grid, Icon, Input} from 'semantic-ui-react';
+import {Button, Container, Form, Grid, Header, Icon, Input} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
 import bg from '../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
-import {Message} from '../common/Message';
 import {Link} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -11,7 +10,7 @@ import {Login as FormModel} from '../../server/service/auth';
 import {useBackend} from '../helpers/BackendProvider';
 import {toJS} from 'mobx';
 import {useLoader} from '../helpers/Store';
-import {Stacktrace} from '../helpers/Stacktrace';
+import {Stacktrace} from '../elements/Stacktrace';
 import {User} from '../../server/model/user';
 import {root} from '../App';
 
@@ -52,7 +51,7 @@ export const Login: FC<Props> = observer(({onLogin}) => {
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Message>Log In</Message>
+                        <Header size={'huge'} textAlign='center'>Log In</Header>
                         <p>
                             Need a Battly Rolly account? <Link to={root('/register')}>Create an account</Link>
                         </p>

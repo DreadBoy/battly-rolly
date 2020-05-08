@@ -5,7 +5,7 @@ import {createUseStyles} from 'react-jss';
 import {DragTarget} from './DragTarget';
 import {OnDrop} from './MakeAttack';
 import {TargetType} from './DropTarget';
-import {roll} from '../../../common/roll';
+import {roll} from '../../../helpers/roll';
 import {isAoe, isDirect, type} from '../../../../server/model/helpers';
 import {Action} from '../../../../server/model/action';
 import {featureToDisplay} from '../../../helpers/display-helpers';

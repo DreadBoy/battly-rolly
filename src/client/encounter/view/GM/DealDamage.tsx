@@ -4,7 +4,7 @@ import {Encounter} from '../../../../server/model/encounter';
 import {filter, groupBy, isEmpty, isNil, map} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
 import {DealDamage as DealDamageBody} from '../../../../server/service/log';
-import {roll} from '../../../common/roll';
+import {roll} from '../../../helpers/roll';
 import {Log} from '../../../../server/model/log';
 import {fakeRequest, useBackend} from '../../../helpers/BackendProvider';
 import {isAoe, isDirect} from '../../../../server/model/helpers';

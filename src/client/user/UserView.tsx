@@ -3,7 +3,6 @@ import {Button, Grid, Header, Image} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {observer} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
-import {LoadingFactory} from '../helpers/Loading';
 import {User} from '../../server/model/user';
 import {useRouteMatch} from 'react-router';
 import {toDataURL} from 'qrcode';
@@ -12,8 +11,9 @@ import {createUseStyles} from 'react-jss';
 import {qrCodeStyle} from '../campaign/CampaignView';
 import {useShare} from '../hooks/use-share';
 import {possessive} from '../helpers/display-helpers';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const Editor = LoadingFactory<User>();
+const Editor = AsyncSection<User>();
 
 const useStyles = createUseStyles({
     img: qrCodeStyle,

@@ -5,9 +5,9 @@ import {Monster} from '../../server/model/monster';
 import {useBackend} from '../helpers/BackendProvider';
 import {find, isEmpty, map, throttle} from 'lodash';
 import {observer} from 'mobx-react';
-import {roll} from '../common/roll';
+import {roll} from '../helpers/roll';
 import {Link} from 'react-router-dom';
-import {sadFace} from '../common/emojis';
+import {sadFace} from '../elements/emojis';
 import {AddFeature} from '../../server/service/feature';
 
 type Props = {

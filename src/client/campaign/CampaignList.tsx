@@ -2,16 +2,16 @@ import React, {FC, useCallback, useEffect} from 'react';
 import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {useBackend} from '../helpers/BackendProvider';
-import {LoadingFactory} from '../helpers/Loading';
 import {Campaign} from '../../server/model/campaign';
 import {observer} from 'mobx-react';
 import {usePlayerId} from '../helpers/PlayerId';
-import {ConfirmButton} from '../helpers/ConfirmButton';
+import {ConfirmButton} from '../elements/ConfirmButton';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {useLoader} from '../helpers/Store';
-import {Stacktrace} from '../helpers/Stacktrace';
+import {Stacktrace} from '../elements/Stacktrace';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const List = LoadingFactory<Campaign[]>();
+const List = AsyncSection<Campaign[]>();
 
 export const CampaignList: FC = observer(() => {
     const {url} = useRouteMatch();

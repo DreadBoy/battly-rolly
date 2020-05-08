@@ -4,7 +4,7 @@ import {usePlayerId} from '../helpers/PlayerId';
 import {Encounter} from '../../server/model/encounter';
 import {Grid, Header} from 'semantic-ui-react';
 import {MonsterList} from './MonsterList';
-import {Stacktrace} from '../helpers/Stacktrace';
+import {Stacktrace} from '../elements/Stacktrace';
 import {useBackend} from '../helpers/BackendProvider';
 import {AddFeature} from '../../server/service/feature';
 

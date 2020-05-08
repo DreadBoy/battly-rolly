@@ -2,13 +2,13 @@ import React, {FC, useCallback} from 'react';
 import {Form, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {observer} from 'mobx-react';
-import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {useLoader} from '../helpers/Store';
 import {Encounter} from '../../server/model/encounter';
 import {useRouteMatch} from 'react-router-dom';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const Editor = LoadingFactory<Encounter>();
+const Editor = AsyncSection<Encounter>();
 
 export const EncounterEdit: FC = observer(() => {
     const {params: {campaignId, encounterId}} = useRouteMatch();

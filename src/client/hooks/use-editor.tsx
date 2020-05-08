@@ -6,8 +6,8 @@ import {Store, useLoader} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
 import {Button, InputOnChangeData} from 'semantic-ui-react';
-import {Stacktrace} from '../helpers/Stacktrace';
-import {ConfirmButton} from '../helpers/ConfirmButton';
+import {Stacktrace} from '../elements/Stacktrace';
+import {ConfirmButton} from '../elements/ConfirmButton';
 
 type Mode = 'edit' | 'create';
 type Urls = {

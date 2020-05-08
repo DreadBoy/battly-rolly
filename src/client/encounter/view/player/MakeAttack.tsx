@@ -7,7 +7,7 @@ import {assign, filter, find, includes, isEmpty, map, pull} from 'lodash';
 import {Encounter} from '../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
-import {Stacktrace} from '../../../helpers/Stacktrace';
+import {Stacktrace} from '../../../elements/Stacktrace';
 import {onDropdown, onNumber, onText} from '../../../hooks/use-form';
 import {LogType} from '../../../../server/model/log';
 import {usePlayerId} from '../../../helpers/PlayerId';

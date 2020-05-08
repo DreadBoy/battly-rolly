@@ -1,8 +1,7 @@
 import React, {FC, useCallback, useState} from 'react';
-import {Button, Container, Form, Grid, Icon, Input, Progress, SemanticCOLORS} from 'semantic-ui-react';
+import {Button, Container, Form, Grid, Header, Icon, Input, Progress, SemanticCOLORS} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
-import {Message} from '../common/Message';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -12,7 +11,7 @@ import {Register as FormModel} from '../../server/service/auth';
 import {useLoader} from '../helpers/Store';
 import {toJS} from 'mobx';
 import {useBackend} from '../helpers/BackendProvider';
-import {Stacktrace} from '../helpers/Stacktrace';
+import {Stacktrace} from '../elements/Stacktrace';
 import {usePlayerId} from '../helpers/PlayerId';
 import {OnLogin} from './Login';
 import {root} from '../App';
@@ -62,7 +61,7 @@ export const Register: FC = observer(() => {
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Message>Welcome to Battly Rolly</Message>
+                        <Header size={'huge'} textAlign='center'>Welcome to Battly Rolly</Header>
                         <p>
                             Run encounters. Create custom monsters. Do it all with Battly Rolly.
                             Already have an account? <Link to={root()}>Log in</Link>

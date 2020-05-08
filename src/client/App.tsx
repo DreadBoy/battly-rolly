@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {createUseStyles} from 'react-jss';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import {TouchProvider} from './common/touch';
+import {TouchProvider} from './elements/touch';
 import {BackendProvider} from './helpers/BackendProvider';
 import {PlayerIdProvider} from './helpers/PlayerId';
 import {Register} from './user/Register';

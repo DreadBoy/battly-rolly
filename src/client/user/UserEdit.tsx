@@ -3,12 +3,12 @@ import {Form, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {observer} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
-import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {User} from '../../server/model/user';
 import {useRouteMatch} from 'react-router';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const Editor = LoadingFactory<User>();
+const Editor = AsyncSection<User>();
 
 export const UserEdit: FC = observer(() => {
     const {params: {userId}} = useRouteMatch();

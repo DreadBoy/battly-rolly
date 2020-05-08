@@ -2,7 +2,7 @@ import React, {FC, ReactElement} from 'react';
 import {Store} from './Store';
 import {Loader} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {Stacktrace} from './Stacktrace';
+import {Stacktrace} from '../elements/Stacktrace';
 
 type Props<T> = {
     store: Store<T>
@@ -10,7 +10,7 @@ type Props<T> = {
     render: (data: T) => ReactElement | null
 }
 
-export const LoadingFactory = <T extends object>(): FC<Props<T>> => observer(({store, id, render}) => {
+export const AsyncSection = <T extends object>(): FC<Props<T>> => observer(({store, id, render}) => {
     return store.loading[id] ? (
         <Loader active size='large' inline={'centered'}/>
     ) : store.error[id] ? (

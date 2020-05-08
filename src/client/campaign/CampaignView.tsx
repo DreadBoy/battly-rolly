@@ -3,7 +3,6 @@ import {Button, Grid, Header, Image, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Campaign} from '../../server/model/campaign';
 import {observer} from 'mobx-react';
-import {LoadingFactory} from '../helpers/Loading';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
 import {toDataURL} from 'qrcode';
@@ -11,12 +10,13 @@ import {createUseStyles} from 'react-jss';
 import {useLoader} from '../helpers/Store';
 import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
-import {Stacktrace} from '../helpers/Stacktrace';
-import {ConfirmButton} from '../helpers/ConfirmButton';
+import {Stacktrace} from '../elements/Stacktrace';
+import {ConfirmButton} from '../elements/ConfirmButton';
 import {EncounterList} from '../encounter/EncounterList';
 import {useShare} from '../hooks/use-share';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const Editor = LoadingFactory<Campaign>();
+const Editor = AsyncSection<Campaign>();
 
 
 export const qrCodeStyle = {

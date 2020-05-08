@@ -1,6 +1,6 @@
 import React, {createContext, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import Io from 'socket.io-client';
-import {Connect} from '../common/Connect';
+import {Connect} from './Connect';
 import Axios, {AxiosInstance, AxiosPromise} from 'axios';
 
 type BackendContext = {

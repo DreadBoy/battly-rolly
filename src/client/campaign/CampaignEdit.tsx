@@ -4,11 +4,11 @@ import {Layout} from '../layout/Layout';
 import {Campaign} from '../../server/model/campaign';
 import {observer} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
-import {LoadingFactory} from '../helpers/Loading';
 import {useEditor} from '../hooks/use-editor';
 import {useRouteMatch} from 'react-router-dom';
+import {AsyncSection} from '../helpers/AsyncSection';
 
-const Editor = LoadingFactory<Campaign>();
+const Editor = AsyncSection<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
     const {params: {campaignId}} = useRouteMatch();
