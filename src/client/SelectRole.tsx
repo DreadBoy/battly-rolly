@@ -14,6 +14,7 @@ export const SelectRole: FC = () => {
             <Link to={'/gm'}>GM</Link>
             <br/>
             <Link to={'/player'}>Player</Link>
+            <h1><Link to={'/v2'}>🎉 Version 2 🎉</Link></h1>
         </div>
     );
 };
