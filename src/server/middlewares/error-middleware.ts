@@ -4,8 +4,8 @@ export const errorMiddleware: Koa.Middleware = async (ctx, next) => {
     try {
         await next();
     } catch (error) {
-        console.error(error);
         if (error instanceof HttpError || error.name === 'HttpError') {
+            console.error(error);
             ctx.status = error.status;
             ctx.body = {
                 message: error.message,
@@ -19,6 +19,7 @@ export const errorMiddleware: Koa.Middleware = async (ctx, next) => {
             };
             return;
         }
+        console.error(error);
         ctx.status = 500;
         ctx.body = {
             message: 'Internal server error',
