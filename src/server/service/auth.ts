@@ -1,4 +1,4 @@
-import {createUser, getUser} from './user';
+import {createUser, getUser, getUserWithAllFields} from './user';
 import {validateObject} from '../middlewares/validators';
 import {User} from '../model/user';
 import {compare, hash} from 'bcryptjs'
@@ -29,14 +29,15 @@ export type Login = {
 
 export async function login(body: Login) {
     const {email, password} = validateObject(body, ['email', 'password'])
-    let user = await User.findOne({where: {email}});
+    let user = await User.findOne({where: {email}, select: User.selectAll});
     if (!user)
         throw new HttpError(400, 'Incorrect credentials!');
     const valid = await compare(password, user.password);
     if (!valid)
         throw new HttpError(400, 'Incorrect credentials!');
     user.invalidate = false;
-    user = await user.save();
+    await user.save();
+    user = await getUser(user.id);
     return {
         user,
         ...createTokens(user),
@@ -44,7 +45,7 @@ export async function login(body: Login) {
 }
 
 export async function forceLogout({id}: User): Promise<void> {
-    const user = await getUser(id);
+    const user = await getUserWithAllFields(id, undefined);
     user.invalidate = true;
     await user.save();
 }
@@ -57,11 +58,12 @@ export async function refresh(body: any) {
     } catch (e) {
         throw new HttpError(400, 'Invalid refresh token!');
     }
-    const user = await User.findOne({where: {id: token?.user?.id}})
+    let user = await User.findOne({where: {id: token?.user?.id}, select: User.selectAll})
     if (!user)
         throw new HttpError(400, 'Invalid user in refresh token!');
     if (user.invalidate)
         throw new HttpError(400, 'Your access was invalidated, log in again!');
+    user = await getUser(user.id);
     return {
         user,
         ...createTokens(user),

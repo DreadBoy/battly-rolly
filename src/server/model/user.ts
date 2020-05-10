@@ -14,10 +14,10 @@ export class User extends BaseEntity {
     @Column()
     displayName!: string;
 
-    @Column()
+    @Column({select: false})
     password!: string;
 
-    @Column({default: false})
+    @Column({default: false, select: false})
     invalidate!: boolean;
 
     @ManyToMany(() => Campaign, campaign => campaign.users)
@@ -29,4 +29,6 @@ export class User extends BaseEntity {
     @ManyToMany(() => Monster, monster => monster.subscribers, {cascade: true})
     @JoinTable()
     subscribedMonsters!: Monster[];
+
+    static selectAll: (keyof User)[] = ['email', 'displayName', 'password', 'invalidate'];
 }

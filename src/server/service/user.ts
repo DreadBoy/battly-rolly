@@ -26,6 +26,13 @@ export const getUser = async (id: string, relations: string[] = []): Promise<Use
     return user;
 };
 
+export const getUserWithAllFields = async (id: string, relations: string[] = []): Promise<User> => {
+    const user = await User.findOne(id, {relations, select: User.selectAll});
+    if (!user)
+        throw new HttpError(404, `User with id ${id} not found`);
+    return user;
+};
+
 export const getUsers = async (ids: string[], relations: string[] = []): Promise<User[]> => {
     return User.findByIds(ids, {relations});
 };
