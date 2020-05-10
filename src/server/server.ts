@@ -3,10 +3,9 @@ import logger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
 import koaSsl, {xForwardedProtoResolver} from 'koa-sslify'
 import mount from 'koa-mount';
-import Io from 'socket.io'
 import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
-import {gray, green, red, white} from 'chalk';
+import {green} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
 import {ensureDatabase} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
@@ -18,7 +17,7 @@ import {app as featureApi} from './api/feature';
 import {app as logApi} from './api/log';
 import {app as monsterApi} from './api/monster';
 import {app as emailApi} from './api/email';
-import {addSocket, removeSocket, repeatEvent} from './service/socket';
+import {createSockets} from './service/socket';
 
 const app = new Koa();
 const koaStatic = KoaStatic({
@@ -52,30 +51,7 @@ app.use(mount(probeApi));
 app.use(koaStatic);
 
 const server = createServer(app.callback());
-const io = Io(server);
-
-io.on('connect', socket => {
-    let connectedUser: string | null = null;
-
-    socket.on('join', (userId: string) => {
-        console.log(green('  <-- ') + white('SOCKET ') + gray(userId));
-        connectedUser = userId;
-        addSocket(userId, socket);
-    });
-
-    socket.on('repeat', (event: string) => {
-        if (!connectedUser)
-            return;
-        console.log(`  ${gray('<--')} ${white('SOCKET')} ${gray('repeat')} ${gray(event)}`);
-        repeatEvent(connectedUser, event);
-    });
-
-    socket.on('disconnect', () => {
-        console.log(red('  --> ') + white('SOCKET ') + gray(connectedUser));
-        if (connectedUser != null)
-            removeSocket(connectedUser);
-    });
-});
+createSockets(server);
 
 const port = process.env.PORT || 3000;
 server.listen(port);

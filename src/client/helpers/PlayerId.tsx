@@ -59,11 +59,15 @@ export const PlayerIdProvider: FC = ({children}) => {
                 throw error;
             }
         });
-
-        socket?.emit('join', userId);
-        socket?.emit('repeat', 'encounter');
         setInit(true);
     }, [api, init, onLogin, setHeader, socket, userId])
+
+    useEffect(() => {
+        if (!socket)
+            return;
+        socket.emit('join', userId);
+        socket.emit('repeat', 'encounter');
+    }, [socket, userId]);
 
     const valid = !!value;
 
