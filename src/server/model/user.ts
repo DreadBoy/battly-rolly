@@ -30,5 +30,5 @@ export class User extends BaseEntity {
     @JoinTable()
     subscribedMonsters!: Monster[];
 
-    static selectAll: (keyof User)[] = ['email', 'displayName', 'password', 'invalidate'];
+    static selectAll: (keyof User)[] = ['id', 'email', 'displayName', 'password', 'invalidate'];
 }
