@@ -39,7 +39,12 @@ const useStyles = createUseStyles({
     },
     menu: {
         width: '100vw',
-    }
+    },
+    noBorder: {
+        '.ui.menu &.item:before': {
+            display: 'none',
+        },
+    },
 });
 
 export const Layout: FC = ({children}) => {
@@ -132,7 +137,18 @@ export const Layout: FC = ({children}) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     <div className={classes.flex}/>
-                    <img src={icon} alt={'icon'} className={classes.logo}/>
+                    {encounter ? (
+                        <Menu.Item className={classes.noBorder}>
+                            <span>
+                            <Icon fitted name={'attention'} color={'orange'}/>
+                            <Link to={root(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
+                            > {encounter.name} </Link>
+                            <Icon fitted name={'attention'} color={'orange'}/>
+                            </span>
+                        </Menu.Item>
+                    ) : (
+                        <img src={icon} alt={'icon'} className={classes.logo}/>
+                    )}
                     <div className={classes.flex}/>
                     <Menu.Item className={classes.fakeItem}/>
                 </Container>
