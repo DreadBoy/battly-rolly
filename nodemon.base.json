@@ -4,7 +4,8 @@
 		"DATABASE_URL": "",
 		"PORT": "3000",
 		"TS_NODE_PROJECT": "tsconfig.server.json",
-		"JWT_KEY": ""
+		"JWT_KEY": "",
+		"SENDGRID_API_KEY": ""
 	},
 	"watch": ["src/server/**/*.ts"],
 	"ext": "ts",

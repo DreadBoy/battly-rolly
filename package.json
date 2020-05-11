@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@koa/router": "^8.0.6",
+    "@sendgrid/mail": "^7.1.0",
     "@testing-library/jest-dom": "^5.1.0",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^8.1.0",

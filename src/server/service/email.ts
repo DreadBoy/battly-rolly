@@ -1,5 +1,10 @@
 import {SMTPServer} from 'smtp-server';
-import Sendmail from 'sendmail';
+import {setApiKey, send as mailSend} from '@sendgrid/mail';
+
+
+if (!process.env.SENDGRID_API_KEY)
+    throw new Error('Missing process.env.SENDGRID_API_KEY!');
+setApiKey(process.env.SENDGRID_API_KEY);
 
 if (process.env.NODE_ENV === 'development') {
     // This is local SMTP server we use to test. We can't send emails from localhost to actual email addresses
@@ -25,38 +30,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export async function send() {
-    const sendmail = process.env.NODE_ENV === 'development' ?
-        Sendmail({
-            logger: {
-                debug: console.log,
-                info: console.info,
-                warn: console.warn,
-                error: console.error,
-            },
-            silent: false,
-            devHost: 'localhost',
-            devPort: 587,
-        }) :
-        Sendmail({
-            logger: {
-                debug: console.log,
-                info: console.info,
-                warn: console.warn,
-                error: console.error,
-            },
-            silent: false,
-        });
-
-    await new Promise((resolve, reject) => {
-        sendmail({
-            from: 'no-reply@battly-rolly-dev.herokuapp.com',
-            to: 'vertical3life@gmail.com',
-            subject: 'test sendmail',
-            html: 'Mail of test sendmail ',
-        }, function (err, reply) {
-            if (err)
-                return reject(err);
-            resolve(reply);
-        })
-    })
+    const msg = {
+        to: 'test@example.com',
+        from: 'test@example.com',
+        subject: 'Sending with Twilio SendGrid is Fun',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    };
+    await mailSend(msg);
 }
