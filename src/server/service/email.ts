@@ -27,14 +27,29 @@ if (process.env.NODE_ENV === 'development') {
 export async function send() {
     const sendmail = process.env.NODE_ENV === 'development' ?
         Sendmail({
+            logger: {
+                debug: console.log,
+                info: console.info,
+                warn: console.warn,
+                error: console.error,
+            },
+            silent: false,
             devHost: 'localhost',
             devPort: 587,
         }) :
-        Sendmail({});
+        Sendmail({
+            logger: {
+                debug: console.log,
+                info: console.info,
+                warn: console.warn,
+                error: console.error,
+            },
+            silent: false,
+        });
 
     await new Promise((resolve, reject) => {
         sendmail({
-            from: 'no-reply@battly-rolly.herokuapp.com',
+            from: 'no-reply@battly-rolly-dev.herokuapp.com',
             to: 'vertical3life@gmail.com',
             subject: 'test sendmail',
             html: 'Mail of test sendmail ',
