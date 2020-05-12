@@ -5,6 +5,7 @@ import {compare, hash} from 'bcryptjs'
 import {sign as signToken, verify} from 'jsonwebtoken';
 import {pick} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
+import {randomBytes} from 'crypto';
 
 export type Register = {
     email: string,
@@ -12,9 +13,13 @@ export type Register = {
     password: string,
 }
 
+export async function hashPassword(password: string) {
+    return hash(password, 10);
+}
+
 export async function register(body: Register) {
     const {password, ...data} = validateObject(body, ['email', 'password', 'displayName'])
-    const hashed = await hash(password, 10);
+    const hashed = await hashPassword(password);
     const user = await createUser({...data, password: hashed});
     return {
         user,
@@ -87,4 +92,35 @@ export function sign(user: User, expiresIn: number) {
             expiresIn,
         },
     );
+}
+
+export function flowWithEmail(key: 'confirmEmail' | 'changeEmail' | 'resetPassword') {
+    function generateKey() {
+        return randomBytes(16).toString('hex');
+    }
+
+    async function start(user: User): Promise<User> {
+        user = await getUserWithAllFields(user.id);
+        user[key] = generateKey();
+        return user.save();
+    }
+
+    async function getUser(value: string): Promise<User | undefined> {
+        return User.findOne({where: {[key]: value}, select: User.selectAll});
+    }
+
+    async function verify(value: string): Promise<boolean> {
+        const user = await getUser(value);
+        return !!user;
+    }
+
+    async function finish(value: string): Promise<void> {
+        const user = await getUser(value);
+        if (!user)
+            throw new Error('You forgot to verify key in email flow!')
+        user[key] = null;
+        await user.save();
+    }
+
+    return {start, verify, finish, getUser};
 }

@@ -17,6 +17,15 @@ export class User extends BaseEntity {
     @Column({select: false})
     password!: string;
 
+    @Column('text', {nullable: true, select: false})
+    confirmEmail!: string | null;
+
+    @Column('text', {nullable: true, select: false})
+    changeEmail!: string | null;
+
+    @Column('text', {nullable: true, select: false})
+    resetPassword!: string | null;
+
     @Column({default: false, select: false})
     invalidate!: boolean;
 
@@ -30,5 +39,6 @@ export class User extends BaseEntity {
     @JoinTable()
     subscribedMonsters!: Monster[];
 
-    static selectAll: (keyof User)[] = ['id', 'email', 'displayName', 'password', 'invalidate'];
+    static selectAll: (keyof User)[] = ['id', 'email', 'displayName', 'password',
+        'confirmEmail', 'changeEmail', 'resetPassword', 'invalidate'];
 }

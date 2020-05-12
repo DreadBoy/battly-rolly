@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@koa/router": "^8.0.6",
+    "@sendgrid/helpers": "^7.0.1",
     "@sendgrid/mail": "^7.1.0",
     "@testing-library/jest-dom": "^5.1.0",
     "@testing-library/react": "^9.3.2",
@@ -48,6 +49,7 @@
     "bcryptjs": "^2.4.3",
     "chalk": "^3.0.0",
     "classnames": "^2.2.6",
+    "crypto": "^1.0.1",
     "fast-xml-parser": "^3.16.0",
     "is-var-name": "^2.0.0",
     "jsonwebtoken": "^8.5.1",

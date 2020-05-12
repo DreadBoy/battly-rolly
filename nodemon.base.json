@@ -1,13 +1,17 @@
 {
-	"env": {
-		"NODE_ENV": "development",
-		"DATABASE_URL": "",
-		"PORT": "3000",
-		"TS_NODE_PROJECT": "tsconfig.server.json",
-		"JWT_KEY": "",
-		"SENDGRID_API_KEY": ""
-	},
-	"watch": ["src/server/**/*.ts"],
-	"ext": "ts",
-	"exec": "node --inspect=3002 -r \"ts-node/register\" src/server/server.ts"
+  "env": {
+    "NODE_ENV": "development",
+    "PORT": "3000",
+    "TS_NODE_PROJECT": "tsconfig.server.json",
+
+    "DATABASE_URL": "",
+    "JWT_KEY": "",
+    "SENDGRID_API_KEY": "",
+    "BASE_URL": "http://localhost:3001"
+  },
+  "watch": [
+    "src/server/**/*.ts"
+  ],
+  "ext": "ts",
+  "exec": "node --inspect=3002 -r \"ts-node/register\" src/server/server.ts"
 }

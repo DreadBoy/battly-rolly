@@ -1,41 +1,63 @@
-import {SMTPServer} from 'smtp-server';
-import {setApiKey, send as mailSend} from '@sendgrid/mail';
-
+import {send as mailSend, setApiKey} from '@sendgrid/mail';
+import {MailDataRequired} from '@sendgrid/helpers/classes/mail';
+import {User} from '../model/user';
 
 if (!process.env.SENDGRID_API_KEY)
     throw new Error('Missing process.env.SENDGRID_API_KEY!');
+if (!process.env.BASE_URL)
+    throw new Error('Missing process.env.BASE_URL!');
 setApiKey(process.env.SENDGRID_API_KEY);
 
-if (process.env.NODE_ENV === 'development') {
-    // This is local SMTP server we use to test. We can't send emails from localhost to actual email addresses
-    // So we set up local SMTP server and send email to it
-    const server = new SMTPServer({
-        secure: false,
-        authOptional: true,
-        onConnect(session, callback) {
-            if (session.remoteAddress !== '127.0.0.1') {
-                return callback(new Error('No connections from outside allowed'));
-            }
-            return callback();
+function _config() {
+    return {
+        from: {
+            email: 'no-reply@maticleva.com',
+            name: 'Battly Rolly',
         },
-        onData(stream, session, callback) {
-            stream.pipe(process.stdout);
-            stream.on('end', callback);
+        replyTo: {
+            email: 'no-reply@maticleva.com',
+            name: 'Battly Rolly',
         },
-    });
-    server.listen(587);
-    server.on('error', err => {
-        console.log('Error %s', err.message);
-    });
+    };
 }
 
-export async function send() {
-    const msg = {
-        to: 'test@example.com',
-        from: 'test@example.com',
-        subject: 'Sending with Twilio SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+export async function confirmEmail(email: string, key: string) {
+    const config: MailDataRequired = {
+        ..._config(),
+        templateId: 'd-69d8b19b189a4b258fa9c5809a9f3320',
+        personalizations: [
+            {
+                to: [
+                    {
+                        email,
+                    },
+                ],
+                dynamicTemplateData: {
+                    url: `${process.env.BASE_URL}/confirm?key=${key}`,
+                },
+            },
+        ],
     };
-    await mailSend(msg);
+    await mailSend(config);
+}
+
+export async function resetPassword(user: User) {
+    const config: MailDataRequired = {
+        ..._config(),
+        templateId: 'd-a2e3298455d54da6b2f93938ceb2f23a',
+        personalizations: [
+            {
+                to: [
+                    {
+                        email: user.email,
+                    },
+                ],
+                dynamicTemplateData: {
+                    url: `${process.env.BASE_URL}/reset-password?key=${user.resetPassword}`,
+                    displayName: user.displayName,
+                },
+            },
+        ],
+    };
+    await mailSend(config);
 }
