@@ -1,7 +1,7 @@
 import React, {FC, useEffect} from 'react';
 import {Container, Grid, Header} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
+import bg from '../../assets/backgrounds/sage-advice-header-image.jpg';
 import {useLocation} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {useBackend} from '../helpers/BackendProvider';

@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Container, Grid, Header} from 'semantic-ui-react';
-import bg from '../../assets/07cdffb028209e9b2fe3ef7fc142e920.jpg';
+import bg from '../../assets/backgrounds/sage-advice-header-image.jpg';
 import {Splash} from './Splash';
 
 export const FourOhFour: FC = () => {

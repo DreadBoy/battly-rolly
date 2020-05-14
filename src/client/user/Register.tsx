@@ -1,7 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Container, Form, Grid, Header, Input} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
-import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
+import bg from '../../assets/backgrounds/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
