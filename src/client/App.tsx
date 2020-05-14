@@ -1,13 +1,14 @@
 import React, {FC} from 'react';
 import {createUseStyles} from 'react-jss';
+import {Redirect} from 'react-router';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {TouchProvider} from './elements/touch';
 import {BackendProvider} from './helpers/BackendProvider';
 import {PlayerIdProvider} from './helpers/PlayerId';
+import {ResetPassword} from './email/ResetPassword';
 import {Register} from './user/Register';
 import {Campaign} from './campaign/Campaign';
 import {User} from './user/User';
-import {Redirect} from 'react-router';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -23,14 +24,19 @@ const App: FC = () => {
         <BrowserRouter>
             <TouchProvider>
                 <BackendProvider>
-                    <PlayerIdProvider>
-                        <Switch>
-                            <Route path={`/register`} component={Register}/>
-                            <Route path={`/campaign`} component={Campaign}/>
-                            <Route path={`/user`} component={User}/>
-                            <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
-                        </Switch>
-                    </PlayerIdProvider>
+                    <Switch>
+                        <Route path={`/reset-password`} component={ResetPassword}/>
+                        <Route path={'*'}>
+                            <PlayerIdProvider>
+                                <Switch>
+                                    <Route path={`/register`} component={Register}/>
+                                    <Route path={`/campaign`} component={Campaign}/>
+                                    <Route path={`/user`} component={User}/>
+                                    <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
+                                </Switch>
+                            </PlayerIdProvider>
+                        </Route>
+                    </Switch>
                 </BackendProvider>
             </TouchProvider>
         </BrowserRouter>
