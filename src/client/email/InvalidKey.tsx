@@ -6,6 +6,7 @@ import {onText} from '../hooks/use-form';
 import {Stacktrace} from '../elements/Stacktrace';
 import {isEmpty, isNil} from 'lodash';
 import {Success} from '../elements/Success';
+import {ButtonAsLink} from '../elements/ButtonAsLink';
 
 export const InvalidKey: FC = observer(() => {
 
@@ -21,11 +22,9 @@ export const InvalidKey: FC = observer(() => {
 
     return (
         <>
-            <p>Something went wrong, would you like to <a
-                href={'#'}
-                onClick={open}>
+            <p>Something went wrong, would you like to <ButtonAsLink onClick={open}>
                 start over
-            </a>?</p>
+            </ButtonAsLink>?</p>
             {opened && (
                 <Form onSubmit={reset}>
                     <p>Enter your email below to reset password.</p>

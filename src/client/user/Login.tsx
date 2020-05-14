@@ -16,6 +16,7 @@ import {root} from '../App';
 import {usePasswordInput} from '../hooks/use-password-input';
 import {successMessage, useResetPassword} from '../hooks/use-reset-password';
 import {Success} from '../elements/Success';
+import {ButtonAsLink} from '../elements/ButtonAsLink';
 
 type Props = {
     onLogin: (onLogin: OnLogin) => void,
@@ -92,11 +93,9 @@ export const Login: FC<Props> = observer(({onLogin}) => {
                                 </Input>
                             </Form.Field>
                             <p>
-                                Forgot your password? <a
-                                href={'#'}
-                                onClick={reset}>
-                                Reset it
-                            </a>. {loading && <Icon name='spinner' color='blue' loading/>}
+                                Forgot your password? <ButtonAsLink
+                                onClick={reset}>Reset it</ButtonAsLink>
+                                . {loading && <Icon name='spinner' color='blue' loading/>}
                             </p>
                             <Success message={successMessage} show={!isNil(data)}/>
                             <Stacktrace error={error}/>
