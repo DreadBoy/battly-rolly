@@ -1,11 +1,10 @@
-import React, {FC, useCallback, useState} from 'react';
-import {Button, Container, Form, Grid, Header, Icon, Input, Progress, SemanticCOLORS} from 'semantic-ui-react';
+import React, {FC, useCallback} from 'react';
+import {Button, Container, Form, Grid, Header, Input} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
 import bg from '../../assets/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
-import {PasswordMeter} from 'password-meter';
 import {isEmpty} from 'lodash';
 import {Register as FormModel} from '../../server/service/auth';
 import {useLoader} from '../helpers/Store';
@@ -15,15 +14,7 @@ import {Stacktrace} from '../elements/Stacktrace';
 import {usePlayerId} from '../helpers/PlayerId';
 import {OnLogin} from './Login';
 import {root} from '../App';
-
-const strengthToColour: { [strength: string]: SemanticCOLORS } = {
-    veryWeak: 'red',
-    weak: 'red',
-    medium: 'orange',
-    strong: 'yellow',
-    veryStrong: 'olive',
-    perfect: 'green',
-}
+import {usePasswordInput} from '../hooks/use-password-input';
 
 export const Register: FC = observer(() => {
     const {api} = useBackend();
@@ -35,12 +26,8 @@ export const Register: FC = observer(() => {
         displayName: '',
         password: '',
     }));
-    const passwordStrength = new PasswordMeter().getResult(form.password);
 
-    const [passVisible, setPassVisible] = useState<boolean>(false);
-    const togglePassVisible = useCallback(() => {
-        setPassVisible(!passVisible)
-    }, [passVisible]);
+    const {type, icon, meter} = usePasswordInput(form.password);
 
     const valid = !isEmpty(form.email) && !isEmpty(form.displayName) && !isEmpty(form.password);
 
@@ -86,25 +73,14 @@ export const Register: FC = observer(() => {
                                 <label htmlFor={'password'}>Password</label>
                                 <Input
                                     id={'password'}
-                                    type={passVisible ? 'text' : 'password'}
-                                    icon={(
-                                        <Icon
-                                            link
-                                            name={passVisible ? 'eye slash' : 'eye'}
-                                            onClick={togglePassVisible}
-                                        />
-                                    )}
+                                    type={type}
+                                    icon={icon}
                                     value={form.password}
                                     onChange={onText(form, 'password')}
                                     required
                                 >
                                 </Input>
-                                {passwordStrength.status !== 'Empty' && (
-                                    <Progress
-                                        percent={passwordStrength.percent}
-                                        attached={'bottom'}
-                                        color={strengthToColour[passwordStrength.status]}/>
-                                )}
+                                {meter}
                             </Form.Field>
                             <Stacktrace error={loader.error[loaderId]}/>
                             <Button

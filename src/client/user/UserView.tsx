@@ -12,6 +12,10 @@ import {qrCodeStyle} from '../campaign/CampaignView';
 import {useShare} from '../hooks/use-share';
 import {possessive} from '../helpers/display-helpers';
 import {AsyncSection} from '../helpers/AsyncSection';
+import {Stacktrace} from '../elements/Stacktrace';
+import {Success} from '../elements/Success';
+import {isNil} from 'lodash';
+import {successMessage, useResetPassword} from '../hooks/use-reset-password';
 
 const Editor = AsyncSection<User>();
 
@@ -46,6 +50,8 @@ export const UserView: FC = observer(() => {
         setHunter(!hunter);
     }, [hunter]);
 
+    const {reset, loading, data: res, error} = useResetPassword(user.data[userId]?.email);
+
     return (
         <Layout>
             <Grid doubling columns={2}>
@@ -67,13 +73,24 @@ export const UserView: FC = observer(() => {
                                 <Grid.Column>
                                     <Header sub>Email</Header>
                                     {data.email}
-                                    <br/>
-                                    <Button basic size={'mini'}>Change</Button>
 
                                     <Header sub>Password</Header>
                                     <span onClick={toggleHunter}>{hunter ? 'hunter2' : '*********'}</span>
                                     <br/>
-                                    <Button basic size={'mini'}>Reset</Button>
+                                    <Button
+                                        basic
+                                        size={'mini'}
+                                        loading={loading}
+                                        disabled={loading}
+                                        onClick={reset}
+                                    >
+                                        Reset
+                                    </Button>
+                                    <Stacktrace error={error}/>
+                                    <Success
+                                        show={!isNil(res)}
+                                        message={successMessage}
+                                    />
                                 </Grid.Column>
                             </Grid.Row>
                             <Grid.Row>
