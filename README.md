@@ -1,7 +1,17 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Potential names
+* Critical Hit / CritHit
+* Dice Squire
+* Nat20 (also YT channel 😩)
+* Roll squire
+* Critical Roll / CritRoll
+* Never Roll
+* Hit Tracker
+* Battle Tracker
+* Battlers Gate
 
 ## Available Scripts
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
 In the project directory, you can run:
 
 ### `yarn start`
