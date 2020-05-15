@@ -5,9 +5,10 @@ import {observer, useLocalStore} from 'mobx-react';
 import {Store, useLoader} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
-import {Button, InputOnChangeData} from 'semantic-ui-react';
+import {Button} from 'semantic-ui-react';
 import {Stacktrace} from '../elements/Stacktrace';
 import {ConfirmButton} from '../elements/ConfirmButton';
+import {onNumber, onText} from './use-form';
 
 type Mode = 'edit' | 'create';
 type Urls = {
@@ -28,7 +29,7 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, id: string, creat
         get: `/${baseUrl}/${id}`,
         put: `/${baseUrl}/${id}`,
         post: `/${baseUrl}`,
-        delete: `/${baseUrl}/${id}`
+        delete: `/${baseUrl}/${id}`,
     }, urls);
 
     const editor = useLocalStore<Partial<T>>(creator);
@@ -104,13 +105,17 @@ export function useEditor<T>(store: Store<T>, baseUrl: string, id: string, creat
         removeButton: true,
     };
 
-    const textControl = (key: keyof T) => ({
-        value: editor[key],
-        onChange: (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-            // @ts-ignore
-            editor[key] = data.value;
-        },
-    });
+    const textControl = useCallback((key: keyof T, defaultValue: string = '') => ({
+        value: editor[key] || defaultValue,
+        // @ts-ignore
+        onChange: onText(editor, key),
+    }), [editor]);
 
-    return {editor, submit, id: finalId, FormButtons, textControl, mode};
+    const numberControl = useCallback((key: keyof T, defaultValue: string = '') => ({
+        value: editor[key] || defaultValue,
+        // @ts-ignore
+        onChange: onNumber(editor, key),
+    }), [editor]);
+
+    return {editor, submit, id: finalId, FormButtons, textControl, numberControl, mode};
 }
