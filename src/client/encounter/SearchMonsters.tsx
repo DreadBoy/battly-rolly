@@ -5,24 +5,31 @@ import {Monster} from '../../server/model/monster';
 import {useBackend} from '../helpers/BackendProvider';
 import {find, isEmpty, map, throttle} from 'lodash';
 import {observer} from 'mobx-react';
-import {roll} from '../helpers/roll';
 import {Link} from 'react-router-dom';
 import {sadFace} from '../elements/emojis';
-import {AddFeature} from '../../server/service/feature';
 
 type Props = {
-    onAdd: (features: AddFeature[]) => void,
+    onSelect: (monster: Monster) => void,
+    pool?: 'available' | 'all',
 }
 
-export const MonsterList: FC<Props> = observer(({onAdd}) => {
+export const SearchMonsters: FC<Props> = observer(({onSelect, pool}) => {
     const {api} = useBackend();
 
     const [value, setValue] = useState<string>('');
     const loader = useLoader<Monster[]>()
 
+    const url = useRef<'search' | 'searchAll'>('search');
+    useEffect(() => {
+        if (pool === 'available')
+            url.current = 'search';
+        if (pool === 'all')
+            url.current = 'searchAll';
+    }, [pool])
+
     const fetch = useRef(
         throttle(
-            (value: string) => loader.fetch(api.get(`/monster/search?search=${value}`), value),
+            (value: string) => loader.fetch(api.get(`/monster/${url.current}?search=${value}`), value),
             200,
             {leading: false},
         ),
@@ -41,18 +48,10 @@ export const MonsterList: FC<Props> = observer(({onAdd}) => {
     const onChange = useCallback((event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
         const monster = find(loader.data[value], ['id', data.value]);
         if (monster) {
-            const HP = roll(monster.HP);
-            const feature: AddFeature = {
-                type: 'npc',
-                reference: monster.id,
-                AC: monster.AC,
-                HP,
-                initialHP: HP,
-            };
-            onAdd([feature]);
+            onSelect(monster);
             setValue('')
         }
-    }, [loader.data, onAdd, value]);
+    }, [loader.data, onSelect, value]);
 
     return (
         <Form.Field>
@@ -81,3 +80,6 @@ export const MonsterList: FC<Props> = observer(({onAdd}) => {
         </Form.Field>
     );
 });
+SearchMonsters.defaultProps = {
+    pool: 'available',
+}

@@ -20,7 +20,7 @@ export const CampaignEdit: FC = observer(() => {
 
     return (
         <Layout>
-            <Grid doubling columns={1}>
+            <Grid doubling columns={2}>
                 <Grid.Row>
                     <Grid.Column>
                         <Header>{mode[0].toUpperCase() + mode.slice(1)} campaign</Header>
