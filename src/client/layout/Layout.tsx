@@ -96,7 +96,7 @@ export const Layout: FC = ({children}) => {
                         <Link className={classes.link} to={root('/campaign')}>Campaigns</Link>
                     </Menu.Item>
                     <Menu.Item>
-                        <Link className={classes.link} to={root('/monsters')}>Monsters</Link>
+                        <Link className={classes.link} to={root('/monster')}>Monsters</Link>
                     </Menu.Item>
                     <Menu.Menu position={'right'}>
                         <Dropdown icon={'user outline'} item>
@@ -123,7 +123,7 @@ export const Layout: FC = ({children}) => {
                                 <Link className={classes.link} to={root('/campaign')}>Campaigns</Link>
                             </Dropdown.Item>
                             <Dropdown.Item>
-                                <Link className={classes.link} to={root('/monsters')}>Monsters</Link>
+                                <Link className={classes.link} to={root('/monster')}>Monsters</Link>
                             </Dropdown.Item>
                             <Dropdown.Divider/>
                             <Dropdown.Item>
