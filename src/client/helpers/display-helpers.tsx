@@ -2,8 +2,9 @@ import React, {createElement, Fragment, ReactElement} from 'react';
 import {Icon} from 'semantic-ui-react';
 import {Feature} from '../../server/model/feature';
 import {Ability} from '../../server/encounter';
-import {isNil, map} from 'lodash';
-import { type } from '../../server/model/helpers';
+import {constant, isNil, map, sum, times} from 'lodash';
+import {type} from '../../server/model/helpers';
+import {Roll} from '../../server/model/action-types';
 
 export function featureToDisplay(feature?: Feature): string {
     if (isNil(feature))
@@ -15,6 +16,15 @@ export function featureToDisplay(feature?: Feature): string {
 
 export function abilityShort(ability: Ability) {
     return ability.slice(0, 3).toUpperCase();
+}
+
+export function withSign(num: number) {
+    return `${num / Math.abs(num) > 0 ? '+' : '-'}${Math.abs(num)}`;
+}
+
+export function roll(roll: Roll) {
+    const average = sum(times(roll[0], constant(roll[1] / 2 + 0.5))) + roll[2];
+    return `${roll[0]}d${withSign(roll[1])} (${average})`;
 }
 
 export function success(success: boolean | null) {
