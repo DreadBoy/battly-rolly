@@ -3,6 +3,7 @@ import {useDrop} from 'react-dnd';
 import {Feature} from '../../../../server/model/feature';
 import {List} from 'semantic-ui-react';
 import {featureToDisplay} from '../../../helpers/display-helpers';
+import classNames from 'classnames';
 
 export type TargetType = 'source' | 'target';
 
@@ -28,7 +29,7 @@ export const DropTarget: FC<Props> = ({type, features, onClear, canDrop}) => {
     }, [onClear]);
 
     return (
-        <div className={`ui segment${_canDrop ? ' raised' : ''}`} ref={drop}>
+        <div className={classNames('ui', 'segment', {raised: _canDrop})} ref={drop}>
             <List>
                 {features.length > 0 ?
                     features

@@ -64,7 +64,12 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
 
     return encounter.features.length > 0 ? (
         <DndProvider backend={Backend}>
-            <Header size={'small'}>Make attack</Header>
+            <Header size={'small'}>
+                Make attack
+                <Header.Subheader>
+                    Drag and drop actions or characters into zones below.
+                </Header.Subheader>
+            </Header>
             <Grid>
                 <Grid.Column width={8}>
                     <Header sub>Monsters</Header>

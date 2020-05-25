@@ -33,10 +33,7 @@ export const CampaignList: FC = observer(() => {
                 <Grid.Row>
                     <Grid.Column>
                         <Header>Campaigns</Header>
-                        <Button.Group>
-                            <Button basic color={'grey'}>Join campaign</Button>
-                            <Link to={`${url}/create`} className={'ui button basic blue'}>Create campaign</Link>
-                        </Button.Group>
+                        <Button basic primary size={'tiny'} as={Link} to={`${url}/create`}>Create campaign</Button>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
