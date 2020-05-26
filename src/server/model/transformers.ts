@@ -1,4 +1,5 @@
 import {abilities, AbilitySet, Damage, DamageType, Roll} from './action-types';
+import {isNil} from 'lodash';
 
 export const Transformers = {
     boolean: {
@@ -28,8 +29,12 @@ export const Transformers = {
         },
     },
     damage: {
-        to: (damage: Damage) => `[${damage.roll.join(',')}]:${damage.damageType}`,
-        from: (value: string): Damage => {
+        to: (damage: Damage) => {
+            if (isNil(damage)) return null;
+            return `[${damage.roll.join(',')}]:${damage.damageType}`;
+        },
+        from: (value?: string): Damage | null => {
+            if (isNil(value)) return null;
             const [roll, type] = value.split(':')
             return {
                 roll: roll

@@ -9,10 +9,10 @@ export class Action extends BaseEntity {
     id!: string;
 
     @Column()
-    type!: ActionType;
+    name!: string;
 
     @Column()
-    name!: string;
+    type!: ActionType;
 
     @Column({nullable: true})
     modifier?: number;
@@ -25,8 +25,9 @@ export class Action extends BaseEntity {
 
     @Column('text', {
         transformer: Transformers.damage,
+        nullable: true,
     })
-    damage!: Damage;
+    damage?: Damage;
 
     @Column({default: false})
     takeHalfOnFailure?: boolean;
@@ -34,7 +35,7 @@ export class Action extends BaseEntity {
     @Column({nullable: true})
     status?: Status;
 
-    @ManyToOne(() => Monster, monster => monster.actions)
+    @ManyToOne(() => Monster, monster => monster.actions, {onDelete: 'CASCADE'})
     monster!: Monster;
 }
 
