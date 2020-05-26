@@ -22,9 +22,12 @@ export function withSign(num: number) {
     return `${num / Math.abs(num) > 0 ? '+' : '-'}${Math.abs(num)}`;
 }
 
-export function roll(roll: Roll) {
-    const average = sum(times(roll[0], constant(roll[1] / 2 + 0.5))) + roll[2];
-    return `${roll[0]}d${withSign(roll[1])} (${average})`;
+export function roll(roll: Roll, leadingAverage?: 'leading-average') {
+    const average = Math.floor(sum(times(roll[0], constant(roll[1] / 2 + 0.5))) + roll[2]);
+    const rolled = `${roll[0]}d${withSign(roll[1])}`;
+    return leadingAverage === 'leading-average' ?
+        `${average} (${rolled})` :
+        `${rolled} (${average})`;
 }
 
 export function success(success: boolean | null) {

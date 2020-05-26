@@ -67,6 +67,8 @@ export interface IAoE {
 }
 
 export const abilities: Ability[] = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+export const statuses = ['blinded', 'charmed', 'deafened', 'fatigued', 'frightened', 'grappled', 'incapacitated', 'invisible', 'paralyzed', 'petrified', 'poisoned', 'prone', 'restrained', 'stunned', 'unconscious', 'exhaustion'];
+export const actionTypes: ActionType[] = ['direct', 'aoe'];
 
 export function findAction(monster: Monster | User | undefined, actionName: string | undefined): Action | undefined {
     // TODO What if GM make attack from player to player, we should also be expecting User in here.

@@ -1,13 +1,12 @@
 import React, {FC, useCallback} from 'react';
 import {Dropdown, Input, InputProps, Label} from 'semantic-ui-react';
-import {observer} from 'mobx-react';
 import {Roll} from '../../server/model/action-types';
 import {createUseStyles} from 'react-jss';
 import classNames from 'classnames';
 import {DropdownProps} from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown';
 import {InputOnChangeData} from 'semantic-ui-react/dist/commonjs/elements/Input/Input';
 
-type Props = Pick<InputProps, 'id'> & { value: Roll, onChange: (roll: Roll) => void }
+type Props = Pick<InputProps, 'id' | 'required'> & { value: Roll, onChange: (roll: Roll) => void }
 
 const dice = [
     {key: '4', text: '4', value: '4'},
@@ -69,16 +68,17 @@ const useStyles = createUseStyles({
 
 })
 
-export const RollInput: FC<Props> = observer(({children, id, value, onChange, ...props}) => {
+export const RollInput: FC<Props> = ({id, required, value, onChange, ...props}) => {
     const classes = useStyles();
 
-    const mod = value[1] / Math.abs(value[1]) > 0 ? '+' : '-';
-    const die = Math.abs(value[1]).toString()
+    const mod = value[1] === 0 || value[1] / Math.abs(value[1]) >= 0 ? '+' : '-';
+    const die = Math.abs(value[1]).toString();
 
     const onDropdown = useCallback((index: number) => (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
         if (index === 0) {
             const die = parseInt(data.value as string);
-            onChange([value[0], (value[1] / Math.abs(value[1])) * die, value[2]]);
+            const sign = value[1] === 0 ? 1 : value[1] / Math.abs(value[1]);
+            onChange([value[0], sign * die, value[2]]);
         } else if (index === 1) {
             const mod = data.value === '+' ? +1 : -1;
             onChange([value[0], Math.abs(value[1]) * mod, value[2]]);
@@ -103,6 +103,7 @@ export const RollInput: FC<Props> = observer(({children, id, value, onChange, ..
                 onChange={onNumber(0)}
                 value={value[0]?.toString() ?? ''}
                 id={id}
+                required={required}
             />
             <Label basic className={classes.label}>d</Label>
             <Dropdown
@@ -130,7 +131,8 @@ export const RollInput: FC<Props> = observer(({children, id, value, onChange, ..
                 type={'number'}
                 onChange={onNumber(2)}
                 value={value[2]?.toString() ?? ''}
+                required={required}
             />
         </div>
     );
-});
+};

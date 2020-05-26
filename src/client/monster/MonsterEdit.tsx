@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {Form, Grid, Header} from 'semantic-ui-react';
+import {Button, Form, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Monster} from '../../server/model/monster';
 import {observer} from 'mobx-react';
@@ -11,6 +11,10 @@ import {RollInput} from '../elements/RollInput';
 import {AbilitySet, Roll} from '../../server/model/action-types';
 import {AbilitySetInput} from '../elements/AbilitySetInput';
 import {toJS} from 'mobx';
+import {ActionInput} from '../elements/ActionInput';
+import {cloneDeep, isNil, map} from 'lodash';
+import {Action} from '../../server/model/action';
+import {defaultDamage} from '../elements/DamageInput';
 
 const Editor = AsyncSection<Monster>();
 
@@ -37,6 +41,7 @@ export const MonsterEdit: FC = observer(() => {
             wisdom: 0,
             charisma: 0,
         },
+        actions: [],
     }), []);
     const {submit, id, FormButtons, textControl, numberControl, mode, editor} = useEditor<Monster>(monster, 'monster', monsterId, empty);
 
@@ -53,9 +58,29 @@ export const MonsterEdit: FC = observer(() => {
         onChange: (set: AbilitySet) => {
             // @ts-ignore
             editor[key] = set;
-            console.log(set);
         },
     }), [editor]);
+
+    const addAction = useCallback(() => {
+        editor.actions?.push({
+            type: 'direct',
+            name: '',
+            modifier: 0,
+            damage: cloneDeep(defaultDamage),
+        } as Action);
+    }, [editor.actions]);
+
+    const changeAction = useCallback((index: number) => (action: Action) => {
+        if (index < 0 || isNil(editor.actions))
+            return;
+        editor.actions[index] = action;
+    }, [editor.actions]);
+
+    const removeAction = useCallback((index: number) => () => {
+        if (index < 0 || isNil(editor.actions))
+            return;
+        editor.actions.splice(index, 1);
+    }, [editor.actions]);
 
     return (
         <Layout>
@@ -100,6 +125,26 @@ export const MonsterEdit: FC = observer(() => {
                                         {...abilitySetControl('savingThrows')}
                                         required
                                     />
+                                    {map(editor.actions, (action, index) => (
+                                        <ActionInput
+                                            key={action.id}
+                                            label={action.name}
+                                            id={action.id || Math.random()}
+                                            action={action}
+                                            onChange={changeAction(index)}
+                                            onRemove={removeAction(index)}
+                                            required
+                                        />
+                                    ))}
+                                    <Form.Field>
+                                        <Button
+                                            basic
+                                            primary
+                                            size={'tiny'}
+                                            onClick={addAction}
+                                            type={'button'}
+                                        >Add action</Button>
+                                    </Form.Field>
                                     <FormButtons removeButton={mode === 'edit'}/>
                                 </Form>
                             )}
