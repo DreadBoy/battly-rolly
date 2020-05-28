@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test" type="Multirun" factoryName="Multirun" separateTabs="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="true" delayTime="5">
+    <runConfiguration name="server:watch" type="npm" />
+    <runConfiguration name="All Tests" type="Jest" />
+    <method v="2" />
+  </configuration>
+</component>
