@@ -25,8 +25,8 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
     return campaign.encounters;
 }
 
-export async function getEncounter(id: string): Promise<Encounter> {
-    const encounter = await Encounter.findOne(id, {
+export async function getEncounter(encounterId: string): Promise<Encounter> {
+    const encounter = await Encounter.findOne(encounterId, {
         relations: [
             'campaign',
             'features', 'features.monster', 'features.player',
@@ -34,12 +34,12 @@ export async function getEncounter(id: string): Promise<Encounter> {
         ],
     });
     if (!encounter)
-        throw new HttpError(404, `Encounter with id ${id} not found`);
+        throw new HttpError(404, `Encounter with id ${encounterId} not found`);
     return encounter;
 }
 
-export async function updateEncounter(id: string, body: Partial<Encounter>): Promise<Encounter> {
-    const encounter = await getEncounter(id);
+export async function updateEncounter(encounterId: string, body: Partial<Encounter>): Promise<Encounter> {
+    const encounter = await getEncounter(encounterId);
     assign(encounter, body);
     await encounter.save();
     return encounter;
@@ -52,8 +52,8 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
     await Encounter.remove(encounter);
 }
 
-export async function toggleActiveEncounter(id: string, user: User): Promise<void> {
-    const encounter = await getEncounter(id);
+export async function toggleActiveEncounter(encounterId: string, user: User): Promise<void> {
+    const encounter = await getEncounter(encounterId);
     if (encounter.campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
     const campaign = await getCampaign(encounter.campaign.id, ['users', 'encounters', 'encounters.features']);
@@ -63,7 +63,7 @@ export async function toggleActiveEncounter(id: string, user: User): Promise<voi
         .filter(user => user.id !== campaign.gm.id)
         .map(user => user.id);
     await Promise.all(campaign.encounters.map(async enc => {
-        enc.active = enc.id === id && !enc.active;
+        enc.active = enc.id === encounterId && !enc.active;
         if (!enc.active) {
             await removePlayers(enc.id, playerIds);
         } else {

@@ -5,20 +5,29 @@ import {
     getCampaignsForUser,
     removeUserFromCampaign,
 } from './campaign';
-import {afterEach as _afterEach, beforeEach as _beforeEach} from '../test-helper/test-helpers'
-import {getGm, getWizard, testCampaign} from '../test-helper/seed-mifration';
+import {afterEach as _afterEach, beforeEach as _beforeEach, seedUsers} from '../test-helper/test-helpers'
+import {getGm, getWizard, testCampaign} from '../test-helper/test-data';
 import {some} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 
 describe('Campaign service', () => {
 
-    beforeEach(_beforeEach);
+    beforeEach(async () => {
+        await _beforeEach();
+        await seedUsers();
+    });
     afterEach(_afterEach);
 
     it('creates campaign', async () => {
         const gm = getGm();
         const campaign = await createCampaign(gm, testCampaign());
         expect(campaign).toMatchObject(testCampaign());
+    })
+
+    it('adds creator to campaign\'s users', async () => {
+        const gm = getGm();
+        const campaign = await createCampaign(gm, testCampaign());
+        expect(some(campaign.users, ['id', gm.id])).toBeTruthy();
     })
 
     it('returns created campaign', async () => {
