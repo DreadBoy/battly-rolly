@@ -44,7 +44,15 @@ describe('Encounter service', () => {
         expect(encounter2.active).toBeTruthy();
     })
 
-    it('removes encounter', async () => {
+    it('automatically adds users to active encounter', async () => {
+        const gm = getGm();
+        let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
+        await toggleActiveEncounter(encounter.id, gm);
+        encounter = await getEncounter(encounter.id);
+        expect(encounter.features).toHaveLength(1);
+    })
+
+    it('removes inactive encounter', async () => {
         const gm = getGm();
         let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
         await deleteEncounter(encounter.id, gm);

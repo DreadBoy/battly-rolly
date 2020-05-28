@@ -18,7 +18,7 @@ export class Feature extends BaseEntity {
     @ManyToOne(() => User, {eager: true})
     player?: User;
 
-    @ManyToOne(() => Encounter, encounter => encounter.features)
+    @ManyToOne(() => Encounter, encounter => encounter.features, {onDelete: 'CASCADE'})
     encounter!: Encounter;
 
     @Column()

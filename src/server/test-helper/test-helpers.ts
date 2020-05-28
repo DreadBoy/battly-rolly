@@ -6,7 +6,7 @@ import {Feature} from '../model/feature';
 import {Log} from '../model/log';
 import {Monster} from '../model/monster';
 import {Action} from '../model/action';
-import {campaigns, users} from './test-data';
+import {campaigns, users, encounters, monsters, features} from './test-data';
 
 export async function beforeEach() {
     const conn = await createConnection({
@@ -31,4 +31,16 @@ export async function seedUsers() {
 
 export async function seedCampaigns() {
     await getRepository(Campaign).save(campaigns)
+}
+
+export async function seedEncounters() {
+    await getRepository(Encounter).save(encounters)
+}
+
+export async function seedFeatures() {
+    await getRepository(Feature).save(features)
+}
+
+export async function seedMonsters() {
+    await getRepository(Monster).save(monsters)
 }

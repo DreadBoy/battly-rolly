@@ -1,5 +1,9 @@
 import {User} from '../model/user';
 import {Encounter} from '../model/encounter';
+import {Campaign} from '../model/campaign';
+import {Monster} from '../model/monster';
+import {AddFeature} from '../service/feature';
+import {Feature} from '../model/feature';
 
 export function getGm() {
     return users[0] as User;
@@ -21,6 +25,16 @@ export function testEncounter() {
     } as Encounter;
 }
 
+export function testMonsterFeature() {
+    return {
+        AC: 11,
+        HP: 11,
+        initialHP: 11,
+        reference: '7cf61eba-935f-450e-9e8a-0e907748fe64',
+        type: 'npc',
+    } as AddFeature;
+}
+
 export const users = [{
     id: '56253fc4-252d-4f4c-9207-032171d62d8c',
     email: 'gm@example.com',
@@ -33,17 +47,75 @@ export const users = [{
     password: 'wizard',
 } as User];
 export const campaigns = [{
-    ...testCampaign(),
-    id: '021376e9-4acd-4d3d-8d71-eebaf6daedc3',
-    gm: getGm(),
-    users: [getGm()],
-},{
-    name: 'Working campaign',
     id: 'f0e50d24-2d37-45de-bdce-fe6a6146f9a4',
+    name: 'Actual campaign',
     gm: getGm(),
     users: [getGm(), getWizard()],
-}];
+} as Campaign];
+export const monsters = [{
+    id: '7cf61eba-935f-450e-9e8a-0e907748fe64',
+    name: 'Boar',
+    HP: [2, 8, 2],
+    AC: 11,
+    abilitySet: {
+        strength: 13,
+        dexterity: 11,
+        constitution: 12,
+        intelligence: 2,
+        wisdom: 9,
+        charisma: 5,
+    },
+    savingThrows: {
+        strength: 0,
+        dexterity: 0,
+        constitution: 0,
+        intelligence: 0,
+        wisdom: 0,
+        charisma: 0,
+    },
+    actions: [
+        {
+            type: 'direct',
+            name: 'Tusk',
+            modifier: 3,
+            damage: {
+                roll: [1, 6, 1],
+                damageType: 'slashing',
+            },
+        },
+        {
+            type: 'direct',
+            name: 'Charge + Tusks',
+            modifier: 3,
+            damage: {
+                roll: [2, 6, 1],
+                damageType: 'slashing',
+            },
+        },
+        {
+            type: 'aoe',
+            name: 'Charge after-effect',
+            DC: 11,
+            ability: 'strength',
+            status: 'prone',
+        },
+    ],
+} as Monster]
+export const features = [{
+    player: getWizard(),
+    AC: 15,
+    HP: 40,
+    initialHP: 40,
+} as Feature, {
+    monster: monsters[0],
+    AC: 11,
+    HP: 13,
+    initialHP: 13,
+} as Feature]
 export const encounters = [{
-    ...testEncounter(),
     id: 'd157e76f-1961-45b2-9be1-b77e3b1a22cd',
-}];
+    name: 'Actual encounter',
+    active: true,
+    campaign: campaigns[0],
+    features: [features[0]],
+} as Encounter];
