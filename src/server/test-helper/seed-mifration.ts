@@ -1,9 +1,18 @@
 import {getRepository, MigrationInterface, QueryRunner} from 'typeorm';
 import {User} from '../model/user';
 
-export async function getGm() {
-    const gm = await User.findOne({where: {id: '56253fc4-252d-4f4c-9207-032171d62d8c'}});
-    return gm as User;
+export function getGm() {
+    return users[0] as User;
+}
+
+export function getWizard() {
+    return users[1] as User;
+}
+
+export function testCampaign() {
+    return {
+        name: 'Test campaign',
+    };
 }
 
 const users = [{
@@ -11,7 +20,12 @@ const users = [{
     email: 'gm@example.com',
     displayName: 'Test',
     password: 'test',
-}];
+} as User, {
+    id: 'd8e95e8f-ff24-4d5c-95cc-e8ae54246f36',
+    email: 'wizard@example.com',
+    displayName: 'Wizard',
+    password: 'wizard',
+} as User];
 
 export class Seed1590653101958 implements MigrationInterface {
     public async up(_: QueryRunner): Promise<any> {
