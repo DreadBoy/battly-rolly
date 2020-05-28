@@ -5,9 +5,10 @@
     "client:start": "react-scripts start",
     "client:build": "react-scripts build",
     "client:test": "react-scripts test",
+    "server:watch": "tsc --watch --project tsconfig.server.json",
     "server:start": "nodemon --inspect=3002",
+    "server:test": "jest",
     "server:build": "rimraf build && tsc --project tsconfig.server.json",
-    "server:test": "echo \"Error: no test specified\" && exit 1",
     "create-migration": "npm run server:build && node build/db-tools/create-migration.js",
     "apply-migrations": "npm run server:build && node build/db-tools/apply-migrations.js",
     "build": "npm run server:build && mvf build server-build && npm run client:build && mvf server-build build && rimraf server-build",
@@ -89,7 +90,6 @@
     "smtp-server": "^3.6.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "ts-node": "^8.6.2",
     "typeorm": "^0.2.22",
     "typescript": "~3.7.5"
   },
@@ -107,5 +107,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "rootDir": "build"
   }
 }
