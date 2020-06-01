@@ -3,7 +3,7 @@ import {User} from '../model/user';
 import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
-import {broadcastEvent} from './socket';
+import {broadcastObject} from './socket';
 import {AddFeature, addFeatures, removePlayers} from './feature';
 import {validateObject} from '../middlewares/validators';
 
@@ -42,6 +42,7 @@ export async function updateEncounter(encounterId: string, body: Partial<Encount
     const encounter = await getEncounter(encounterId);
     assign(encounter, body);
     await encounter.save();
+    await pushEncounterOverSockets(encounter.id);
     return encounter;
 }
 
@@ -102,9 +103,10 @@ export async function getActiveEncounter(campaignId: string): Promise<Encounter>
 
 export async function pushEncounterOverSockets(encounterId: string) {
     const encounter = await getEncounter(encounterId);
-    broadcastEvent(
-        'encounter',
+    const users = await Encounter.affectedUsers(encounterId)
+    broadcastObject(
+        Encounter.name,
         encounter.active ? encounter : null,
-        encounter.campaign.users.map(u => u.id),
+        users,
     );
 }

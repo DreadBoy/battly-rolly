@@ -3,6 +3,8 @@ import {afterEach as _afterEach, beforeEach as _beforeEach, seedCampaigns, seedU
 import {campaigns, getGm, testEncounter} from '../test-helper/test-data';
 import {HttpError} from '../middlewares/error-middleware';
 
+jest.mock('./socket')
+
 describe('Encounter service', () => {
 
     beforeEach(async () => {

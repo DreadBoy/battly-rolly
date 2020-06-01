@@ -140,7 +140,3 @@ export type AbilitySet = {
     wisdom: number,
     charisma: number,
 }
-export type Encounter = {
-    monsters: Monster[],
-    phase: Phase,
-}

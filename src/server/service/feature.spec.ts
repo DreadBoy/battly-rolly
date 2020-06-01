@@ -11,6 +11,8 @@ import {encounters, getWizard, testMonsterFeature} from '../test-helper/test-dat
 import {addFeatures, removeFeatures, removePlayers} from './feature';
 import {getEncounter} from './encounter';
 
+jest.mock('./socket')
+
 describe('Feature service', () => {
 
     beforeEach(async () => {

@@ -1,19 +1,8 @@
-import Io, {Socket} from 'socket.io';
-import {intersection} from 'lodash';
+import Io from 'socket.io';
+import SocketIO from 'socket.io';
 import {gray, green, red, white} from 'chalk';
 import {Server} from 'http';
-import SocketIO from 'socket.io';
 import {logger} from '../logger';
-
-type Sockets = {
-    [userId: string]: Socket,
-};
-const sockets: Sockets = {};
-export const cache: {
-    [userId: string]: {
-        [event: string]: any,
-    },
-} = {};
 
 let io: SocketIO.Server;
 
@@ -24,40 +13,27 @@ export function createSockets(server: Server) {
         logger.info(`  ${green('<--')} ${white('SOCKET ')}`);
 
         socket.on('join', (userId: string) => {
+            // TODO add auth to this method
+            // https://gist.github.com/naoki-sawada/2f4e135feb3c6bad7f555f59dfb40020
             logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('join')} ${gray(userId)}`);
             connectedUser = userId;
-            sockets[userId] = socket;
-        });
-
-        socket.on('repeat', (event: string) => {
-            if (!connectedUser)
-                return;
-            logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('repeat')} ${gray(event)}`);
-            repeatEvent(connectedUser, event);
+            socket.join(userId);
         });
 
         socket.on('disconnect', () => {
             logger.info(`  ${red('-->')} ${white('SOCKET ')} ${gray(connectedUser)}`);
-            if (connectedUser != null)
-                delete sockets[connectedUser];
         });
     });
     return io;
 }
 
-export function broadcastEvent(event: string, data: any, users: string[]) {
-    const targetUsers = intersection(Object.keys(sockets), users);
+export function broadcastObject(model: string, data: any | null, users: string[]) {
     const state = !data ? 'null' : JSON.stringify(data);
-    logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('event')} ${gray(event)}`);
-    return targetUsers.forEach(id => {
-        sockets[id].emit(event, state);
-        cache[id] = cache[id] || {};
-        cache[id][event] = state;
+    logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('state')} ${gray(data?.id)}`);
+    return users.forEach(id => {
+        io.to(id).emit('object', {
+            model,
+            state,
+        });
     });
-}
-
-export function repeatEvent(userId: string, event: string) {
-    if (!cache[userId] || !cache[userId][event])
-        return;
-    sockets[userId].emit(event, cache[userId][event]);
 }
