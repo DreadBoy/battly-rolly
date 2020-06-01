@@ -3,8 +3,10 @@ import {Campaign} from '../model/campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, remove, some} from 'lodash';
 import {getUser} from './user';
+import {validateObject} from '../middlewares/validators';
 
 export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise<Campaign> => {
+    body = validateObject(body, ['name']);
     const campaign = new Campaign();
     assign(campaign, body);
     campaign.users = [gm];
@@ -14,6 +16,7 @@ export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise
 };
 
 export const updateCampaign = async (id: string, body: Partial<Campaign>): Promise<Campaign> => {
+    body = validateObject(body, ['name']);
     const campaign = await getCampaign(id);
     assign(campaign, body);
     await campaign.save();
@@ -48,6 +51,7 @@ export const addUserToCampaign = async (id: string, user: User): Promise<void> =
 };
 
 export const removeUserFromCampaign = async (id: string, authenticatedUser: User, user: Partial<User>): Promise<void> => {
+    user = validateObject(user, ['id']);
     const campaign = await getCampaign(id);
     if (!some(campaign.users, ['id', user.id]))
         throw new HttpError(400, 'You are not in this campaign!');

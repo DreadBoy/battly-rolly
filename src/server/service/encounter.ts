@@ -5,8 +5,10 @@ import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastEvent} from './socket';
 import {AddFeature, addFeatures, removePlayers} from './feature';
+import {validateObject} from '../middlewares/validators';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
+    body = validateObject(body, ['name']);
     const campaign = await getCampaign(campaignId);
     if (campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t create encounter in it!');
