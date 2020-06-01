@@ -3,6 +3,7 @@ import {intersection} from 'lodash';
 import {gray, green, red, white} from 'chalk';
 import {Server} from 'http';
 import SocketIO from 'socket.io';
+import {logger} from '../logger';
 
 type Sockets = {
     [userId: string]: Socket,
@@ -20,10 +21,10 @@ export function createSockets(server: Server) {
     io = Io(server);
     io.on('connect', socket => {
         let connectedUser: string | null = null;
-        console.log(`  ${green('<--')} ${white('SOCKET ')}`);
+        logger.info(`  ${green('<--')} ${white('SOCKET ')}`);
 
         socket.on('join', (userId: string) => {
-            console.log(`  ${gray('<--')} ${white('SOCKET')} ${gray('join')} ${gray(userId)}`);
+            logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('join')} ${gray(userId)}`);
             connectedUser = userId;
             sockets[userId] = socket;
         });
@@ -31,12 +32,12 @@ export function createSockets(server: Server) {
         socket.on('repeat', (event: string) => {
             if (!connectedUser)
                 return;
-            console.log(`  ${gray('<--')} ${white('SOCKET')} ${gray('repeat')} ${gray(event)}`);
+            logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('repeat')} ${gray(event)}`);
             repeatEvent(connectedUser, event);
         });
 
         socket.on('disconnect', () => {
-            console.log(`  ${red('-->')} ${white('SOCKET ')} ${gray(connectedUser)}`);
+            logger.info(`  ${red('-->')} ${white('SOCKET ')} ${gray(connectedUser)}`);
             if (connectedUser != null)
                 delete sockets[connectedUser];
         });
@@ -47,7 +48,7 @@ export function createSockets(server: Server) {
 export function broadcastEvent(event: string, data: any, users: string[]) {
     const targetUsers = intersection(Object.keys(sockets), users);
     const state = !data ? 'null' : JSON.stringify(data);
-    console.log(`  ${gray('<--')} ${white('SOCKET')} ${gray('event')} ${gray(event)}`);
+    logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('event')} ${gray(event)}`);
     return targetUsers.forEach(id => {
         sockets[id].emit(event, state);
         cache[id] = cache[id] || {};

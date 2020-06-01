@@ -5,7 +5,7 @@
     "client:start": "react-scripts start",
     "client:build": "react-scripts build",
     "client:test": "react-scripts test",
-    "server:watch": "tsc --watch --project tsconfig.server.json",
+    "server:watch": "rimraf build && tsc --watch --project tsconfig.server.json",
     "server:start": "nodemon --inspect=3002",
     "server:test": "jest",
     "server:build": "rimraf build && tsc --project tsconfig.server.json",
@@ -92,7 +92,8 @@
     "socket.io-client": "^2.3.0",
     "sqlite3": "^4.2.0",
     "typeorm": "^0.2.22",
-    "typescript": "~3.7.5"
+    "typescript": "~3.7.5",
+    "winston": "^3.2.1"
   },
   "eslintConfig": {
     "extends": "react-app"
