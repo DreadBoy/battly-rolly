@@ -6,7 +6,7 @@ import {DropTarget, TargetType} from './DropTarget';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
 import {assign, find, includes, pull} from 'lodash';
-import Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import {FeatureItem} from './FeatureItem';
 import {Encounter} from '../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
@@ -63,7 +63,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
     }, [encounter.features]);
 
     return encounter.features.length > 0 ? (
-        <DndProvider backend={Backend}>
+        <DndProvider backend={HTML5Backend}>
             <Header size={'small'}>
                 Make attack
                 <Header.Subheader>

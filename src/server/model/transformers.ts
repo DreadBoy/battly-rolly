@@ -4,20 +4,26 @@ import {isNil} from 'lodash';
 export const Transformers = {
     boolean: {
         to: (input: boolean[]) => `[${input.join(',')}]`,
-        from: (value: string) =>
-            value.replace(/[[\]]/g, '').split(',').map((p: string) =>
-                p === 'true' ? true : p === 'false' ? false : null),
+        from: (value?: string) => {
+            if (isNil(value)) return null;
+            return value.replace(/[[\]]/g, '').split(',').map((p: string) =>
+                p === 'true' ? true : p === 'false' ? false : null);
+        },
     },
     number: {
         to: (input: number[]) => `[${input.join(',')}]`,
-        from: (value: string) => value.replace(/[[\]]/g, '').split(',').map((p: string) => {
-            const num = parseInt(p);
-            return isNaN(num) ? null : num;
-        }),
+        from: (value?: string) => {
+            if (isNil(value)) return null;
+            return value.replace(/[[\]]/g, '').split(',').map((p: string) => {
+                const num = parseInt(p);
+                return isNaN(num) ? null : num;
+            });
+        },
     },
     abilitySet: {
         to: (input: AbilitySet) => `[${abilities.map(ability => input[ability]).join(',')}]`,
-        from: (value: string) => {
+        from: (value?: string) => {
+            if (isNil(value)) return null;
             const set = {} as AbilitySet;
             value
                 .replace(/[[\]]/g, '').split(',')

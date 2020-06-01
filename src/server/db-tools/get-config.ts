@@ -10,14 +10,12 @@ export function getConfig(DATABASE_URL?: string): ConnectionOptions {
 
     return {
         type: match[1] as any,
-        host: match[4],
-        port: parseInt(match[5]),
-        username: match[2],
-        password: match[3],
-        database: match[6],
+        url: process.env.DATABASE_URL,
         logging: ['error', 'warn'],
         extra: {
-            ssl: true,
+            ssl: {
+                rejectUnauthorized: false,
+            },
         },
     }
 }

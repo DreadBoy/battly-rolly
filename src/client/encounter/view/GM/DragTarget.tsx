@@ -1,6 +1,5 @@
 import React, {FC} from 'react';
-import {DragSourceMonitor, useDrag} from 'react-dnd';
-import {Feature} from '../../../../server/model/feature';
+import {useDrag} from 'react-dnd';
 import {createUseStyles} from 'react-jss';
 import {TargetType} from './DropTarget';
 
@@ -17,7 +16,7 @@ const useStyles = createUseStyles({
 export const DragTarget: FC<Props> = ({children, onDrop}) => {
     const [, drag] = useDrag({
         item: {type: 'feature'},
-        end: (item: Feature | undefined, monitor: DragSourceMonitor) => {
+        end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
             if (item && dropResult)
                 onDrop(dropResult.type);
