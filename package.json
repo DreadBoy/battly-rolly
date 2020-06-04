@@ -19,6 +19,9 @@
     "start": "node build/server.js"
   },
   "dependencies": {
+    "@koa/router": "^9.0.1",
+    "@sendgrid/helpers": "^7.0.1",
+    "@sendgrid/mail": "^7.1.1",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.0.0",
@@ -68,9 +71,6 @@
     "typescript": "~3.9.3"
   },
   "devDependencies": {
-    "@koa/router": "^9.0.1",
-    "@sendgrid/helpers": "^7.0.1",
-    "@sendgrid/mail": "^7.1.1",
     "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/user-event": "^10.4.0",
