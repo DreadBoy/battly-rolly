@@ -1,6 +1,9 @@
 {
   "name": "battly-rolly",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "client:start": "react-scripts start",
     "client:build": "react-scripts build",
