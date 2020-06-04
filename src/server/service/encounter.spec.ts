@@ -54,6 +54,15 @@ describe('Encounter service', () => {
         expect(encounter.features).toHaveLength(1);
     })
 
+    it('automatically removes users from inactive encounter', async () => {
+        const gm = getGm();
+        let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
+        await toggleActiveEncounter(encounter.id, gm);
+        await toggleActiveEncounter(encounter.id, gm);
+        encounter = await getEncounter(encounter.id);
+        expect(encounter.features).toHaveLength(0);
+    })
+
     it('removes inactive encounter', async () => {
         const gm = getGm();
         let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
