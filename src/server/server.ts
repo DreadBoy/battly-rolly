@@ -52,7 +52,7 @@ app.use(mount('/api/feature', featureApi));
 app.use(mount('/api/log', logApi));
 app.use(mount('/api/monster', monsterApi));
 app.use(mount('/api/email', emailApi));
-app.use(mount(probeApi));
+app.use(mount('/api/probe', probeApi));
 app.use(koaStatic);
 
 const server = createServer(app.callback());
