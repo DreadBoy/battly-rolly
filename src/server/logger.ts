@@ -1,14 +1,9 @@
-import {createLogger, transports, format} from 'winston';
-
-export const logger = createLogger({
-    level: 'info',
-    transports: [
-        new transports.Console({
-            format: format.combine(
-                format.printf((info) => {
-                    return info.message;
-                }),
-            ),
-        }),
-    ],
-});
+export const logger = {
+    info(...args: any[]) {
+        if (process.env.LOG_LEVEL === 'info')
+            console.log(...args);
+    },
+    error(...args: any[]) {
+        console.error(...args);
+    },
+}

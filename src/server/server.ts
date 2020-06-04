@@ -1,5 +1,6 @@
 import Koa from 'koa';
-import logger from 'koa-logger';
+import Logger from 'koa-logger';
+import {logger} from './logger';
 import bodyParser from 'koa-bodyparser';
 import koaSsl, {xForwardedProtoResolver} from 'koa-sslify'
 import mount from 'koa-mount';
@@ -34,7 +35,11 @@ app.use(async (ctx, next) => {
         return ctx.status = 204;
     await next();
 });
-app.use(logger());
+app.use(Logger({
+    transporter: (str) => {
+        logger.info(str);
+    }
+}));
 if (process.env.NODE_ENV !== 'development')
     app.use(koaSsl({resolver: xForwardedProtoResolver}));
 app.use(bodyParser());
@@ -55,4 +60,4 @@ createSockets(server);
 
 const port = process.env.PORT || 3000;
 server.listen(port);
-console.log(green(`Server listening on port ${port}`));
+logger.info(green(`Server listening on port ${port}`));

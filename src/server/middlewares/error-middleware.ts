@@ -1,11 +1,12 @@
 import * as Koa from 'koa';
+import {logger} from '../logger';
 
 export const errorMiddleware: Koa.Middleware = async (ctx, next) => {
     try {
         await next();
     } catch (error) {
         if (error instanceof HttpError || error.name === 'HttpError') {
-            console.error(error);
+            logger.error(error);
             ctx.status = error.status;
             ctx.body = {
                 message: error.message,
@@ -19,7 +20,7 @@ export const errorMiddleware: Koa.Middleware = async (ctx, next) => {
             };
             return;
         }
-        console.error(error);
+        logger.error(error);
         ctx.status = 500;
         ctx.body = {
             message: 'Internal server error',
