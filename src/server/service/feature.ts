@@ -1,59 +1,32 @@
-import {Feature, FeatureType} from '../model/feature';
-import {assign, filter, find, forEach, groupBy, isArray, isEmpty, map, pick, uniq} from 'lodash';
-import {getConnection} from 'typeorm';
-import {getEncounter, pushEncounterOverSockets} from './encounter';
+import {Feature} from '../model/feature';
+import {assign, filter, find, forEach, isArray, isEmpty, map, uniq} from 'lodash';
+import {pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
-import {getMonsters} from './monster';
-import {getUsers} from './user';
+import * as repo from '../repo/feature';
+import {validateObject} from '../middlewares/validators';
 
-export type AddFeature = Pick<Feature, 'AC' | 'HP' | 'initialHP'> &
-    {
-        reference: string,
-        type: FeatureType,
-    };
-type AddFeatures = {
-    features: AddFeature[],
+export type AddFeatures = {
+    features: repo.AddFeature[],
 };
 
 export const addFeatures = async (encounterId: string, body: AddFeatures): Promise<void> => {
-    const encounter = await getEncounter(encounterId);
-    const groups = groupBy(map(body.features, o => pick(o, ['reference', 'type'])), 'type');
-    const references = {
-        npc: await getMonsters(uniq(map(groups['npc'], 'reference'))),
-        player: await getUsers(uniq(map(groups['player'], 'reference'))),
-    }
-    const features = body.features.map(obj => {
-        const feature = new Feature();
-        assign(feature, obj);
-        feature.encounter = encounter;
-        if (obj.type === 'npc')
-            feature.monster = find(references.npc, ['id', obj.reference]);
-        if (obj.type === 'player')
-            feature.player = find(references.player, ['id', obj.reference]);
-        return feature;
-    });
-    await getConnection().getRepository(Feature).save(features);
+    const {features} = validateObject(body, ['features']);
+    await repo.addFeatures(encounterId, features);
     await pushEncounterOverSockets(encounterId);
 };
 
 type RemoveFeatures = {
-    features: Partial<Feature>[]
+    features: Feature[]
 };
 
 export const removeFeatures = async (encounterId: string, body: RemoveFeatures): Promise<void> => {
-    const ids = map(body.features, 'id') as string[];
-    if (ids.length === 0)
-        return;
-    await getConnection().getRepository(Feature).delete(ids);
+    await repo.removeFeatures(encounterId, body.features);
     await pushEncounterOverSockets(encounterId);
 };
 
 export const removePlayers = async (encounterId: string, playerIds: string[]): Promise<void> => {
-    const encounter = await getEncounter(encounterId);
-    const removedPlayers = encounter.features
-        .filter(feature => playerIds.includes(feature?.player?.id ?? ''))
-        .map(u => pick(u, 'id'));
-    await removeFeatures(encounterId, {features: removedPlayers});
+    await repo.removePlayers(encounterId, playerIds);
+    await pushEncounterOverSockets(encounterId);
 };
 
 export const updateFeature = async (featureId: string, body: Partial<Feature>): Promise<Feature> => {
@@ -68,7 +41,7 @@ export const updateFeatures = async (body: [Partial<Feature>]): Promise<Feature[
     if (!isArray(body))
         throw new HttpError(400, 'Request body expected to be array!');
     const ids = filter(map(body, 'id')) as string[];
-    const features = await getFeatures(ids, ['encounter']);
+    const features = await Feature.findByIds(ids, {relations: ['encounter']});
     if (isEmpty(features))
         throw new HttpError(400, 'Didn\'t find any feature matching ids in body!');
     forEach(features, f => assign(f, find(body, ['id', f.id])));
@@ -76,10 +49,6 @@ export const updateFeatures = async (body: [Partial<Feature>]): Promise<Feature[
     await Promise.all(map(uniq(map(features, 'encounter.id')),
         pushEncounterOverSockets));
     return features;
-};
-
-export const getFeatures = async (ids: string[], relations: string[] = ['monster', 'player']): Promise<Feature[]> => {
-    return Feature.findByIds(ids, {relations});
 };
 
 export const getFeature = async (id: string, relations: string[] = ['monster', 'player']): Promise<Feature> => {

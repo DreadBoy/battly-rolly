@@ -2,11 +2,11 @@ import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
 import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
-import {getFeatures} from './feature';
 import {getEncounter, pushEncounterOverSockets} from './encounter';
 import {Ability, Status} from '../encounter';
 import {validateObject} from '../middlewares/validators';
 import {DamageType} from '../model/action-types';
+import {Feature} from '../model/feature';
 
 export async function getLogsInEncounter(encounterId: string): Promise<Log[]> {
     return Log.find({where: {encounter: {id: encounterId}}});
@@ -49,8 +49,8 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     if (isEmpty(body.target))
         throw new HttpError(401, `Target array is empty, something went wrong on your side!`);
     const log = new Log();
-    const source = await getFeatures(body.source);
-    const target = await getFeatures(body.target);
+    const source = await Feature.findByIds(body.source);
+    const target = await Feature.findByIds(body.target);
     assign(log, {
         source,
         target,

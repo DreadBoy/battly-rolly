@@ -6,7 +6,7 @@ import {Grid, Header} from 'semantic-ui-react';
 import {SearchMonsters} from './SearchMonsters';
 import {Stacktrace} from '../elements/Stacktrace';
 import {useBackend} from '../helpers/BackendProvider';
-import {AddFeature} from '../../server/service/feature';
+import {AddFeature} from '../../server/repo/feature';
 import {roll} from '../helpers/roll';
 import {Monster} from '../../server/model/monster';
 

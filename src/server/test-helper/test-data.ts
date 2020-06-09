@@ -2,7 +2,7 @@ import {User} from '../model/user';
 import {Encounter} from '../model/encounter';
 import {Campaign} from '../model/campaign';
 import {Monster} from '../model/monster';
-import {AddFeature} from '../service/feature';
+import {AddFeature} from '../repo/feature';
 import {Feature} from '../model/feature';
 
 export function getGm() {

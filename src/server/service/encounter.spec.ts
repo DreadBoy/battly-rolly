@@ -2,12 +2,15 @@ import {createEncounter, deleteEncounter, getEncounter, toggleActiveEncounter} f
 import {afterEach as _afterEach, beforeEach as _beforeEach, seedCampaigns, seedUsers} from '../test-helper/test-helpers'
 import {campaigns, getGm, testEncounter} from '../test-helper/test-data';
 import {HttpError} from '../middlewares/error-middleware';
+import { broadcastObject } from './socket';
 
 jest.mock('./socket')
+const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
 
 describe('Encounter service', () => {
 
     beforeEach(async () => {
+        mockedBroadcastObject.mockClear();
         await _beforeEach();
         await seedUsers();
         await seedCampaigns();
@@ -32,6 +35,13 @@ describe('Encounter service', () => {
         await toggleActiveEncounter(encounter.id, gm);
         encounter = await getEncounter(encounter.id);
         expect(encounter.active).toBeTruthy();
+    })
+
+    it('send encounter via sockets when toggling active flag', async () => {
+        const gm = getGm();
+        let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
+        await toggleActiveEncounter(encounter.id, gm);
+        expect(mockedBroadcastObject.mock.calls).toHaveLength(1);
     })
 
     it('sets other encounters in campaign to inactive', async () => {

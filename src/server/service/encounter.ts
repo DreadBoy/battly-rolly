@@ -4,7 +4,8 @@ import {getCampaign} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastObject} from './socket';
-import {AddFeature, addFeatures, removePlayers} from './feature';
+import {AddFeature} from '../repo/feature';
+import * as repo from '../repo/feature';
 import {validateObject} from '../middlewares/validators';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
@@ -66,7 +67,7 @@ export async function toggleActiveEncounter(encounterId: string, user: User): Pr
     await Promise.all(campaign.encounters.map(async enc => {
         enc.active = enc.id === encounterId && !enc.active;
         if (!enc.active) {
-            await removePlayers(enc.id, playerIds);
+            await repo.removePlayers(enc.id, playerIds);
         } else {
             const addedPlayers = campaign.users.filter(u => u.id !== encounter.campaign.gm.id)
                 .map(u => ({
@@ -76,7 +77,7 @@ export async function toggleActiveEncounter(encounterId: string, user: User): Pr
                     HP: 10,
                     initialHP: 10,
                 } as AddFeature));
-            await addFeatures(enc.id, {features: addedPlayers});
+            await repo.addFeatures(enc.id, addedPlayers);
         }
     }));
     await campaign.save();

@@ -41,10 +41,6 @@ export const getUserWithAllFields = async (id: string, relations: string[] = [])
     return user;
 };
 
-export const getUsers = async (ids: string[], relations: string[] = []): Promise<User[]> => {
-    return User.findByIds(ids, {relations});
-};
-
 export const updateUser = async (id: string, body: Partial<User>): Promise<User> => {
     body = validateObject(body, ['email', 'displayName']);
     const user = await getUser(id);

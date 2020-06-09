@@ -13,10 +13,6 @@ export async function getMonster(id: string, relations: string[] = ['actions', '
     return monster;
 }
 
-export async function getMonsters(ids: string[], relations: string[] = ['actions', 'owner']): Promise<Monster[]> {
-    return Monster.findByIds(ids, {relations});
-}
-
 export async function createMonster(user: User, body: Partial<Monster>): Promise<Monster> {
     const monster = new Monster();
     body = validateObject(body, ['name', 'HP', 'AC', 'abilitySet', 'savingThrows'], ['actions']);
