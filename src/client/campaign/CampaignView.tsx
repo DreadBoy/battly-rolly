@@ -1,12 +1,10 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {Button, Grid, Header, Image, Table} from 'semantic-ui-react';
+import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Campaign} from '../../server/model/campaign';
 import {observer} from 'mobx-react';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
-import {toDataURL} from 'qrcode';
-import {createUseStyles} from 'react-jss';
 import {useLoader} from '../helpers/Store';
 import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
@@ -18,33 +16,17 @@ import {AsyncSection} from '../helpers/AsyncSection';
 
 const Editor = AsyncSection<Campaign>();
 
-
-export const qrCodeStyle = {
-    marginBottom: '.5em',
-};
-const useStyles = createUseStyles({
-    img: qrCodeStyle,
-});
-
 export const CampaignView: FC = observer(() => {
-    const classes = useStyles();
     const {id: playerId} = usePlayerId();
     const {url, params: {campaignId: id}} = useRouteMatch();
     const {api} = useBackend();
     const campaign = useLoader<Campaign>();
-    const [code, setCode] = useState<string>();
     const [refresh, setRefresh] = useState<number>(0);
     const _refresh = useCallback(() => {
         setRefresh(refresh + 1);
     }, [refresh]);
     useEffect(() => {
-        const promise = api.get(`/campaign/${id}`)
-            .then(async response => {
-                const code = await toDataURL(window.location.href, {margin: 0});
-                setCode(code);
-                return response;
-            });
-        campaign.fetch(promise, id, refresh > 0 ? 'silent' : undefined);
+        campaign.fetch(api.get(`/campaign/${id}`), id, refresh > 0 ? 'silent' : undefined);
     }, [api, campaign, id, refresh, url]);
 
     const {canShare, share} = useShare({
@@ -83,11 +65,12 @@ export const CampaignView: FC = observer(() => {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column>
-                                <Header sub>Share campaign</Header>
-                                <Image src={code} alt={'QR code'} className={classes.img}/>
-                                {canShare && <Button basic primary onClick={share}>Share</Button>}
-                            </Grid.Column>
+                            {canShare && (
+                                <Grid.Column>
+                                    <Header sub>Share campaign</Header>
+                                    <Button basic primary onClick={share}>Share</Button>
+                                </Grid.Column>
+                            )}
                             {!some(data.users, ['id', playerId]) ? (
                                 <Grid.Column>
                                     <Header sub>Join campaign</Header>

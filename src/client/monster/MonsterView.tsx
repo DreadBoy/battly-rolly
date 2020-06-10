@@ -1,15 +1,14 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {Button, Grid, Header, Image, Table} from 'semantic-ui-react';
+import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Monster} from '../../server/model/monster';
 import {observer} from 'mobx-react';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
-import {toDataURL} from 'qrcode';
 import {createUseStyles} from 'react-jss';
 import {useLoader} from '../helpers/Store';
 import {usePlayerId} from '../helpers/PlayerId';
-import {filter, some, map} from 'lodash';
+import {filter, map, some} from 'lodash';
 import {Stacktrace} from '../elements/Stacktrace';
 import {useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
@@ -18,12 +17,7 @@ import {abilities, Ability} from '../../server/model/action-types';
 
 const View = AsyncSection<Monster>();
 
-
-export const qrCodeStyle = {
-    marginBottom: '.5em',
-};
 const useStyles = createUseStyles({
-    img: qrCodeStyle,
     stats: {
         '.ui.table&':
             {
@@ -38,19 +32,12 @@ export const MonsterView: FC = observer(() => {
     const {url, params: {monsterId}} = useRouteMatch();
     const {api} = useBackend();
     const monster = useLoader<Monster>();
-    const [code, setCode] = useState<string>();
     const [refresh, setRefresh] = useState<number>(0);
     const _refresh = useCallback(() => {
         setRefresh(refresh + 1);
     }, [refresh]);
     useEffect(() => {
-        const promise = api.get(`/monster/${monsterId}`)
-            .then(async response => {
-                const code = await toDataURL(window.location.href, {margin: 0});
-                setCode(code);
-                return response;
-            });
-        monster.fetch(promise, monsterId, refresh > 0 ? 'silent' : undefined);
+        monster.fetch(api.get(`/monster/${monsterId}`), monsterId, refresh > 0 ? 'silent' : undefined);
     }, [api, monster, monsterId, refresh, url]);
 
     const {canShare, share} = useShare({
@@ -135,9 +122,12 @@ export const MonsterView: FC = observer(() => {
                             )}
                         </Grid.Column>
                         <Grid.Column>
-                            <Header sub>Share monster</Header>
-                            <Image src={code} alt={'QR code'} className={classes.img}/>
-                            {canShare && <Button basic primary onClick={share}>Share</Button>}
+                            {canShare && (
+                                <>
+                                    <Header sub>Share monster</Header>
+                                    <Button basic primary onClick={share}>Share</Button>
+                                </>
+                            )}
                             {data.owner.id === playerId ? (
                                 <>
                                     <Header sub>Edit monster</Header>

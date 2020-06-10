@@ -1,14 +1,11 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {Button, Grid, Header, Image} from 'semantic-ui-react';
+import {Button, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {observer} from 'mobx-react';
 import {useLoader} from '../helpers/Store';
 import {User} from '../../server/model/user';
 import {useRouteMatch} from 'react-router';
-import {toDataURL} from 'qrcode';
 import {useBackend} from '../helpers/BackendProvider';
-import {createUseStyles} from 'react-jss';
-import {qrCodeStyle} from '../campaign/CampaignView';
 import {useShare} from '../hooks/use-share';
 import {possessive} from '../helpers/display-helpers';
 import {AsyncSection} from '../helpers/AsyncSection';
@@ -19,25 +16,14 @@ import {successMessage, useResetPassword} from '../hooks/use-reset-password';
 
 const Editor = AsyncSection<User>();
 
-const useStyles = createUseStyles({
-    img: qrCodeStyle,
-});
 export const UserView: FC = observer(() => {
-    const classes = useStyles();
     const {api} = useBackend();
 
     const {params: {userId}} = useRouteMatch();
     const user = useLoader<User>();
-    const [code, setCode] = useState<string>();
 
     useEffect(() => {
-        const promise = api.get(`/user/${userId}`)
-            .then(async response => {
-                const code = await toDataURL(window.location.href, {margin: 0});
-                setCode(code);
-                return response;
-            });
-        user.fetch(promise, userId);
+        user.fetch(api.get(`/user/${userId}`), userId);
     }, [api, user, userId]);
 
     const {canShare, share} = useShare({
@@ -93,13 +79,14 @@ export const UserView: FC = observer(() => {
                                     />
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column>
-                                    <Header sub>Share profile</Header>
-                                    <Image src={code} alt={'QR code'} className={classes.img}/>
-                                    {canShare && <Button basic primary onClick={share}>Share</Button>}
-                                </Grid.Column>
-                            </Grid.Row>
+                            {canShare && (
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <Header sub>Share profile</Header>
+                                        <Button basic primary onClick={share}>Share</Button>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            )}
                         </>
                     )}
                 />
