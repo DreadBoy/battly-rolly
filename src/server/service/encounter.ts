@@ -1,6 +1,6 @@
 import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
-import {getCampaign} from './campaign';
+import {getCampaign, pushCampaignOverSockets} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastObject} from './socket';
@@ -52,6 +52,7 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
     if (encounter.campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t delete encounter in it!');
     await Encounter.remove(encounter);
+    await pushCampaignOverSockets(encounter.campaign.id);
 }
 
 export async function toggleActiveEncounter(encounterId: string, user: User): Promise<void> {
@@ -86,12 +87,10 @@ export async function toggleActiveEncounter(encounterId: string, user: User): Pr
         const b = find(before, ['id', a.id]);
         return b?.active !== a.active;
     });
-    const off = find(changed, enc => !enc.active);
-    if (off)
-        await pushEncounterOverSockets(off.id);
-    const on = find(changed, enc => enc.active);
-    if (on)
-        await pushEncounterOverSockets(on.id);
+    for (const {id} of changed)
+        await pushEncounterOverSockets(id);
+    if (changed.length > 0)
+        await pushCampaignOverSockets(campaign.id);
 }
 
 export async function getActiveEncounter(campaignId: string): Promise<Encounter> {
@@ -107,7 +106,7 @@ export async function pushEncounterOverSockets(encounterId: string) {
     const users = await Encounter.affectedUsers(encounterId)
     broadcastObject(
         Encounter.name,
-        encounter.active ? encounter : null,
+        encounter,
         users,
     );
 }

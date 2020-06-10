@@ -27,13 +27,17 @@ export function createSockets(server: Server) {
     return io;
 }
 
+export type BroadcastObject = {
+    model: string,
+    data: any | null
+}
+
 export function broadcastObject(model: string, data: any | null, users: string[]) {
-    const state = !data ? 'null' : JSON.stringify(data);
     logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('state')} ${gray(data?.id)}`);
     return users.forEach(id => {
         io.to(id).emit('object', {
             model,
-            state,
-        });
+            data,
+        } as BroadcastObject);
     });
 }

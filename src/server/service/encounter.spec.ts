@@ -2,7 +2,9 @@ import {createEncounter, deleteEncounter, getEncounter, toggleActiveEncounter} f
 import {afterEach as _afterEach, beforeEach as _beforeEach, seedCampaigns, seedUsers} from '../test-helper/test-helpers'
 import {campaigns, getGm, testEncounter} from '../test-helper/test-data';
 import {HttpError} from '../middlewares/error-middleware';
-import { broadcastObject } from './socket';
+import {broadcastObject} from './socket';
+import {Encounter} from '../model/encounter';
+import {Campaign} from '../model/campaign';
 
 jest.mock('./socket')
 const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
@@ -35,13 +37,6 @@ describe('Encounter service', () => {
         await toggleActiveEncounter(encounter.id, gm);
         encounter = await getEncounter(encounter.id);
         expect(encounter.active).toBeTruthy();
-    })
-
-    it('send encounter via sockets when toggling active flag', async () => {
-        const gm = getGm();
-        let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
-        await toggleActiveEncounter(encounter.id, gm);
-        expect(mockedBroadcastObject.mock.calls).toHaveLength(1);
     })
 
     it('sets other encounters in campaign to inactive', async () => {
@@ -88,3 +83,23 @@ describe('Encounter service', () => {
         await expect(getEncounter(encounter.id)).rejects.toBeInstanceOf(HttpError);
     })
 });
+
+describe('Encounter sockets', () => {
+
+    beforeEach(async () => {
+        mockedBroadcastObject.mockClear();
+        await _beforeEach();
+        await seedUsers();
+        await seedCampaigns();
+    });
+    afterEach(_afterEach);
+
+    it('notify when toggling active flag', async () => {
+        const gm = getGm();
+        let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
+        await toggleActiveEncounter(encounter.id, gm);
+        expect(mockedBroadcastObject.mock.calls).toHaveLength(2);
+        expect(mockedBroadcastObject.mock.calls[0][0]).toEqual(Encounter.name);
+        expect(mockedBroadcastObject.mock.calls[1][0]).toEqual(Campaign.name);
+    })
+})

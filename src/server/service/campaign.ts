@@ -4,6 +4,7 @@ import {HttpError} from '../middlewares/error-middleware';
 import {assign, remove, some} from 'lodash';
 import {getUser} from './user';
 import {validateObject} from '../middlewares/validators';
+import {broadcastObject} from './socket';
 
 export const createCampaign = async (gm: User, body: Partial<Campaign>): Promise<Campaign> => {
     body = validateObject(body, ['name']);
@@ -20,6 +21,7 @@ export const updateCampaign = async (id: string, body: Partial<Campaign>): Promi
     const campaign = await getCampaign(id);
     assign(campaign, body);
     await campaign.save();
+    await pushCampaignOverSockets(id);
     return campaign;
 };
 
@@ -48,6 +50,7 @@ export const addUserToCampaign = async (id: string, user: User): Promise<void> =
         throw new HttpError(400, 'You are already in this campaign!');
     campaign.users.push(user);
     await campaign.save();
+    await pushCampaignOverSockets(id);
 };
 
 export const removeUserFromCampaign = async (id: string, authenticatedUser: User, user: Partial<User>): Promise<void> => {
@@ -59,6 +62,19 @@ export const removeUserFromCampaign = async (id: string, authenticatedUser: User
         throw new HttpError(400, 'You are GM of this campaign, you can\'t leave it, only delete!');
     if (authenticatedUser.id !== campaign.gm.id && authenticatedUser.id !== user.id)
         throw new HttpError(403, 'You can\'t kick other players unless you are GM!');
+    // We wish to notify user that left the campaign, too
+    const users = await Campaign.affectedUsers(id)
     remove(campaign.users, ['id', user.id]);
     await campaign.save();
+    await pushCampaignOverSockets(id, users);
 };
+
+export async function pushCampaignOverSockets(campaignId: string, users?: string[]) {
+    const campaign = await getCampaign(campaignId);
+    users = users ?? await Campaign.affectedUsers(campaignId)
+    broadcastObject(
+        Campaign.name,
+        campaign,
+        users,
+    );
+}
