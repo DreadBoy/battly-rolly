@@ -11,27 +11,22 @@ import {Campaign} from '../../server/model/campaign';
 
 type Props = {
     campaign: Campaign,
-    refresh: () => void,
 };
 
-export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}, refresh}) => {
+export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}}) => {
     const {url} = useRouteMatch();
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
 
     const _remove = useLoader();
     const remove = useCallback((id: string) => () => {
-        _remove.fetchAsync(api.delete(`/encounter/${id}`), id)
-            .then(refresh)
-            .catch(() => undefined);
-    }, [_remove, api, refresh]);
+        _remove.fetch(api.delete(`/encounter/${id}`), id);
+    }, [_remove, api]);
 
     const _active = useLoader();
     const setActive = useCallback((id: string) => () => {
-        _active.fetchAsync(api.post(`/encounter/${id}/active`), id)
-            .then(refresh)
-            .catch(() => undefined);
-    }, [_active, api, refresh]);
+        _active.fetch(api.post(`/encounter/${id}/active`), id);
+    }, [_active, api]);
 
     return (
         <>
@@ -57,9 +52,7 @@ export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}, r
                                         onChange={setActive(enc.id)}
                                     />
                                 )}
-                                {_active.error[enc.id] && (
-                                    <Stacktrace error={_active.error[enc.id]}/>
-                                )}
+                                <Stacktrace error={_active.error[enc.id]}/>
                             </Table.Cell>
                             <Table.Cell>{
                                 gm.id === playerId ? (

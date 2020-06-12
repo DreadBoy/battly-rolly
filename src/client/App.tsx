@@ -10,6 +10,7 @@ import {Register} from './user/Register';
 import {Campaign} from './campaign/Campaign';
 import {Monster} from './monster/Monster';
 import {User} from './user/User';
+import {GlobalStoreProvider} from './helpers/GlobalStore';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -22,26 +23,28 @@ const useStyles = createUseStyles({
 const App: FC = () => {
     useStyles();
     return (
-        <BrowserRouter>
-            <TouchProvider>
-                <BackendProvider>
-                    <Switch>
-                        <Route path={`/reset-password`} component={ResetPassword}/>
-                        <Route path={'*'}>
-                            <PlayerIdProvider>
-                                <Switch>
-                                    <Route path={`/register`} component={Register}/>
-                                    <Route path={`/campaign`} component={Campaign}/>
-                                    <Route path={`/monster`} component={Monster}/>
-                                    <Route path={`/user`} component={User}/>
-                                    <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
-                                </Switch>
-                            </PlayerIdProvider>
-                        </Route>
-                    </Switch>
-                </BackendProvider>
-            </TouchProvider>
-        </BrowserRouter>
+        <GlobalStoreProvider>
+            <BrowserRouter>
+                <TouchProvider>
+                    <BackendProvider>
+                        <Switch>
+                            <Route path={`/reset-password`} component={ResetPassword}/>
+                            <Route path={'*'}>
+                                <PlayerIdProvider>
+                                    <Switch>
+                                        <Route path={`/register`} component={Register}/>
+                                        <Route path={`/campaign`} component={Campaign}/>
+                                        <Route path={`/monster`} component={Monster}/>
+                                        <Route path={`/user`} component={User}/>
+                                        <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
+                                    </Switch>
+                                </PlayerIdProvider>
+                            </Route>
+                        </Switch>
+                    </BackendProvider>
+                </TouchProvider>
+            </BrowserRouter>
+        </GlobalStoreProvider>
     );
 };
 

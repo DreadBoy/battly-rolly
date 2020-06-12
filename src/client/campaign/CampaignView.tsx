@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect} from 'react';
 import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Campaign} from '../../server/model/campaign';
@@ -13,6 +13,7 @@ import {ConfirmButton} from '../elements/ConfirmButton';
 import {EncounterList} from '../encounter/EncounterList';
 import {useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
+import {useGlobalStore} from '../helpers/GlobalStore';
 
 const Editor = AsyncSection<Campaign>();
 
@@ -20,14 +21,11 @@ export const CampaignView: FC = observer(() => {
     const {id: playerId} = usePlayerId();
     const {url, params: {campaignId: id}} = useRouteMatch();
     const {api} = useBackend();
-    const campaign = useLoader<Campaign>();
-    const [refresh, setRefresh] = useState<number>(0);
-    const _refresh = useCallback(() => {
-        setRefresh(refresh + 1);
-    }, [refresh]);
+    const campaign = useGlobalStore();
+
     useEffect(() => {
-        campaign.fetch(api.get(`/campaign/${id}`), id, refresh > 0 ? 'silent' : undefined);
-    }, [api, campaign, id, refresh, url]);
+        campaign.fetch(api.get(`/campaign/${id}`), id);
+    }, [api, campaign, id, url]);
 
     const {canShare, share} = useShare({
         title: campaign.data[id]?.name,
@@ -36,21 +34,18 @@ export const CampaignView: FC = observer(() => {
 
     const _join = useLoader();
     const join = useCallback(() => {
-        _join.fetchAsync(api.post(`/campaign/${id}/user`), id)
-            .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
-    }, [_join, api, id, campaign]);
+        _join.fetch(api.post(`/campaign/${id}/user`), id);
+    }, [_join, api, id]);
 
     const _leave = useLoader();
     const leave = useCallback(() => {
-        _leave.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), id)
-            .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
-    }, [_leave, api, id, playerId, campaign]);
+        _leave.fetch(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), id);
+    }, [_leave, api, id, playerId]);
 
     const _kick = useLoader();
     const kick = useCallback((playerId) => () => {
-        _kick.fetchAsync(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), playerId)
-            .then(() => campaign.fetch(api.get(`/campaign/${id}`), id));
-    }, [_kick, api, id, campaign]);
+        _kick.fetch(api.delete(`/campaign/${id}/user`, {data: {id: playerId}}), id);
+    }, [_kick, api, id]);
 
     return (
         <Layout>
@@ -101,7 +96,6 @@ export const CampaignView: FC = observer(() => {
                                     <Link className={'ui button basic blue'} to={`${url}/edit`}>
                                         Edit
                                     </Link>
-                                    <Stacktrace error={_leave.error[id]}/>
                                 </Grid.Column>
                             )}
                         </Grid.Row>
@@ -132,11 +126,11 @@ export const CampaignView: FC = observer(() => {
                                                                 basic
                                                                 size={'mini'}
                                                                 onClick={kick(user.id)}
-                                                                loading={_kick.loading[user.id]}
-                                                                disabled={_kick.loading[user.id]}
+                                                                loading={_kick.loading[id]}
+                                                                disabled={_kick.loading[id]}
                                                             >Kick</ConfirmButton>
                                                         )}
-                                                        <Stacktrace error={_kick.error[user.id]}/>
+                                                        <Stacktrace error={_kick.error[id]}/>
                                                     </Table.Cell>
                                                 )}
                                             </Table.Row>
@@ -146,7 +140,7 @@ export const CampaignView: FC = observer(() => {
                             </Grid.Column>
                             {playerId === data.gm.id && (
                                 <Grid.Column>
-                                    <EncounterList campaign={data} refresh={_refresh}/>
+                                    <EncounterList campaign={data}/>
                                 </Grid.Column>
                             )}
                         </Grid.Row>

@@ -2,7 +2,7 @@ import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button, Grid, Header} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {observer} from 'mobx-react';
-import {useLoader} from '../helpers/Store';
+import {useGlobalStore} from '../helpers/GlobalStore';
 import {User} from '../../server/model/user';
 import {useRouteMatch} from 'react-router';
 import {useBackend} from '../helpers/BackendProvider';
@@ -20,7 +20,7 @@ export const UserView: FC = observer(() => {
     const {api} = useBackend();
 
     const {params: {userId}} = useRouteMatch();
-    const user = useLoader<User>();
+    const user = useGlobalStore();
 
     useEffect(() => {
         user.fetch(api.get(`/user/${userId}`), userId);

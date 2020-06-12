@@ -1,13 +1,15 @@
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback} from 'react';
 import {Container, Dropdown, Icon, Menu, Responsive} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
 import icon from '../../assets/dice-twenty-faces-twenty.svg';
 import {Link, Redirect} from 'react-router-dom';
 import {usePlayerId} from '../helpers/PlayerId';
 import {useBackend} from '../helpers/BackendProvider';
-import {Encounter} from '../../server/model/encounter';
 import {useLoader} from '../helpers/Store';
 import {root} from '../App';
+import {useGlobalStore} from '../helpers/GlobalStore';
+import {find} from 'lodash';
+import {observer} from 'mobx-react';
 
 const useStyles = createUseStyles({
     grid: {
@@ -47,23 +49,13 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Layout: FC = ({children}) => {
+export const Layout: FC = observer(({children}) => {
     const classes = useStyles();
     const {id, onLogin} = usePlayerId();
     const {api} = useBackend();
-    const {socket} = useBackend();
-    const [encounter, setEncounter] = useState<Encounter | null>(null);
 
-    useEffect(() => {
-        const onEncounter = (state: string) => {
-            const encounter = JSON.parse(state) as Encounter;
-            setEncounter(encounter);
-        };
-        socket?.addEventListener('encounter', onEncounter);
-        return () => {
-            socket?.removeEventListener('encounter', onEncounter);
-        };
-    }, [socket]);
+    const globalStore = useGlobalStore();
+    const encounter = find(Object.values(globalStore.data), ['active', true]);
 
     const loader = useLoader();
     const logout = useCallback(() => {
@@ -158,4 +150,4 @@ export const Layout: FC = ({children}) => {
             </Container>
         </div>
     );
-};
+});

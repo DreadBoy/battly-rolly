@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect} from 'react';
 import {Button, Grid, Header, Table} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
 import {Monster} from '../../server/model/monster';
@@ -14,6 +14,7 @@ import {useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
 import {abilityShort, roll, withSign} from '../helpers/display-helpers';
 import {abilities, Ability} from '../../server/model/action-types';
+import {useGlobalStore} from '../helpers/GlobalStore';
 
 const View = AsyncSection<Monster>();
 
@@ -31,14 +32,10 @@ export const MonsterView: FC = observer(() => {
     const {id: playerId} = usePlayerId();
     const {url, params: {monsterId}} = useRouteMatch();
     const {api} = useBackend();
-    const monster = useLoader<Monster>();
-    const [refresh, setRefresh] = useState<number>(0);
-    const _refresh = useCallback(() => {
-        setRefresh(refresh + 1);
-    }, [refresh]);
+    const monster = useGlobalStore();
     useEffect(() => {
-        monster.fetch(api.get(`/monster/${monsterId}`), monsterId, refresh > 0 ? 'silent' : undefined);
-    }, [api, monster, monsterId, refresh, url]);
+        monster.fetch(api.get(`/monster/${monsterId}`), monsterId);
+    }, [api, monster, monsterId, url]);
 
     const {canShare, share} = useShare({
         title: monster.data[monsterId]?.name,
@@ -47,15 +44,13 @@ export const MonsterView: FC = observer(() => {
 
     const _sub = useLoader();
     const sub = useCallback(() => {
-        _sub.fetchAsync(api.post(`/monster/${monsterId}/sub`), monsterId)
-            .then(_refresh);
-    }, [_sub, api, monsterId, _refresh]);
+        _sub.fetch(api.post(`/monster/${monsterId}/sub`), monsterId);
+    }, [_sub, api, monsterId]);
 
     const _unsub = useLoader();
     const unsub = useCallback(() => {
-        _unsub.fetchAsync(api.delete(`/monster/${monsterId}/sub`), monsterId)
-            .then(_refresh);
-    }, [_unsub, api, monsterId, _refresh]);
+        _unsub.fetch(api.delete(`/monster/${monsterId}/sub`), monsterId);
+    }, [_unsub, api, monsterId]);
 
     return (
         <Layout>
