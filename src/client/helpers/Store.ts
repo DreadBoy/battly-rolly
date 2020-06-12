@@ -1,53 +1,57 @@
-import {action, observable} from 'mobx';
+import {useLocalStore} from 'mobx-react';
 import {AxiosPromise} from 'axios';
-import {useState} from 'react';
 
 export type Silent = 'silent' | undefined;
-type Obj<T> = { [id: string]: T };
+type Obj<T = any> = { [id: string]: T };
+type Model = { id: string };
 
-export class Store<T> {
-    @observable public loading: Obj<boolean> = {};
-    @observable public error: Obj<Error> = {};
-    @observable public data: Obj<T> = {};
+export function createStore() {
+    return {
+        loading: {} as Obj,
+        error: {} as Obj,
+        data: {} as Obj,
+        set<T extends Model>(obj: T) {
+            this.data[obj.id] = obj;
+        },
+        get<T>(id: string) {
+            return this.data[id] as T;
+        },
+        async fetchAsync(request: AxiosPromise, uuid: string, silent?: Silent) {
+            const isSilent = silent === 'silent';
+            if (!isSilent) {
+                this.loading[uuid] = true;
+                delete this.data[uuid];
+                delete this.error[uuid];
+            }
 
-    @action
-    public async fetchAsync(request: AxiosPromise<T>, uuid: string, silent?: Silent) {
-        const isSilent = silent === 'silent';
-        if (!isSilent) {
-            this.loading[uuid] = true;
-            delete this.data[uuid];
-            delete this.error[uuid];
-        }
-
-        try {
-            const response = await request;
-            this.data[uuid] = response.data;
-            this.loading[uuid] = false;
-        } catch (e) {
-            let error = e;
-            if (e.response && e.response.data)
-                error = e.response.data;
-            console.error(error);
-            this.error[uuid] = error;
-            this.loading[uuid] = false;
-            throw error;
-        }
-        return this.data[uuid];
-    }
-
-    @action
-    public fetch(request: AxiosPromise<T>, uuid: string, silent?: Silent) {
-        this.fetchAsync(request, uuid, silent).catch(() => undefined);
-    }
-
-    @action
-    public reset() {
-        this.data = {};
-        this.error = {};
-        this.loading = {};
-    }
+            try {
+                const response = await request;
+                this.data[uuid] = response.data;
+                this.loading[uuid] = false;
+            } catch (e) {
+                let error = e;
+                if (e.response && e.response.data)
+                    error = e.response.data;
+                console.error(error);
+                this.error[uuid] = error;
+                this.loading[uuid] = false;
+                throw error;
+            }
+            return this.data[uuid];
+        },
+        fetch(request: AxiosPromise, uuid: string, silent?: Silent) {
+            this.fetchAsync(request, uuid, silent).catch(() => undefined);
+        },
+        reset() {
+            this.data = {};
+            this.error = {};
+            this.loading = {};
+        },
+    };
 }
 
+export type TStore = ReturnType<typeof createStore>;
+
 export function useLoader<T = null>() {
-    return useState<Store<T>>(new Store<T>())[0];
+    return useLocalStore(createStore);
 }

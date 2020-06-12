@@ -2,7 +2,7 @@ import {fakeRequest, useBackend} from '../helpers/BackendProvider';
 import {useHistory} from 'react-router';
 import React, {FC, useCallback, useEffect} from 'react';
 import {observer, useLocalStore} from 'mobx-react';
-import {Store, useLoader} from '../helpers/Store';
+import {TStore, useLoader} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
 import {Button} from 'semantic-ui-react';
@@ -18,7 +18,7 @@ type Urls = {
     delete: string,
 }
 
-export function useEditor<T>(store: Store<T>, baseUrl: string, id: string, creator: () => Partial<T>, urls?: Partial<Urls>) {
+export function useEditor<T>(store: TStore, baseUrl: string, id: string, creator: () => Partial<T>, urls?: Partial<Urls>) {
     const {api} = useBackend();
     const {goBack} = useHistory();
 

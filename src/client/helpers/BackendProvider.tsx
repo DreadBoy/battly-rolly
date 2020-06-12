@@ -2,6 +2,8 @@ import React, {createContext, FC, useCallback, useContext, useEffect, useRef, us
 import Io from 'socket.io-client';
 import {Connect} from './Connect';
 import Axios, {AxiosInstance, AxiosPromise} from 'axios';
+import {BroadcastObject} from '../../server/service/socket';
+import {useGlobalStore} from './GlobalStore';
 
 type BackendContext = {
     origin: string,
@@ -19,6 +21,7 @@ export const BackendProvider: FC = ({children}) => {
     const [socket, setSocket] = useState<SocketIOClient.Socket | null | undefined>(undefined);
     const [origin, setOrigin] = useState<string>('');
     const [api, setApi] = useState<AxiosInstance>();
+    const globalStore = useGlobalStore();
 
     const connected = !!origin && origin.length > 0;
 
@@ -34,6 +37,11 @@ export const BackendProvider: FC = ({children}) => {
             s.addEventListener('encounter', (state: string) => {
                 console.log('%c  <-- %cSOCKET %cencounter %o', 'color:gray', 'color:white', 'color:gray', JSON.parse(state));
             });
+            s.addEventListener('object', ({model, data}: BroadcastObject) => {
+                console.log(`%c  <-- %cSOCKET %cobject ${model} %o`,
+                    'color:gray', 'color:white', 'color:gray', data);
+                globalStore.set(data);
+            });
         });
 
         const api = Axios.create({
@@ -42,7 +50,7 @@ export const BackendProvider: FC = ({children}) => {
         setApi(() => api);
 
         setOrigin(origin);
-    }, []);
+    }, [globalStore]);
 
     const socketRef = useRef<SocketIOClient.Socket>();
     useEffect(() => {

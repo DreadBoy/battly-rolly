@@ -1,11 +1,11 @@
 import React, {FC, ReactElement} from 'react';
-import {Store} from './Store';
+import {TStore} from './Store';
 import {Loader} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Stacktrace} from '../elements/Stacktrace';
 
 type Props<T> = {
-    store: Store<T>
+    store: TStore
     id: string
     render: (data: T) => ReactElement | null
 }
