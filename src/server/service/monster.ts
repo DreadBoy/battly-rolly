@@ -5,6 +5,7 @@ import {assign, includes, map, remove} from 'lodash';
 import {validateObject} from '../middlewares/validators';
 import {getManager, SelectQueryBuilder} from 'typeorm';
 import {getUser} from './user';
+import {broadcastObject} from './socket';
 
 export async function getMonster(id: string, relations: string[] = ['actions', 'owner', 'subscribers']): Promise<Monster> {
     const monster = await Monster.findOne(id, {relations});
@@ -22,12 +23,14 @@ export async function createMonster(user: User, body: Partial<Monster>): Promise
 }
 
 export async function updateMonster(id: string, user: User, body: Partial<Monster>): Promise<Monster> {
-    const monster = await getMonster(id);
+    let monster = await getMonster(id);
     if (monster.owner.id !== user.id)
         throw new HttpError(403, 'You are not author of this monster, you can\'t change it!');
     body = validateObject(body, [], ['name', 'HP', 'AC', 'abilitySet', 'savingThrows', 'actions']);
     assign(monster, body);
-    return monster.save();
+    monster = await monster.save();
+    await pushMonsterOverSockets(id);
+    return monster;
 }
 
 export async function deleteMonster(id: string, user: User): Promise<void> {
@@ -77,6 +80,7 @@ export async function subscribe(monsterId: string, user: User): Promise<void> {
     const monster = await getMonster(monsterId);
     user.subscribedMonsters.push(monster)
     await user.save();
+    await pushMonsterOverSockets(monsterId);
 }
 
 export async function unsubscribe(monsterId: string, user: User): Promise<void> {
@@ -85,6 +89,19 @@ export async function unsubscribe(monsterId: string, user: User): Promise<void> 
         return;
     if (includes(map(user.monsters, 'id'), monsterId))
         throw new HttpError(400, 'You are author of this monster, you can\'t unsubscribe to it!');
+    const monster = await getMonster(monsterId);
     remove(user.subscribedMonsters, ['id', monsterId]);
     await user.save();
+    await pushMonsterOverSockets(monsterId, map(monster.subscribers, 'id').concat(monster.owner.id));
 }
+
+export async function pushMonsterOverSockets(monsterId: string, users?: string[]) {
+    const monster = await getMonster(monsterId);
+    users = users ?? await Monster.affectedUsers(monsterId)
+    broadcastObject(
+        Monster.name,
+        monster,
+        users,
+    );
+}
+

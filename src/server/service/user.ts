@@ -3,6 +3,7 @@ import {HttpError} from '../middlewares/error-middleware';
 import {assign} from 'lodash';
 import {validateObject} from '../middlewares/validators';
 import {hashPassword} from './auth';
+import {broadcastObject} from './socket';
 
 export type CreateUser = {
     email: string,
@@ -43,9 +44,10 @@ export const getUserWithAllFields = async (id: string, relations: string[] = [])
 
 export const updateUser = async (id: string, body: Partial<User>): Promise<User> => {
     body = validateObject(body, ['email', 'displayName']);
-    const user = await getUser(id);
+    let user = await getUser(id);
     assign(user, body);
-    await user.save();
+    user = await user.save();
+    await pushUserOverSockets(user.id);
     return user;
 };
 
@@ -55,3 +57,12 @@ export const updatePassword = async (user: User, password: string): Promise<User
     await user.save();
     return user;
 };
+
+export async function pushUserOverSockets(userId: string) {
+    const user = await getUser(userId);
+    broadcastObject(
+        User.name,
+        user,
+        [userId],
+    );
+}

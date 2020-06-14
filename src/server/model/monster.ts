@@ -1,8 +1,18 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    getManager,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import {Transformers} from './transformers';
 import {Action} from './action';
 import {User} from './user';
 import {AbilitySet, Roll} from './action-types';
+import {map} from 'lodash';
 
 
 @Entity()
@@ -39,4 +49,15 @@ export class Monster extends BaseEntity {
 
     @ManyToMany(() => User, user => user.subscribedMonsters)
     subscribers!: User[];
+
+    static async affectedUsers(monsterId: string): Promise<string[]> {
+        const users = await getManager().createQueryBuilder(User, 'user')
+            .leftJoin('user.monsters', 'monster')
+            .leftJoin('user.subscribedMonsters', 'subscribedMonster')
+            .where('monster.id = :monsterId', {monsterId})
+            .orWhere('subscribedMonster.id = :monsterId', {monsterId})
+            .select('user.id')
+            .getMany();
+        return map(users, 'id');
+    }
 }

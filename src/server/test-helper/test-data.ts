@@ -54,6 +54,7 @@ export const campaigns = [{
 } as Campaign];
 export const monsters = [{
     id: '7cf61eba-935f-450e-9e8a-0e907748fe64',
+    owner: getGm(),
     name: 'Boar',
     HP: [2, 8, 2],
     AC: 11,
