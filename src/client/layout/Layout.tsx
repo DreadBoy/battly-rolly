@@ -73,7 +73,7 @@ export const Layout: FC = observer(({children}) => {
             <Responsive minWidth={640} as={Menu}>
                 <Container>
                     <Menu.Item header>
-                        <img src={icon} alt={'icon'}/>
+                        <img src={icon} alt={'icon'} title={`App version: ${process.env.REACT_APP_APP_VERSION}`}/>
                     </Menu.Item>
                     {encounter && (
                         <Menu.Item>
