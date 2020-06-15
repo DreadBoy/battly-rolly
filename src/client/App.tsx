@@ -11,6 +11,7 @@ import {Campaign} from './campaign/Campaign';
 import {Monster} from './monster/Monster';
 import {User} from './user/User';
 import {GlobalStoreProvider} from './helpers/GlobalStore';
+import {ServiceWorkerProvider} from './hooks/use-service-worker';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -23,28 +24,30 @@ const useStyles = createUseStyles({
 const App: FC = () => {
     useStyles();
     return (
-        <GlobalStoreProvider>
-            <BrowserRouter>
-                <TouchProvider>
-                    <BackendProvider>
-                        <Switch>
-                            <Route path={`/reset-password`} component={ResetPassword}/>
-                            <Route path={'*'}>
-                                <PlayerIdProvider>
-                                    <Switch>
-                                        <Route path={`/register`} component={Register}/>
-                                        <Route path={`/campaign`} component={Campaign}/>
-                                        <Route path={`/monster`} component={Monster}/>
-                                        <Route path={`/user`} component={User}/>
-                                        <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
-                                    </Switch>
-                                </PlayerIdProvider>
-                            </Route>
-                        </Switch>
-                    </BackendProvider>
-                </TouchProvider>
-            </BrowserRouter>
-        </GlobalStoreProvider>
+        <ServiceWorkerProvider>
+            <GlobalStoreProvider>
+                <BrowserRouter>
+                    <TouchProvider>
+                        <BackendProvider>
+                            <Switch>
+                                <Route path={`/reset-password`} component={ResetPassword}/>
+                                <Route path={'*'}>
+                                    <PlayerIdProvider>
+                                        <Switch>
+                                            <Route path={`/register`} component={Register}/>
+                                            <Route path={`/campaign`} component={Campaign}/>
+                                            <Route path={`/monster`} component={Monster}/>
+                                            <Route path={`/user`} component={User}/>
+                                            <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
+                                        </Switch>
+                                    </PlayerIdProvider>
+                                </Route>
+                            </Switch>
+                        </BackendProvider>
+                    </TouchProvider>
+                </BrowserRouter>
+            </GlobalStoreProvider>
+        </ServiceWorkerProvider>
     );
 };
 

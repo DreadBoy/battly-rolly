@@ -10,6 +10,7 @@ import {root} from '../App';
 import {useGlobalStore} from '../helpers/GlobalStore';
 import {find} from 'lodash';
 import {observer} from 'mobx-react';
+import {UpdateButton} from './UpdateButton';
 
 const useStyles = createUseStyles({
     grid: {
@@ -106,7 +107,6 @@ export const Layout: FC = observer(({children}) => {
                     </Menu.Menu>
                 </Container>
             </Responsive>
-
             <Responsive maxWidth={439} as={Menu}>
                 <Container>
                     <Dropdown icon={'bars'} item>
@@ -147,6 +147,7 @@ export const Layout: FC = observer(({children}) => {
             </Responsive>
             <Container>
                 {children}
+                <UpdateButton/>
             </Container>
         </div>
     );
