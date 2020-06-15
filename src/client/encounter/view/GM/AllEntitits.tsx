@@ -8,6 +8,7 @@ import {Feature} from '../../../../server/model/feature';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {filter, map} from 'lodash';
 import { type } from '../../../../server/model/helpers';
+import {MonsterHP} from './MonsterHP';
 
 type Props = {
     encounter: Encounter,
@@ -36,7 +37,9 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                         name='close'
                                         onClick={onRemove(f)}
                                     />
-                                    <List.Content>{featureToDisplay(f)} {f.HP} / {f.initialHP}</List.Content>
+                                    <List.Content>{featureToDisplay(f)}
+                                    <MonsterHP id={f.id} HP={f.HP} initialHP={f.initialHP}/>
+                                    </List.Content>
                                 </List.Item>
                             ),
                         )}

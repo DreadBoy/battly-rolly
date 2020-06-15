@@ -1,6 +1,6 @@
 import React, {FC, useEffect} from 'react';
 import {observer} from 'mobx-react';
-import {useLoader} from '../helpers/Store';
+import {useGlobalStore} from '../helpers/GlobalStore';
 import {Encounter} from '../../server/model/encounter';
 import {useRouteMatch} from 'react-router-dom';
 import {useBackend} from '../helpers/BackendProvider';
@@ -16,7 +16,7 @@ export const EncounterView: FC = observer(() => {
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
 
-    const encounter = useLoader();
+    const encounter = useGlobalStore();
     useEffect(() => {
         encounter.fetch(api.get(`/encounter/${encounterId}`), encounterId);
     }, [api, encounter, encounterId]);

@@ -7,8 +7,8 @@ import {
     seedMonsters,
     seedUsers,
 } from '../test-helper/test-helpers'
-import {encounters, getWizard, testMonsterFeature} from '../test-helper/test-data';
-import {addFeatures, removeFeatures, removePlayers} from './feature';
+import {encounters, features, getWizard, testMonsterFeature} from '../test-helper/test-data';
+import {addFeatures, removeFeatures, removePlayers, updateFeature} from './feature';
 import {getEncounter} from './encounter';
 import {Encounter} from '../model/encounter';
 import {broadcastObject} from './socket';
@@ -67,7 +67,6 @@ describe('Feature sockets', () => {
 
     it('notify when adding feature', async () => {
         await addFeatures(encounters[0].id, {features: [testMonsterFeature()]});
-        await getEncounter(encounters[0].id)
         expect(mockedBroadcastObject.mock.calls).toHaveLength(1);
         expect(mockedBroadcastObject.mock.calls[0][0]).toEqual(Encounter.name);
     })
@@ -77,6 +76,12 @@ describe('Feature sockets', () => {
         let encounter = await getEncounter(encounters[0].id)
         mockedBroadcastObject.mockClear();
         await removeFeatures(encounters[0].id, {features: encounter.features.slice(-1)})
+        expect(mockedBroadcastObject.mock.calls).toHaveLength(1);
+        expect(mockedBroadcastObject.mock.calls[0][0]).toEqual(Encounter.name);
+    })
+
+    it('notify when updating feature', async () => {
+        await updateFeature(features[0].id, {HP: features[0].HP - 1});
         expect(mockedBroadcastObject.mock.calls).toHaveLength(1);
         expect(mockedBroadcastObject.mock.calls[0][0]).toEqual(Encounter.name);
     })
