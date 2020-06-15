@@ -83,12 +83,10 @@ function registerValidSW(swUrl: string, config?: Config) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              const confirmed = window.confirm(
-                'New update of Battly Rolly is available but you need to close the app to start using it. '
-                + 'Confirm to close the app or decline to keep using older version.'
+              console.log(
+                  'New content is available and will be used when all ' +
+                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               );
-              if(confirmed)
-                window.close();
 
               // Execute callback
               if (config && config.onUpdate) {
