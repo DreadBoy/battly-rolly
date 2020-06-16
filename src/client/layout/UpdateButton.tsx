@@ -21,19 +21,38 @@ const useStyles = createUseStyles({
 
 export const UpdateButton: FC = () => {
     const classes = useStyles();
-    const {isUpdateAvailable, update} = useServiceWorker();
+    const {isUpdateAvailable, update: _update} = useServiceWorker();
 
     const [hidden, _setHide] = useState<boolean>(false);
     const hide = useCallback(() => {
         _setHide(true);
     }, []);
 
+    const [loading, setLoading] = useState<boolean>(false);
+    const update = useCallback(() => {
+        setLoading(true);
+        _update();
+    }, [_update]);
+
     if (!isUpdateAvailable || hidden) return null;
 
     return (
         <Message floating className={classes.message}>
             New update is available, click to apply!
-            <Button onClick={update} primary basic size={'mini'} className={classes.button}>Apply</Button>
+            <Button
+                onClick={update}
+                disabled={loading}
+                primary
+                basic
+                size={'mini'}
+                className={classes.button}
+            >
+                {loading ? (
+                    <>&nbsp;&nbsp;&nbsp;<Icon loading name={'spinner'}/>&nbsp;&nbsp;&nbsp;</>
+                ) : (
+                    <>Apply</>
+                )}
+            </Button>
             <Icon name={'close'} onClick={hide}/>
         </Message>
     )
