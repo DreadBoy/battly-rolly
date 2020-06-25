@@ -20,12 +20,12 @@ type RemoveFeatures = {
 };
 
 export const removeFeatures = async (encounterId: string, body: RemoveFeatures): Promise<void> => {
-    await repo.removeFeatures(encounterId, body.features);
+    await repo.removeFeatures(body.features);
     await pushEncounterOverSockets(encounterId);
 };
 
 export const removePlayers = async (encounterId: string, playerIds: string[]): Promise<void> => {
-    await repo.removePlayers(encounterId, playerIds);
+    await repo.removePlayers(playerIds);
     await pushEncounterOverSockets(encounterId);
 };
 

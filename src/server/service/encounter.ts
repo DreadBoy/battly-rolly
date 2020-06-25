@@ -4,8 +4,8 @@ import {getCampaign, pushCampaignOverSockets} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastObject} from './socket';
-import {AddFeature} from '../repo/feature';
-import * as repo from '../repo/feature';
+import {AddFeature, addFeatures, removePlayers} from '../repo/feature';
+import * as repo from '../repo/encounter';
 import {validateObject} from '../middlewares/validators';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
@@ -17,7 +17,6 @@ export async function createEncounter(campaignId: string, user: User, body: Part
     encounter.campaign = campaign;
     assign(encounter, body);
     await encounter.save();
-    delete encounter.campaign;
     return encounter;
 }
 
@@ -27,20 +26,15 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
 }
 
 export async function getEncounter(encounterId: string): Promise<Encounter> {
-    const encounter = await Encounter.findOne(encounterId, {
-        relations: [
-            'campaign',
-            'features', 'features.monster', 'features.player',
-            'logs', 'logs.source', 'logs.target',
-        ],
-    });
-    if (!encounter)
-        throw new HttpError(404, `Encounter with id ${encounterId} not found`);
-    return encounter;
+    return repo.getEncounter(encounterId, [
+        'campaign',
+        'features', 'features.monster', 'features.player',
+        'logs', 'logs.source', 'logs.target',
+    ]);
 }
 
 export async function updateEncounter(encounterId: string, body: Partial<Encounter>): Promise<Encounter> {
-    const encounter = await getEncounter(encounterId);
+    const encounter = await repo.getEncounter(encounterId);
     assign(encounter, body);
     await encounter.save();
     await pushEncounterOverSockets(encounter.id);
@@ -48,7 +42,7 @@ export async function updateEncounter(encounterId: string, body: Partial<Encount
 }
 
 export async function deleteEncounter(encounterId: string, user: User): Promise<void> {
-    const encounter = await getEncounter(encounterId);
+    const encounter = await repo.getEncounter(encounterId, ['campaign']);
     if (encounter.campaign.gm.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t delete encounter in it!');
     await Encounter.remove(encounter);
@@ -56,10 +50,13 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
 }
 
 export async function toggleActiveEncounter(encounterId: string, user: User): Promise<void> {
-    const encounter = await getEncounter(encounterId);
-    if (encounter.campaign.gm.id !== user.id)
+    const encounter = await repo.getEncounter(
+        encounterId,
+        ['campaign', 'campaign.users', 'campaign.encounters'],
+    );
+    if (encounter?.campaign?.gm?.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
-    const campaign = await getCampaign(encounter.campaign.id, ['users', 'encounters', 'encounters.features']);
+    const campaign = encounter.campaign;
     const before = map(campaign.encounters, e => pick(e, ['id', 'name', 'active']));
 
     const playerIds = campaign.users
@@ -68,17 +65,17 @@ export async function toggleActiveEncounter(encounterId: string, user: User): Pr
     await Promise.all(campaign.encounters.map(async enc => {
         enc.active = enc.id === encounterId && !enc.active;
         if (!enc.active) {
-            await repo.removePlayers(enc.id, playerIds);
+            await removePlayers(playerIds);
         } else {
-            const addedPlayers = campaign.users.filter(u => u.id !== encounter.campaign.gm.id)
-                .map(u => ({
+            const addedPlayers = playerIds
+                .map(id => ({
                     type: 'player',
-                    reference: u.id,
+                    reference: id,
                     AC: 15,
                     HP: 10,
                     initialHP: 10,
                 } as AddFeature));
-            await repo.addFeatures(enc.id, addedPlayers);
+            await addFeatures(enc.id, addedPlayers);
         }
     }));
     await campaign.save();

@@ -9,7 +9,7 @@ import {
 } from '../test-helper/test-helpers'
 import {encounters, features, getWizard, testMonsterFeature} from '../test-helper/test-data';
 import {addFeatures, removeFeatures, removePlayers, updateFeature} from './feature';
-import {getEncounter} from './encounter';
+import {getEncounter} from '../repo/encounter';
 import {Encounter} from '../model/encounter';
 import {broadcastObject} from './socket';
 
@@ -31,23 +31,23 @@ describe('Feature service', () => {
     it('adds monster', async () => {
         // TODO add authentication to this method
         await addFeatures(encounters[0].id, {features: [testMonsterFeature()]});
-        const encounter = await getEncounter(encounters[0].id)
+        const encounter = await getEncounter(encounters[0].id, ['features'])
         expect(encounter.features).toHaveLength(2);
     })
 
     it('removes monster', async () => {
         // TODO add authentication to this method
         await addFeatures(encounters[0].id, {features: [testMonsterFeature()]});
-        let encounter = await getEncounter(encounters[0].id)
+        let encounter = await getEncounter(encounters[0].id, ['features'])
         await removeFeatures(encounters[0].id, {features: encounter.features.slice(-1)})
-        encounter = await getEncounter(encounters[0].id)
+        encounter = await getEncounter(encounters[0].id, ['features'])
         expect(encounter.features).toHaveLength(1);
     })
 
     it('removes players', async () => {
         // TODO add authentication to this method
         await removePlayers(encounters[0].id, [getWizard().id])
-        const encounter = await getEncounter(encounters[0].id)
+        const encounter = await getEncounter(encounters[0].id, ['features'])
         expect(encounter.features).toHaveLength(0);
     })
 
@@ -73,7 +73,7 @@ describe('Feature sockets', () => {
 
     it('notify when removing feature', async () => {
         await addFeatures(encounters[0].id, {features: [testMonsterFeature()]});
-        let encounter = await getEncounter(encounters[0].id)
+        let encounter = await getEncounter(encounters[0].id, ['features'])
         mockedBroadcastObject.mockClear();
         await removeFeatures(encounters[0].id, {features: encounter.features.slice(-1)})
         expect(mockedBroadcastObject.mock.calls).toHaveLength(1);

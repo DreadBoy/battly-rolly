@@ -1,4 +1,5 @@
-import {createEncounter, deleteEncounter, getEncounter, toggleActiveEncounter} from './encounter';
+import {createEncounter, deleteEncounter, toggleActiveEncounter} from './encounter';
+import {getEncounter} from '../repo/encounter';
 import {afterEach as _afterEach, beforeEach as _beforeEach, seedCampaigns, seedUsers} from '../test-helper/test-helpers'
 import {campaigns, getGm, testEncounter} from '../test-helper/test-data';
 import {HttpError} from '../middlewares/error-middleware';
@@ -55,7 +56,7 @@ describe('Encounter service', () => {
         const gm = getGm();
         let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
         await toggleActiveEncounter(encounter.id, gm);
-        encounter = await getEncounter(encounter.id);
+        encounter = await getEncounter(encounter.id, ['features']);
         expect(encounter.features).toHaveLength(1);
     })
 
@@ -64,7 +65,7 @@ describe('Encounter service', () => {
         let encounter = await createEncounter(campaigns[0].id, gm, testEncounter());
         await toggleActiveEncounter(encounter.id, gm);
         await toggleActiveEncounter(encounter.id, gm);
-        encounter = await getEncounter(encounter.id);
+        encounter = await getEncounter(encounter.id, ['features']);
         expect(encounter.features).toHaveLength(0);
     })
 

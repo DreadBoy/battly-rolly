@@ -2,7 +2,8 @@ import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
 import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
-import {getEncounter, pushEncounterOverSockets} from './encounter';
+import {pushEncounterOverSockets} from './encounter';
+import {getEncounter} from '../repo/encounter';
 import {Ability, Status} from '../encounter';
 import {validateObject} from '../middlewares/validators';
 import {DamageType} from '../model/action-types';
@@ -32,7 +33,7 @@ export type StartLog = {
 };
 
 export async function startLog(encounterId: string, user: User, body: StartLog) {
-    const encounter = await getEncounter(encounterId);
+    const encounter = await getEncounter(encounterId, ['campaign', 'features', 'logs']);
     if (!some(encounter.campaign.users, ['id', user.id]))
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
     if (body.type === 'direct')

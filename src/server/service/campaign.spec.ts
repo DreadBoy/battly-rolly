@@ -1,9 +1,11 @@
 import {
     addUserToCampaign,
     createCampaign,
-    deleteCampaign, getCampaign,
+    deleteCampaign,
+    getCampaign,
     getCampaignsForUser,
-    removeUserFromCampaign, updateCampaign,
+    removeUserFromCampaign,
+    updateCampaign,
 } from './campaign';
 import {afterEach as _afterEach, beforeEach as _beforeEach, seedUsers} from '../test-helper/test-helpers'
 import {getGm, getWizard, testCampaign} from '../test-helper/test-data';

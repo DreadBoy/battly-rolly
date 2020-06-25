@@ -1,7 +1,7 @@
 import {Feature, FeatureType} from '../model/feature';
 import {assign, find, groupBy, map, pick, uniq} from 'lodash';
-import {getConnection} from 'typeorm';
-import {getEncounter} from '../service/encounter';
+import {getConnection, In} from 'typeorm';
+import {getEncounter} from './encounter';
 import {Monster} from '../model/monster';
 import {User} from '../model/user';
 
@@ -31,16 +31,14 @@ export async function addFeatures(encounterId: string, features: AddFeature[]): 
     await getConnection().getRepository(Feature).save(added);
 }
 
-export async function removeFeatures(encounterId: string, features: Feature[]): Promise<void> {
+export async function removeFeatures(features: Feature[]): Promise<void> {
     const ids = map(features, 'id') as string[];
     if (ids.length === 0)
         return;
     await getConnection().getRepository(Feature).delete(ids);
 }
 
-export async function removePlayers(encounterId: string, playerIds: string[]): Promise<void> {
-    const encounter = await getEncounter(encounterId);
-    const removedPlayers = encounter.features
-        .filter(feature => playerIds.includes(feature?.player?.id ?? ''));
-    await removeFeatures(encounterId, removedPlayers);
+export async function removePlayers(playerIds: string[]): Promise<void> {
+    const removedPlayers: Feature[] = await Feature.find({where: {player: {id: In(playerIds)}}});
+    await removeFeatures(removedPlayers);
 }
