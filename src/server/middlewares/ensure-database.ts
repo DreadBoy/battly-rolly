@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Connection, createConnection} from 'typeorm';
+import {Connection, createConnection, getConnection} from 'typeorm';
 import * as Koa from 'koa';
 import {getConfig} from '../db-tools/get-config';
 import {User} from '../model/user';
@@ -9,16 +9,25 @@ import {Feature} from '../model/feature';
 import {Log} from '../model/log';
 import {Monster} from '../model/monster';
 import {Action} from '../model/action';
+import {ConnectionNotFoundError} from 'typeorm/error/ConnectionNotFoundError';
 
 let connection: Connection;
 
 
 async function connect() {
+    try {
+        connection = getConnection();
+        if (connection)
+            return connection;
+    } catch (e) {
+        if (!(e instanceof ConnectionNotFoundError))
+            throw e;
+    }
     if (!process.env.DATABASE_URL)
         throw new Error('Invalid or missing DATABASE_URL env variable');
     let config = getConfig(process.env.DATABASE_URL);
     config = {
-      ...config,
+        ...config,
         entities: [User, Campaign, Encounter, Feature, Log, Monster, Action],
         migrations: [],
         synchronize: true,
@@ -29,7 +38,7 @@ async function connect() {
 
 
 export const ensureDatabase: Koa.Middleware = async (ctx, next) => {
-    if(!connection)
+    if (!connection)
         await connect();
     return next();
 };
