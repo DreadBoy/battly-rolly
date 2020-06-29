@@ -10,10 +10,16 @@ import {AllLogs} from './GM/AllLogs';
 import {ResolveResult} from './GM/ResolveResult';
 import {DealDamage} from './GM/DealDamage';
 import {ConfirmDamage} from './GM/ConfirmDamage';
+import {Stacktrace} from '../../elements/Stacktrace';
 
 export const EncounterGm: FC<{ encounter: Encounter }> = observer(({encounter}) => {
     if (!encounter.features)
-        return null;
+        return (
+            <Layout>
+                <Header>Run {encounter.name}</Header>
+                <Stacktrace error={new Error('No features in this encounter')}/>
+            </Layout>
+        );
 
     return (
         <Layout>

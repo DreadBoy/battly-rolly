@@ -38,6 +38,9 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         target: [],
         type: 'direct',
         name: '',
+        attack: undefined,
+        stat: 'constitution',
+        DC: undefined,
     } as StartLog), [playerFeature]);
     const logSetup = useLocalStore<StartLog>(empty);
 
@@ -84,7 +87,8 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                 <Grid.Column width={16}>
                     <Header size={'small'}>Make an attack</Header>
                     <Form.Input
-                        label={'Name'}
+                        name={'name_of_attack'}
+                        label={'Name of attack'}
                         onChange={onText(logSetup, 'name')}
                         value={logSetup.name}
                     />
@@ -110,7 +114,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             label={'Attack roll'}
                             onChange={onNumber(logSetup, 'attack')}
                             type={'number'}
-                            value={logSetup.attack}
+                            value={logSetup.attack || ''}
                         />
                     ) : (
                         <>

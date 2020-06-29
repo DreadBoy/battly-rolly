@@ -39,9 +39,7 @@ export const AddFeatures: FC<Props> = ({encounter}) => {
                     <SearchMonsters onSelect={onAdd}/>
                 </Grid.Column>
                 <Grid.Column>
-                    <Stacktrace
-                        error={silentLoader.error['add'] || silentLoader.error['remove']}
-                    />
+                    <Stacktrace error={silentLoader.error['add']}/>
                 </Grid.Column>
             </Grid>
         </>
