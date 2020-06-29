@@ -1,5 +1,4 @@
-import React, {FC, useCallback, useState} from 'react';
-import {observer} from 'mobx-react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button, Input} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
 import {useNumber} from '../../../hooks/form-helpers';
@@ -34,7 +33,7 @@ export const styles = {
 
 const useStyles = createUseStyles(styles);
 
-export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
+export const MonsterHP: FC<Props> = ({id, HP, initialHP}) => {
     const classes = useStyles();
     const {api} = useBackend();
 
@@ -44,6 +43,10 @@ export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
     }, [input]);
 
     const text = useNumber(HP.toString());
+    const textOnChange = text.onChange;
+    useEffect(() => {
+        textOnChange({target: {value: HP.toString()}} as any);
+    }, [HP, textOnChange])
     const _confirm = useLoader();
     const confirm = useCallback(() => {
         _confirm.fetchAsync(api.put(`/feature/${id}`, {HP: text.number} as Feature), id)
@@ -85,4 +88,4 @@ export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
             />
         </Input>
     );
-});
+};
