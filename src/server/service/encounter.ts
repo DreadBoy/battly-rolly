@@ -4,7 +4,7 @@ import {getCampaign, pushCampaignOverSockets} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
 import {assign, filter, find, map, pick} from 'lodash';
 import {broadcastObject} from './socket';
-import {AddFeature, addFeatures, removePlayers} from '../repo/feature';
+import {AddFeature, addFeatures} from '../repo/feature';
 import * as repo from '../repo/encounter';
 import {validateObject} from '../middlewares/validators';
 
@@ -52,7 +52,7 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
 export async function toggleActiveEncounter(encounterId: string, user: User): Promise<void> {
     const encounter = await repo.getEncounter(
         encounterId,
-        ['campaign', 'campaign.users', 'campaign.encounters'],
+        ['campaign', 'campaign.users', 'campaign.encounters', 'features'],
     );
     if (encounter?.campaign?.gm?.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
@@ -64,10 +64,10 @@ export async function toggleActiveEncounter(encounterId: string, user: User): Pr
         .map(user => user.id);
     await Promise.all(campaign.encounters.map(async enc => {
         enc.active = enc.id === encounterId && !enc.active;
-        if (!enc.active) {
-            await removePlayers(playerIds);
-        } else {
-            const addedPlayers = playerIds
+        if (enc.active) {
+            const inEncounter = map(enc.features, 'id');
+            const notInEncounter = filter(playerIds, id => !inEncounter.includes(id));
+            const addedPlayers = notInEncounter
                 .map(id => ({
                     type: 'player',
                     reference: id,

@@ -15,20 +15,6 @@ export const addFeatures = async (encounterId: string, body: AddFeatures): Promi
     await pushEncounterOverSockets(encounterId);
 };
 
-type RemoveFeatures = {
-    features: Feature[]
-};
-
-export const removeFeatures = async (encounterId: string, body: RemoveFeatures): Promise<void> => {
-    await repo.removeFeatures(body.features);
-    await pushEncounterOverSockets(encounterId);
-};
-
-export const removePlayers = async (encounterId: string, playerIds: string[]): Promise<void> => {
-    await repo.removePlayers(playerIds);
-    await pushEncounterOverSockets(encounterId);
-};
-
 export const updateFeature = async (featureId: string, body: Partial<Feature>): Promise<Feature> => {
     const feature = await getFeature(featureId, ['encounter']);
     assign(feature, body);

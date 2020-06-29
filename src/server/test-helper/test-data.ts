@@ -103,11 +103,13 @@ export const monsters = [{
     ],
 } as Monster]
 export const features = [{
+    id: 'e16c4d10-dd62-4190-b03a-a89c1afd8121',
     player: getWizard(),
     AC: 15,
     HP: 40,
     initialHP: 40,
 } as Feature, {
+    id: '809ba8ff-b376-4f15-9e92-a0a49a3eaf12',
     monster: monsters[0],
     AC: 11,
     HP: 13,
@@ -118,5 +120,5 @@ export const encounters = [{
     name: 'Actual encounter',
     active: true,
     campaign: campaigns[0],
-    features: [features[0]],
+    features: [features[0], features[1]],
 } as Encounter];

@@ -70,7 +70,8 @@ export class Log extends BaseEntity {
     @Column()
     stage!: LogStage;
 
-    // If type === direct
+    // If type === direct, this is result of attack roll
+    // TODO this should include info about critical roll. Crit always hit regardless of AC.
     @Column({nullable: true})
     attack!: number;
     // If type === aoe

@@ -1,6 +1,6 @@
 import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
-import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times} from 'lodash';
+import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times, filter} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {pushEncounterOverSockets} from './encounter';
 import {getEncounter} from '../repo/encounter';
@@ -33,7 +33,7 @@ export type StartLog = {
 };
 
 export async function startLog(encounterId: string, user: User, body: StartLog) {
-    const encounter = await getEncounter(encounterId, ['campaign', 'features', 'logs']);
+    const encounter = await getEncounter(encounterId, ['campaign', 'features']);
     if (!some(encounter.campaign.users, ['id', user.id]))
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
     if (body.type === 'direct')
@@ -50,8 +50,9 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     if (isEmpty(body.target))
         throw new HttpError(401, `Target array is empty, something went wrong on your side!`);
     const log = new Log();
-    const source = await Feature.findByIds(body.source);
-    const target = await Feature.findByIds(body.target);
+    const all = await Feature.findByIds([...body.source, ...body.target]);
+    const source = filter(all, f => body.source.includes(f.id));
+    const target = filter(all, f => body.target.includes(f.id));
     assign(log, {
         source,
         target,
@@ -67,9 +68,8 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     else if (body.type === 'aoe')
         assign(log, pick(body, ['stat', 'DC']));
 
+    log.encounter = encounter;
     await log.save();
-    encounter.logs.push(log);
-    await encounter.save();
     await pushEncounterOverSockets(encounter.id);
     return log;
 }
