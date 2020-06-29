@@ -2,11 +2,12 @@ import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
 import {getCampaign, pushCampaignOverSockets} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {assign, filter, find, map, pick} from 'lodash';
+import {assign, filter, find, isNil, map, pick} from 'lodash';
 import {broadcastObject} from './socket';
 import {AddFeature, addFeatures} from '../repo/feature';
 import * as repo from '../repo/encounter';
 import {validateObject} from '../middlewares/validators';
+import {getManager} from 'typeorm';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
     body = validateObject(body, ['name']);
@@ -96,6 +97,17 @@ export async function getActiveEncounter(campaignId: string): Promise<Encounter>
     if (!encounter)
         throw new HttpError(404, `Campaign with id ${campaignId} doesn't have active encounter`);
     return encounter;
+}
+
+export async function notifyUserOfActiveEncounter(userId: string): Promise<void> {
+    const encounter = await getManager().createQueryBuilder(Encounter, 'encounter')
+        .leftJoin('encounter.campaign', 'campaign')
+        .leftJoin('campaign.users', 'user')
+        .where('encounter.active = :active', {active: true})
+        .andWhere('user.id = :userId', {userId})
+        .getOne();
+    if (!isNil(encounter))
+        await pushEncounterOverSockets(encounter.id);
 }
 
 export async function pushEncounterOverSockets(encounterId: string) {

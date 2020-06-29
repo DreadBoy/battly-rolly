@@ -3,6 +3,7 @@ import SocketIO from 'socket.io';
 import {gray, green, red, white} from 'chalk';
 import {Server} from 'http';
 import {logger} from '../logger';
+import {notifyUserOfActiveEncounter} from './encounter';
 
 let io: SocketIO.Server;
 
@@ -18,6 +19,7 @@ export function createSockets(server: Server) {
             logger.info(`  ${gray('<--')} ${white('SOCKET')} ${gray('join')} ${gray(userId)}`);
             connectedUser = userId;
             socket.join(userId);
+            notifyUserOfActiveEncounter(userId).catch(e => console.error(e));
         });
 
         socket.on('disconnect', () => {

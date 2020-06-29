@@ -8,7 +8,7 @@ import {createServer} from 'http';
 import KoaStatic from 'koa-static-server';
 import {green} from 'chalk';
 import {errorMiddleware} from './middlewares/error-middleware';
-import {ensureDatabase} from './middlewares/ensure-database';
+import {connectDB} from './middlewares/ensure-database';
 import {app as probeApi} from './api/probe';
 import {app as authApi} from './api/auth';
 import {app as userApi} from './api/user';
@@ -38,12 +38,11 @@ app.use(async (ctx, next) => {
 app.use(Logger({
     transporter: (str) => {
         logger.info(str);
-    }
+    },
 }));
 if (process.env.NODE_ENV !== 'development')
     app.use(koaSsl({resolver: xForwardedProtoResolver}));
 app.use(bodyParser());
-app.use(ensureDatabase);
 app.use(mount('/api/auth', authApi));
 app.use(mount('/api/user', userApi));
 app.use(mount('/api/campaign', campaignApi));
@@ -55,9 +54,14 @@ app.use(mount('/api/email', emailApi));
 app.use(mount('/api/probe', probeApi));
 app.use(koaStatic);
 
-const server = createServer(app.callback());
-createSockets(server);
+connectDB().then(() => {
+    const server = createServer(app.callback());
+    createSockets(server);
 
-const port = process.env.PORT || 3000;
-server.listen(port);
-logger.info(green(`Server listening on port ${port}`));
+    const port = process.env.PORT || 3000;
+    server.listen(port);
+    logger.info(green(`Server listening on port ${port}`));
+}).catch(e => {
+    console.error(e);
+    process.exit(1);
+});
