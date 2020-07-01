@@ -32,7 +32,7 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                 </Table.Header>
                 <Table.Body>
                     {map(logs, l => (
-                        <Table.Row>
+                        <Table.Row key={l.id}>
                             <Table.Cell>{l.name}</Table.Cell>
                             <Table.Cell>{featureToDisplay(l.source[0])}</Table.Cell>
                             <Table.Cell>{l.type}</Table.Cell>
