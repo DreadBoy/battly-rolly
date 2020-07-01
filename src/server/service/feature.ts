@@ -1,5 +1,5 @@
 import {Feature} from '../model/feature';
-import {assign, filter, find, forEach, isArray, isEmpty, map, uniq} from 'lodash';
+import {assign, filter, find, forEach, isArray, isEmpty, isNil, map, uniq} from 'lodash';
 import {pushEncounterOverSockets} from './encounter';
 import {HttpError} from '../middlewares/error-middleware';
 import * as repo from '../repo/feature';
@@ -16,9 +16,15 @@ export const addFeatures = async (encounterId: string, body: AddFeatures): Promi
 };
 
 export const updateFeature = async (featureId: string, body: Partial<Feature>): Promise<Feature> => {
-    const feature = await getFeature(featureId, ['encounter']);
+    body = validateObject(body, [], ['AC', 'HP', 'name']);
+    let feature = await getFeature(featureId, ['encounter', 'monster', 'player']);
     assign(feature, body);
-    await feature.save();
+    if (isNil(body.name) ||
+        isEmpty(body.name) ||
+        body.name === feature?.monster?.name ||
+        body.name === feature?.player?.displayName)
+        feature.name = null as any;
+    feature = await feature.save();
     await pushEncounterOverSockets(feature.encounter.id);
     return feature;
 };

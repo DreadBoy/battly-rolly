@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import Router from '@koa/router';
 import {authenticate, AuthenticatedUser} from '../middlewares/authenticate';
-import {validateBody, validateParam} from '../middlewares/validators';
+import {validateParam} from '../middlewares/validators';
 import {getFeature, updateFeature, updateFeatures} from '../service/feature';
 
 const router = new Router<AuthenticatedUser>();
@@ -13,8 +13,7 @@ router.get('/:id', authenticate, async ctx => {
 
 router.put('/:id', authenticate, async ctx => {
     const id = validateParam(ctx, 'id');
-    const body = validateBody(ctx, [], ['AC', 'HP']);
-    ctx.body = await updateFeature(id, body);
+    ctx.body = await updateFeature(id, ctx.request.body);
 });
 
 router.put('/', authenticate, async ctx => {

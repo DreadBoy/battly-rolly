@@ -1,40 +1,29 @@
-import React, {FC, useCallback, useState} from 'react';
-import {observer} from 'mobx-react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button, Input} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
-import {useNumber} from '../../../hooks/form-helpers';
+import {useText} from '../../../hooks/form-helpers';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Feature} from '../../../../server/model/feature';
+import {featureToDisplay} from '../../../helpers/display-helpers';
+import {isEmpty} from 'lodash';
+import {styles} from './MonsterHP';
 
 type Props = {
-    id: string,
-    HP: number,
-    initialHP: number,
+    feature: Feature,
 }
 
-export const styles = {
-    wrapper: {
-        verticalAlign: 'top',
-        height: '1.4em',
-    },
+const useStyles = createUseStyles({
+    ...styles,
     input: {
-        '.ui.form input[type=number]&': {
+        '.ui.form input[type=text]&': {
             padding: '0.4em',
-            width: '4.5em',
+            width: '7em',
         },
     },
-    icon: {
-        '.ui.icon.button&': {
-            padding: '0.25em',
-        },
-    },
+})
 
-};
-
-const useStyles = createUseStyles(styles);
-
-export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
+export const MonsterName: FC<Props> = ({feature}) => {
     const classes = useStyles();
     const {api} = useBackend();
 
@@ -43,24 +32,27 @@ export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
         setInput(!input);
     }, [input]);
 
-    const text = useNumber(HP.toString());
+    const text = useText(feature.name ?? undefined);
+    const textOnChange = text.onChange;
+    useEffect(() => {
+        textOnChange({target: {value: feature.name}} as any);
+    }, [feature.name, textOnChange])
     const _confirm = useLoader();
     const confirm = useCallback(() => {
-        _confirm.fetchAsync(api.put(`/feature/${id}`, {HP: text.number} as Feature), id)
+        _confirm.fetchAsync(api.put(`/feature/${feature.id}`, {name: text.value} as Feature), feature.id)
             .then(toggle);
-    }, [_confirm, api, id, text.number, toggle]);
+    }, [_confirm, api, feature.id, text.value, toggle]);
 
     if (!input)
         return (
-            <span onClick={toggle}> {HP} / {initialHP}</span>
+            <span onClick={toggle}>{featureToDisplay(feature)}</span>
         );
 
     return (
         <Input
-            type={'number'}
             size={'mini'}
             className={classes.wrapper}
-            disabled={_confirm.loading[id]}
+            disabled={_confirm.loading[feature.id]}
             value={text.value}
             onChange={text.onChange}
         >
@@ -70,9 +62,9 @@ export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
                 type='button'
                 size={'mini'}
                 className={classes.icon}
-                disabled={!text.isValid || _confirm.loading[id]}
-                loading={_confirm.loading[id]}
-                icon={_confirm.loading[id] ? 'spinner' : 'check'}
+                disabled={isEmpty(text.value) || _confirm.loading[feature.id]}
+                loading={_confirm.loading[feature.id]}
+                icon={_confirm.loading[feature.id] ? 'spinner' : 'check'}
                 onClick={confirm}
             />
             <Button
@@ -80,9 +72,9 @@ export const MonsterHP: FC<Props> = observer(({id, HP, initialHP}) => {
                 size={'mini'}
                 icon={'close'}
                 className={classes.icon}
-                disabled={_confirm.loading[id]}
+                disabled={_confirm.loading[feature.id]}
                 onClick={toggle}
             />
         </Input>
     );
-});
+};

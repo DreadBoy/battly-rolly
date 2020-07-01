@@ -1,27 +1,18 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC} from 'react';
 import {Grid, Header, List} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../server/model/encounter';
-import {useLoader} from '../../../helpers/Store';
-import {useBackend} from '../../../helpers/BackendProvider';
-import {Feature} from '../../../../server/model/feature';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {filter, map} from 'lodash';
-import { type } from '../../../../server/model/helpers';
+import {type} from '../../../../server/model/helpers';
 import {MonsterHP} from './MonsterHP';
+import {MonsterName} from './MonsterName';
 
 type Props = {
     encounter: Encounter,
 }
 
 export const AllEntities: FC<Props> = observer(({encounter}) => {
-    const silentLoader = useLoader();
-    const {api} = useBackend();
-
-    const onRemove = useCallback((feature: Partial<Feature>) => () => {
-        silentLoader.fetch(api.delete(`/encounter/${encounter.id}/feature`, {data: {features: [feature]}}), 'remove');
-    }, [api, encounter.id, silentLoader]);
-
     return encounter.features.length > 0 ? (
         <>
             <Header size={'small'}>All entities</Header>
@@ -32,13 +23,9 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                             filter(encounter.features, f => type(f) === 'npc'),
                             (f, index) => (
                                 <List.Item key={index}>
-                                    <List.Icon
-                                        link
-                                        name='close'
-                                        onClick={onRemove(f)}
-                                    />
-                                    <List.Content>{featureToDisplay(f)}
-                                    <MonsterHP id={f.id} HP={f.HP} initialHP={f.initialHP}/>
+                                    <List.Content>
+                                        <MonsterName feature={f}/>
+                                        <MonsterHP id={f.id} HP={f.HP} initialHP={f.initialHP}/>
                                     </List.Content>
                                 </List.Item>
                             ),
@@ -51,12 +38,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                             filter(encounter.features, f => type(f) === 'player'),
                             (f, index) => (
                                 <List.Item key={index}>
-                                    <List.Icon
-                                        link
-                                        name='close'
-                                        onClick={onRemove(f)}
-                                    />
-                                    <List.Content>{featureToDisplay(f)} {f.HP} / {f.initialHP}</List.Content>
+                                    <List.Content>{featureToDisplay(f)}</List.Content>
                                 </List.Item>
                             ))}
                     </List>

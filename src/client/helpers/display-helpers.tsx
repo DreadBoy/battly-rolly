@@ -2,13 +2,15 @@ import React, {createElement, Fragment, ReactElement} from 'react';
 import {Icon} from 'semantic-ui-react';
 import {Feature} from '../../server/model/feature';
 import {Ability} from '../../server/encounter';
-import {constant, isNil, map, sum, times} from 'lodash';
+import {constant, isEmpty, isNil, map, sum, times} from 'lodash';
 import {type} from '../../server/model/helpers';
 import {Roll} from '../../server/model/action-types';
 
 export function featureToDisplay(feature?: Feature): string {
     if (isNil(feature))
         return '';
+    if (!isNil(feature.name) && !isEmpty(feature.name))
+        return feature.name;
     if (type(feature) === 'player')
         return feature.player?.displayName ?? '';
     return feature.monster?.name ?? '';

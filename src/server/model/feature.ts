@@ -12,6 +12,9 @@ export class Feature extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
+    @Column({nullable: true})
+    name?: string;
+
     @ManyToOne(() => Monster, {eager: true})
     monster?: Monster;
 
