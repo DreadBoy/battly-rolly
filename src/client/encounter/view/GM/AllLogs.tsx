@@ -2,8 +2,9 @@ import React, {FC} from 'react';
 import {Header, Icon, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../server/model/encounter';
-import {isEmpty, map, nth, sortBy, toArray} from 'lodash';
+import {isEmpty, isNil, map, nth, sortBy, toArray} from 'lodash';
 import {featureToDisplay, multiline, success} from '../../../helpers/display-helpers';
+import {Log} from '../../../../server/model/log';
 
 type Props = {
     encounter: Encounter,
@@ -37,27 +38,17 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
                             <Table.Cell>{featureToDisplay(l.source[0])}</Table.Cell>
                             <Table.Cell>{l.type}</Table.Cell>
                             <Table.Cell>{multiline(l.target, featureToDisplay)}</Table.Cell>
-                            {l.type === 'direct' ? (
-                                <Table.Cell>{l.attack} to hit</Table.Cell>
-                            ) : (
-                                <Table.Cell>{l.DC} {l.stat}</Table.Cell>
-                            )}
+                            <Table.Cell>{toHit(l)}</Table.Cell>
                             <Table.Cell>{multiline(l.success, (s, index) =>
                                 l.type === 'direct' ? success(s) : <>{success(s)} {nth(l.throw, index)}</>,
                             )}</Table.Cell>
                             <Table.Cell>
-                                {!l.damageSuccess ? (
-                                    <Icon name='spinner' color='blue' loading/>
-                                ) : !l.damageFailure ? (
-                                    <>{l.damageSuccess} {l.damageType}</>
-                                ) : (
-                                    <>{l.damageSuccess}/{l.damageFailure} {l.damageType}</>
-                                )}
+                                {damage(l)}
                                 <br/>
                                 {l.status}
                             </Table.Cell>
                             <Table.Cell>{multiline(l.confirmed, (c, index) =>
-                                (l.success[index] || l.damageFailure) ? success(c) : '')}</Table.Cell>
+                                (l.success[index] || !isNil(l.damageFailure)) ? success(c) : '')}</Table.Cell>
                             <Table.Cell>{l.stage}</Table.Cell>
                         </Table.Row>
                     ))}
@@ -67,3 +58,29 @@ export const AllLogs: FC<Props> = observer(({encounter}) => {
         </>
     ) : null;
 });
+
+function toHit(l: Log) {
+    if (l.type === 'direct') {
+        if (l.nat20) {
+            const icon = (<Icon name='exclamation' color='orange'/>);
+            return (<>{icon}NAT 20{icon}</>);
+        }
+        return `${l.attack} to hit`;
+    } else {
+        return `${l.DC} ${l.stat}`;
+    }
+}
+
+function damage(l: Log) {
+    if (l.type === 'direct' && l.success[0] && isNil(l.damageSuccess))
+        return (
+            <Icon name='spinner' color='blue' loading/>
+        )
+    if (!l.damageFailure)
+        return (
+            <>{l.damageSuccess} {l.damageType}</>
+        )
+    return (
+        <>{l.damageSuccess}/{l.damageFailure} {l.damageType}</>
+    );
+}

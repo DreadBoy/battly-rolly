@@ -25,6 +25,9 @@ const useStyles = createUseStyles({
     strike: {
         textDecoration: 'line-through',
     },
+    checkbox: {
+        alignSelf: 'center',
+    },
 });
 
 export const MakeAttack: FC<Props> = observer(({encounter}) => {
@@ -39,6 +42,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         type: 'direct',
         name: '',
         attack: undefined,
+        nat20: undefined,
         stat: 'constitution',
         DC: undefined,
     } as StartLog), [playerFeature]);
@@ -68,6 +72,13 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                 logSetup.target.splice(0, logSetup.target.length, f.id);
             }
         }, [logSetup]);
+
+    const onNat20 = useCallback((event: React.FormEvent<HTMLInputElement>, {checked}: CheckboxProps) => {
+        if (checked) {
+            logSetup.nat20 = true;
+        } else
+            logSetup.nat20 = undefined;
+    }, [logSetup.nat20]);
 
     const isSetupValid = !isEmpty(logSetup.name) && !isEmpty(logSetup.target);
 
@@ -110,12 +121,22 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                         </Button.Group>
                     </Form.Field>
                     {logSetup.type === 'direct' ? (
-                        <Form.Input
-                            label={'Attack roll'}
-                            onChange={onNumber(logSetup, 'attack')}
-                            type={'number'}
-                            value={logSetup.attack || ''}
-                        />
+                        <Form.Group>
+                            <Form.Input
+                                label={'Attack roll'}
+                                onChange={onNumber(logSetup, 'attack')}
+                                type={'number'}
+                                value={logSetup.attack || ''}
+                                disabled={logSetup.nat20}
+                            />
+                            <Form.Field className={classes.checkbox}>
+                                <Checkbox
+                                    label={'Nat 20'}
+                                    onChange={onNat20}
+                                    checked={!!logSetup.nat20}
+                                />
+                            </Form.Field>
+                        </Form.Group>
                     ) : (
                         <>
                             <Form.Field>

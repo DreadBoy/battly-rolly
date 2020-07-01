@@ -1,6 +1,20 @@
 import {Log, LogStage, LogType} from '../model/log';
 import {User} from '../model/user';
-import {assign, constant, difference, every, findIndex, isEmpty, isNil, map, negate, pick, some, times, filter} from 'lodash';
+import {
+    assign,
+    constant,
+    difference,
+    every,
+    filter,
+    findIndex,
+    isEmpty,
+    isNil,
+    map,
+    negate,
+    pick,
+    some,
+    times,
+} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {pushEncounterOverSockets} from './encounter';
 import {getEncounter} from '../repo/encounter';
@@ -27,6 +41,7 @@ export type StartLog = {
     name: string,
 
     attack?: number,
+    nat20?: boolean,
 
     DC?: number,
     stat?: Ability,
@@ -36,9 +51,13 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
     const encounter = await getEncounter(encounterId, ['campaign', 'features']);
     if (!some(encounter.campaign.users, ['id', user.id]))
         throw new HttpError(403, 'You are not part of this campaign, you can\'t act in it!');
-    if (body.type === 'direct')
-        validateObject(body, ['attack']);
-    else if (body.type === 'aoe')
+    if (body.type === 'direct') {
+        try {
+            validateObject(body, ['nat20']);
+        } catch (e) {
+            validateObject(body, ['attack']);
+        }
+    } else if (body.type === 'aoe')
         validateObject(body, ['stat', 'DC']);
     const notInCampaign = difference(body.source.concat(body.target), map(encounter.features, 'id'));
     if (notInCampaign.length > 0)
@@ -64,7 +83,7 @@ export async function startLog(encounterId: string, user: User, body: StartLog) 
         confirmed: times(target.length, constant(null)),
     } as Partial<Log>);
     if (body.type === 'direct')
-        assign(log, pick(body, ['attack']));
+        assign(log, pick(body, ['attack', 'nat20']));
     else if (body.type === 'aoe')
         assign(log, pick(body, ['stat', 'DC']));
 
@@ -135,8 +154,10 @@ export async function dealDamage(logId: string, user: User, body: DealDamage) {
 
     if (log.damageFailure > 0 || log.damageSuccess > 0 || !isNil(log.status))
         log.stage = 'WaitingOnConfirmed';
-    else
+    else {
+        log.confirmed = times(log.success.length, constant(true));
         log.stage = 'Confirmed';
+    }
 
     await log.save();
     await pushEncounterOverSockets(log.encounter.id);

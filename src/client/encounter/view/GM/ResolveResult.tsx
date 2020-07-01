@@ -37,7 +37,7 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                 return {
                     log,
                     featureId: feature.id,
-                    success: monster.AC <= log.attack,
+                    success: log.nat20 || monster.AC <= log.attack,
                 } as Result;
             } else {
                 return {
