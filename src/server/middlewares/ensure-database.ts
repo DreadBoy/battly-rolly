@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Connection, createConnection, getConnection} from 'typeorm';
+import {createConnection, getConnection} from 'typeorm';
 import {getConfig} from '../db-tools/get-config';
 import {User} from '../model/user';
 import {Campaign} from '../model/campaign';
@@ -10,11 +10,9 @@ import {Monster} from '../model/monster';
 import {Action} from '../model/action';
 import {ConnectionNotFoundError} from 'typeorm/error/ConnectionNotFoundError';
 
-let connection: Connection;
-
 export async function connectDB() {
     try {
-        connection = getConnection();
+        const connection = getConnection();
         if (connection)
             return connection;
     } catch (e) {
@@ -30,6 +28,5 @@ export async function connectDB() {
         migrations: [],
         synchronize: true,
     };
-    connection = await createConnection(config);
-    return connection;
+    return createConnection(config);
 }
