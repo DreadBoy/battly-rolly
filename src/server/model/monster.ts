@@ -1,13 +1,5 @@
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    getManager,
-    ManyToMany,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import {Column, Entity, getManager, ManyToMany, ManyToOne, OneToMany} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Transformers} from './transformers';
 import {Action} from './action';
 import {User} from './user';
@@ -16,9 +8,7 @@ import {map} from 'lodash';
 
 
 @Entity()
-export class Monster extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class Monster extends ReactiveEntity {
 
     @Column()
     name!: string;

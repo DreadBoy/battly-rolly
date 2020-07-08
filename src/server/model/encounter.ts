@@ -1,16 +1,14 @@
-import {BaseEntity, Column, Entity, getManager, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, getManager, ManyToOne, OneToMany} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Campaign} from './campaign';
 import {Feature} from './feature';
 import {Log} from './log';
 import {User} from './user';
-import { map } from 'lodash';
+import {map} from 'lodash';
 
 
 @Entity()
-export class Encounter extends BaseEntity {
-
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class Encounter extends ReactiveEntity {
 
     @Column({default: false})
     active: boolean;

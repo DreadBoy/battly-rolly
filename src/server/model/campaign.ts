@@ -1,23 +1,11 @@
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    getManager,
-    JoinTable,
-    ManyToMany,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import {Column, Entity, getManager, JoinTable, ManyToMany, ManyToOne, OneToMany} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Encounter} from './encounter';
 import {User} from './user';
 import {map} from 'lodash';
 
 @Entity()
-export class Campaign extends BaseEntity {
-
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class Campaign extends ReactiveEntity {
 
     @Column()
     name!: string;

@@ -1,12 +1,10 @@
-import {BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Campaign} from './campaign';
 import {Monster} from './monster';
 
 @Entity()
-export class User extends BaseEntity {
-
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class User extends ReactiveEntity {
 
     @Column()
     email!: string;

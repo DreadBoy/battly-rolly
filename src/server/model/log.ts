@@ -1,13 +1,5 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinTable,
-    ManyToMany,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Encounter} from './encounter';
 import {Feature} from './feature';
 import {Ability, Status} from '../encounter';
@@ -48,10 +40,7 @@ export type LogStage = 'WaitingOnResult' | 'WaitingOnDamage' | 'WaitingOnConfirm
  */
 
 @Entity()
-export class Log extends BaseEntity {
-
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class Log extends ReactiveEntity {
 
     @Column()
     type!: LogType;
@@ -111,7 +100,4 @@ export class Log extends BaseEntity {
 
     @ManyToOne(() => Encounter, encounter => encounter.logs)
     encounter!: Encounter;
-
-    @CreateDateColumn()
-    createdAt!: Date;
 }

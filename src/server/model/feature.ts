@@ -1,4 +1,5 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToMany, ManyToOne} from 'typeorm';
+import {ReactiveEntity} from './reactive-entity';
 import {Encounter} from './encounter';
 import {Log} from './log';
 import {Monster} from './monster';
@@ -7,10 +8,7 @@ import {User} from './user';
 export type FeatureType = 'npc' | 'player';
 
 @Entity()
-export class Feature extends BaseEntity {
-
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+export class Feature extends ReactiveEntity {
 
     @Column({nullable: true})
     name?: string;
