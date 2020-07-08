@@ -148,7 +148,7 @@ export type DealDamage = {
 
 export async function dealDamage(logId: string, user: User, body: DealDamage) {
     const log = await getVerifyLog(logId, user.id, 'WaitingOnDamage');
-    body = validateObject(body, ['damageSuccess', 'damageType'], ['damageFailure', 'status']);
+    body = validateObject(body, [], ['damageSuccess', 'damageType', 'damageFailure', 'status']);
 
     assign(log, body);
 
