@@ -9,6 +9,7 @@ import {roll} from '../../../helpers/roll';
 import {isAoe, isDirect, type} from '../../../../server/model/helpers';
 import {Action} from '../../../../server/model/action';
 import {featureToDisplay} from '../../../helpers/display-helpers';
+import {map, sortBy} from 'lodash';
 
 type Props = {
     feature: Feature,
@@ -67,11 +68,14 @@ export const FeatureItem: FC<Props> = ({feature, onDrop}) => {
                 <>
                     <DragTarget onDrop={_onDrop(null)}>{featureToDisplay(feature)}</DragTarget>
                     <List.List className={classes.list}>
-                        {monster?.actions.map(action => (
-                            <List.Item key={action.name}>
-                                <DragTarget onDrop={_onDrop(action as Action)}>{action.name}</DragTarget>
-                            </List.Item>
-                        ))}
+                        {map(
+                            sortBy(monster?.actions, 'createdAt'),
+                            action => (
+                                <List.Item key={action.name}>
+                                    <DragTarget onDrop={_onDrop(action as Action)}>{action.name}</DragTarget>
+                                </List.Item>
+                            ),
+                        )}
                     </List.List>
                 </>
             )}

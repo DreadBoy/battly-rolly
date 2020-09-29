@@ -3,7 +3,7 @@ import {Button, Checkbox, CheckboxProps, Dropdown, Form, Grid, Header, Icon, Lis
 import {Feature} from '../../../../server/model/feature';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
-import {assign, filter, find, includes, isEmpty, map, pull} from 'lodash';
+import {assign, filter, find, includes, isEmpty, map, pull, sortBy} from 'lodash';
 import {Encounter} from '../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
@@ -163,24 +163,27 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header sub>Monsters</Header>
                     {!isEmpty(monsters) && (
                         <List>
-                            {map(monsters, f => (
-                                <List.Item key={f.id}>
-                                    <Checkbox
-                                        onChange={onChecked(f)}
-                                        checked={includes(logSetup.target, f.id)}
-                                        label={(
-                                            <label className={classNames({[classes.strike]: f.HP <= 0})}>
-                                                {featureToDisplay(f)}
-                                                {f.HP > 0 && f.HP <= f.initialHP / 2 && (
-                                                    <Icon name={'tint'} color={'red'}/>
-                                                )}
-                                            </label>
-                                        )}
-                                    />
+                            {map(
+                                sortBy(monsters, 'createdAt'),
+                                f => (
+                                    <List.Item key={f.id}>
+                                        <Checkbox
+                                            onChange={onChecked(f)}
+                                            checked={includes(logSetup.target, f.id)}
+                                            label={(
+                                                <label className={classNames({[classes.strike]: f.HP <= 0})}>
+                                                    {featureToDisplay(f)}
+                                                    {f.HP > 0 && f.HP <= f.initialHP / 2 && (
+                                                        <Icon name={'tint'} color={'red'}/>
+                                                    )}
+                                                </label>
+                                            )}
+                                        />
 
 
-                                </List.Item>
-                            ))}
+                                    </List.Item>
+                                ),
+                            )}
                         </List>
                     )}
                 </Grid.Column>
@@ -188,15 +191,18 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                     <Header sub>Players</Header>
                     {!isEmpty(players) && (
                         <List>
-                            {map(players, f => (
-                                <List.Item key={f.id}>
-                                    <Checkbox
-                                        label={featureToDisplay(f)}
-                                        onChange={onChecked(f)}
-                                        checked={includes(logSetup.target, f.id)}
-                                    />
-                                </List.Item>
-                            ))}
+                            {map(
+                                sortBy(players, 'createdAt'),
+                                f => (
+                                    <List.Item key={f.id}>
+                                        <Checkbox
+                                            label={featureToDisplay(f)}
+                                            onChange={onChecked(f)}
+                                            checked={includes(logSetup.target, f.id)}
+                                        />
+                                    </List.Item>
+                                ),
+                            )}
                         </List>
                     )}
                 </Grid.Column>

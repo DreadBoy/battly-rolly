@@ -5,7 +5,7 @@ import {Feature} from '../../../../server/model/feature';
 import {DropTarget, TargetType} from './DropTarget';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
-import {assign, find, includes, pull} from 'lodash';
+import {assign, filter, find, includes, map, pull, sortBy} from 'lodash';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import {FeatureItem} from './FeatureItem';
 import {Encounter} from '../../../../server/model/encounter';
@@ -74,29 +74,37 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                 <Grid.Column width={8}>
                     <Header sub>Monsters</Header>
                     <List>
-                        {encounter.features
-                            .filter(f => type(f) === 'npc')
-                            .map((f) => (
+                        {map(
+                            filter(
+                                sortBy(encounter.features, 'createdAt'),
+                                f => type(f) === 'npc',
+                            ),
+                            f => (
                                 <FeatureItem
                                     key={f.id}
                                     feature={f}
                                     onDrop={onDrop(f.id)}
                                 />
-                            ))}
+                            ),
+                        )}
                     </List>
                 </Grid.Column>
                 <Grid.Column width={8}>
                     <Header sub>Players</Header>
                     <List>
-                        {encounter.features
-                            .filter(f => type(f) === 'player')
-                            .map((f) => (
+                        {map(
+                            filter(
+                                sortBy(encounter.features, 'createdAt'),
+                                f => type(f) === 'player',
+                            ),
+                            f => (
                                 <FeatureItem
                                     key={f.id}
                                     feature={f}
                                     onDrop={onDrop(f.id)}
                                 />
-                            ))}
+                            ),
+                        )}
                     </List>
                 </Grid.Column>
                 <Grid.Column width={8}>

@@ -3,7 +3,7 @@ import {Grid, Header, List} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
 import {Encounter} from '../../../../server/model/encounter';
 import {featureToDisplay} from '../../../helpers/display-helpers';
-import {filter, map} from 'lodash';
+import {filter, map, sortBy} from 'lodash';
 import {type} from '../../../../server/model/helpers';
 import {MonsterHP} from './MonsterHP';
 import {MonsterName} from './MonsterName';
@@ -20,9 +20,12 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                 <Grid.Column><Header sub>Monsters</Header>
                     <List>
                         {map(
-                            filter(encounter.features, f => type(f) === 'npc'),
-                            (f, index) => (
-                                <List.Item key={index}>
+                            filter(
+                                sortBy(encounter.features, 'createdAt'),
+                                f => type(f) === 'npc',
+                            ),
+                            f => (
+                                <List.Item>
                                     <List.Content>
                                         <MonsterName feature={f}/>
                                         <MonsterHP id={f.id} HP={f.HP} initialHP={f.initialHP}/>
@@ -35,12 +38,16 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                 <Grid.Column><Header sub>Players</Header>
                     <List>
                         {map(
-                            filter(encounter.features, f => type(f) === 'player'),
-                            (f, index) => (
-                                <List.Item key={index}>
+                            filter(
+                                sortBy(encounter.features, 'createdAt'),
+                                f => type(f) === 'player',
+                            ),
+                            f => (
+                                <List.Item>
                                     <List.Content>{featureToDisplay(f)}</List.Content>
                                 </List.Item>
-                            ))}
+                            ),
+                        )}
                     </List>
                 </Grid.Column>
             </Grid>
