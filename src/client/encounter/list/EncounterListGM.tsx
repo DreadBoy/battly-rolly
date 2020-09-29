@@ -1,19 +1,19 @@
 import React, {FC, useCallback} from 'react';
 import {Checkbox, Header, Loader, Table} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import {ConfirmButton} from '../elements/ConfirmButton';
+import {ConfirmButton} from '../../elements/ConfirmButton';
 import {Link, useRouteMatch} from 'react-router-dom';
-import {useLoader} from '../helpers/Store';
-import {useBackend} from '../helpers/BackendProvider';
-import {Stacktrace} from '../elements/Stacktrace';
-import {usePlayerId} from '../helpers/PlayerId';
-import {Campaign} from '../../server/model/campaign';
+import {useLoader} from '../../helpers/Store';
+import {useBackend} from '../../helpers/BackendProvider';
+import {Stacktrace} from '../../elements/Stacktrace';
+import {usePlayerId} from '../../helpers/PlayerId';
+import {Campaign} from '../../../server/model/campaign';
 
 type Props = {
     campaign: Campaign,
 };
 
-export const EncounterList: FC<Props> = observer(({campaign: {gm, encounters}}) => {
+export const EncounterListGM: FC<Props> = observer(({campaign: {gm, encounters}}) => {
     const {url} = useRouteMatch();
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();

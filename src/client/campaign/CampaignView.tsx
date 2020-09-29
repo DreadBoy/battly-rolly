@@ -10,7 +10,8 @@ import {usePlayerId} from '../helpers/PlayerId';
 import {some} from 'lodash';
 import {Stacktrace} from '../elements/Stacktrace';
 import {ConfirmButton} from '../elements/ConfirmButton';
-import {EncounterList} from '../encounter/EncounterList';
+import {EncounterListGM} from '../encounter/list/EncounterListGM';
+import {EncounterListPlayer} from '../encounter/list/EncounterListPlayer';
 import {useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
 import {useGlobalStore} from '../helpers/GlobalStore';
@@ -138,9 +139,13 @@ export const CampaignView: FC = observer(() => {
                                     </Table.Body>
                                 </Table>
                             </Grid.Column>
-                            {playerId === data.gm.id && (
+                            {playerId === data.gm.id ? (
                                 <Grid.Column>
-                                    <EncounterList campaign={data}/>
+                                    <EncounterListGM campaign={data}/>
+                                </Grid.Column>
+                            ) : (
+                                <Grid.Column>
+                                    <EncounterListPlayer campaign={data}/>
                                 </Grid.Column>
                             )}
                         </Grid.Row>

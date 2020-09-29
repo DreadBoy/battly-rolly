@@ -8,9 +8,11 @@ import {useBackend} from '../helpers/BackendProvider';
 import {useLoader} from '../helpers/Store';
 import {root} from '../App';
 import {useGlobalStore} from '../helpers/GlobalStore';
-import {find} from 'lodash';
+import {find, some} from 'lodash';
 import {observer} from 'mobx-react';
 import {UpdateButton} from './UpdateButton';
+import {Encounter} from '../../server/model/encounter';
+import {Campaign} from '../../server/model/campaign';
 
 const useStyles = createUseStyles({
     grid: {
@@ -55,8 +57,11 @@ export const Layout: FC = observer(({children}) => {
     const {id, onLogin} = usePlayerId();
     const {api} = useBackend();
 
+    // Show active encounter only if user is joined in campaign
     const globalStore = useGlobalStore();
-    const encounter = find(Object.values(globalStore.data), ['active', true]);
+    const encounter = find(Object.values(globalStore.data), ['active', true]) as Encounter;
+    const campaign = find(Object.values(globalStore.data), ['id', encounter?.campaign?.id]) as Campaign;
+    const shouldShowEncounter = some(campaign?.users, ['id', id]);
 
     const loader = useLoader();
     const logout = useCallback(() => {
@@ -75,7 +80,7 @@ export const Layout: FC = observer(({children}) => {
                     <Menu.Item header>
                         <img src={icon} alt={'icon'} title={`App version: ${process.env.REACT_APP_APP_VERSION}`}/>
                     </Menu.Item>
-                    {encounter && (
+                    {shouldShowEncounter && (
                         <Menu.Item>
                             <span>
                             <Icon fitted name={'attention'} color={'orange'}/>
