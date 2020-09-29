@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import {featureToDisplay} from '../../../helpers/display-helpers';
 import {hasPlayer, type} from '../../../../server/model/helpers';
 import {abilities} from '../../../../server/encounter';
+import {integer} from '../../../helpers/integer';
 
 type Props = {
     encounter: Encounter,
@@ -124,8 +125,8 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                         <Form.Group>
                             <Form.Input
                                 label={'Attack roll'}
+                                {...integer}
                                 onChange={onNumber(logSetup, 'attack')}
-                                type={'number'}
                                 value={logSetup.attack || ''}
                                 disabled={logSetup.nat20}
                             />
@@ -153,7 +154,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             <Form.Input
                                 label={'DC'}
                                 onChange={onText(logSetup, 'DC')}
-                                type={'number'}
+                                {...integer}
                                 value={logSetup.DC}
                             />
                         </>

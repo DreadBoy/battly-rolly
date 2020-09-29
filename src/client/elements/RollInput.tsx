@@ -5,6 +5,7 @@ import {createUseStyles} from 'react-jss';
 import classNames from 'classnames';
 import {DropdownProps} from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown';
 import {InputOnChangeData} from 'semantic-ui-react/dist/commonjs/elements/Input/Input';
+import {integer} from '../helpers/integer';
 
 type Props = Pick<InputProps, 'id' | 'required'> & { value: Roll, onChange: (roll: Roll) => void }
 
@@ -99,7 +100,7 @@ export const RollInput: FC<Props> = ({id, required, value, onChange, ...props}) 
                 {...props}
                 fluid
                 className={classes.inputLeft}
-                type={'number'}
+                {...integer}
                 onChange={onNumber(0)}
                 value={value[0]?.toString() ?? ''}
                 id={id}
@@ -128,7 +129,7 @@ export const RollInput: FC<Props> = ({id, required, value, onChange, ...props}) 
                 {...props}
                 fluid
                 className={classes.inputRight}
-                type={'number'}
+                {...integer}
                 onChange={onNumber(2)}
                 value={value[2]?.toString() ?? ''}
                 required={required}

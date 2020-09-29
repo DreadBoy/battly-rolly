@@ -12,6 +12,7 @@ import {DealDamage as DealDamageBody} from '../../../../server/service/log';
 import {damageTypes} from '../../../../server/encounter';
 import {onDropdown, onNumber} from '../../../hooks/use-form';
 import {toJS} from 'mobx';
+import {integer} from '../../../helpers/integer';
 
 type Props = {
     encounter: Encounter,
@@ -93,14 +94,14 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                                 />
                             </Form.Field>
                             <Form.Input
-                                type={'number'}
+                                {...integer}
                                 label={'Damage'}
                                 onChange={onDamageSuccess}
                                 value={form.damageSuccess ?? ''}
                             />
                             {log.type === 'aoe' && (
                                 <Form.Input
-                                    type={'number'}
+                                    {...integer}
                                     label={'Damage if target saves (optional)'}
                                     onChange={onNumber(form, 'damageFailure')}
                                     value={form.damageFailure ?? ''}

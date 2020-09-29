@@ -12,6 +12,7 @@ import {useNumber} from '../../../hooks/form-helpers';
 import {abilityShort, featureToDisplay} from '../../../helpers/display-helpers';
 import {usePlayerId} from '../../../helpers/PlayerId';
 import {hasPlayer} from '../../../../server/model/helpers';
+import {integer} from '../../../helpers/integer';
 
 type Props = {
     encounter: Encounter,
@@ -112,7 +113,7 @@ export const ResolveResult: FC<Props> = observer(({encounter}) => {
                                 label={abilityShort(log.stat)}
                                 value={save.value}
                                 onChange={save.onChange}
-                                type={'number'}
+                                {...integer}
                             />
                         </Form>
                     </Modal.Content>

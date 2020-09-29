@@ -5,6 +5,7 @@ import {abilities, Ability, AbilitySet} from '../../server/model/action-types';
 import {abilityShort} from '../helpers/display-helpers';
 import {assign, drop, isEmpty, map, take} from 'lodash';
 import {InputOnChangeData} from 'semantic-ui-react/dist/commonjs/elements/Input/Input';
+import {integer} from '../helpers/integer';
 
 type Props = Pick<InputProps, 'id' | 'label' | 'required'> &
     { value: AbilitySet, onChange: (set: AbilitySet) => void }
@@ -28,7 +29,7 @@ export const AbilitySetInput: FC<Props> = observer(({children, id, label, value,
                 {...props}
                 id={index === 0 ? id : ''}
                 fluid
-                type={'number'}
+                {...integer}
                 label={abilityShort(ability)}
                 labelPosition={'left'}
                 value={value[ability]?.toString() ?? ''}

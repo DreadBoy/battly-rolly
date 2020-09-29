@@ -15,6 +15,7 @@ import {ActionInput} from '../elements/ActionInput';
 import {cloneDeep, isNil, map} from 'lodash';
 import {Action} from '../../server/model/action';
 import {defaultDamage} from '../elements/DamageInput';
+import {integer} from '../helpers/integer';
 
 const Editor = AsyncSection<Monster>();
 
@@ -109,7 +110,7 @@ export const MonsterEdit: FC = observer(() => {
                                     <Form.Input
                                         label={'AC'}
                                         id={'AC'}
-                                        type={'number'}
+                                        {...integer}
                                         {...numberControl('AC')}
                                         required
                                     />

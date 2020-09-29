@@ -1,6 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import {
     Button,
+    Checkbox,
     Dropdown,
     DropdownProps,
     Form,
@@ -8,7 +9,6 @@ import {
     InputOnChangeData,
     InputProps,
     Segment,
-    Checkbox,
 } from 'semantic-ui-react';
 import {Action} from '../../server/model/action';
 import {assign, isEmpty} from 'lodash';
@@ -16,6 +16,7 @@ import {RollInput} from './RollInput';
 import {abilities, actionTypes, Damage, Roll, statuses} from '../../server/model/action-types';
 import {DamageInput} from './DamageInput';
 import {CheckboxProps} from 'semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox';
+import {integer} from '../helpers/integer';
 
 type Props = Pick<InputProps, 'id' | 'label' | 'required'> & {
     action: Action,
@@ -126,8 +127,8 @@ export const ActionInput: FC<Props> = ({action, onChange, onRemove, required, id
                         <Form.Group widths={'equal'}>
                             <Form.Input
                                 label={'DC'}
+                                {...integer}
                                 id={`${id}-dc`}
-                                type={'number'}
                                 value={action.DC}
                                 onChange={onDC}
                                 required={required}

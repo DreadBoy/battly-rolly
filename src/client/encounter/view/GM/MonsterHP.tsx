@@ -5,6 +5,7 @@ import {useNumber} from '../../../hooks/form-helpers';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
 import {Feature} from '../../../../server/model/feature';
+import {integer} from '../../../helpers/integer';
 
 type Props = {
     id: string,
@@ -60,7 +61,7 @@ export const MonsterHP: FC<Props> = ({id, HP, initialHP}) => {
 
     return (
         <Input
-            type={'number'}
+            {...integer}
             size={'mini'}
             className={classes.wrapper}
             disabled={_confirm.loading[id]}
