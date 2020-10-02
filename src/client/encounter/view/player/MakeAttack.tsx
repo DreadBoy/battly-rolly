@@ -1,9 +1,20 @@
 import React, {FC, useCallback} from 'react';
-import {Button, Checkbox, CheckboxProps, Dropdown, Form, Grid, Header, Icon, List} from 'semantic-ui-react';
+import {
+    Button,
+    ButtonGroup,
+    Checkbox,
+    CheckboxProps,
+    Dropdown,
+    Form,
+    Grid,
+    Header,
+    Icon,
+    List,
+} from 'semantic-ui-react';
 import {Feature} from '../../../../server/model/feature';
 import {observer, useLocalStore} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
-import {assign, filter, find, includes, isEmpty, map, pull, sortBy} from 'lodash';
+import {assign, filter, find, includes, isEmpty, isNil, map, pick, pull, sortBy, uniqBy} from 'lodash';
 import {Encounter} from '../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
@@ -17,6 +28,9 @@ import {featureToDisplay} from '../../../helpers/display-helpers';
 import {hasPlayer, type} from '../../../../server/model/helpers';
 import {abilities} from '../../../../server/encounter';
 import {integer} from '../../../helpers/integer';
+import {useLocalStorage} from '../../../hooks/use-local-storage';
+import {toJS} from 'mobx';
+import {ConfirmButton} from '../../../elements/ConfirmButton';
 
 type Props = {
     encounter: Encounter,
@@ -48,6 +62,24 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         DC: undefined,
     } as StartLog), [playerFeature]);
     const logSetup = useLocalStore<StartLog>(empty);
+
+    const {value, remove, set} = useLocalStorage('saved-attacks');
+    const savedAttacks: StartLog[] = isNil(value) ? [] : JSON.parse(value);
+
+    const loadAttack = useCallback((log: StartLog) => () => {
+        assign(logSetup, empty());
+        assign(logSetup, log);
+    }, [empty, logSetup]);
+
+    const saveAttack = useCallback(() => {
+        const setup = pick(toJS(logSetup), 'name', 'type', 'stat', 'DC', 'target') as StartLog;
+        // uniqBy will take first duplicated element, that's reason why we put new setup in first place
+        // We always wish to overwrite saved attack with new one
+        const newValue = uniqBy([setup, ...savedAttacks], 'name');
+        set(JSON.stringify(newValue));
+    }, [logSetup, savedAttacks, set]);
+
+    const clearAttacks = useCallback(remove, [remove]);
 
     const setType = useCallback((type: LogType) => () => {
         logSetup.type = type;
@@ -85,10 +117,11 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
 
     const _confirm = useLoader();
     const onConfirm = useCallback(() => {
+        saveAttack();
         _confirm.fetchAsync(api.post(`/log/encounter/${encounter.id}`, logSetup), encounter.id)
             .then(() => assign(logSetup, empty()))
             .catch(e => e);
-    }, [_confirm, api, empty, encounter.id, logSetup]);
+    }, [_confirm, api, empty, encounter.id, logSetup, saveAttack]);
 
 
     const monsters = filter(encounter.features, f => type(f) === 'npc');
@@ -98,13 +131,34 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
             <Grid>
                 <Grid.Column width={16}>
                     <Header size={'small'}>Make an attack</Header>
+                    {!isEmpty(savedAttacks) && (
+                        <Form.Field>
+                            <label>Previous attacks</label>
+                            <ButtonGroup size={'tiny'} basic>
+                                {savedAttacks.map(a => (
+                                    <Button
+                                        type={'button'}
+                                        color={'grey'}
+                                        onClick={loadAttack(a)}>
+                                        {a.name}
+                                    </Button>
+                                ))}
+                                <ConfirmButton
+                                    color={'grey'}
+                                    onClick={clearAttacks}>
+                                    Forget all attacks
+                                </ConfirmButton>
+                            </ButtonGroup>
+                        </Form.Field>
+                    )}
                     <Form.Input
                         name={'name_of_attack'}
                         label={'Name of attack'}
                         onChange={onText(logSetup, 'name')}
                         value={logSetup.name}
+                        required
                     />
-                    <Form.Field>
+                    <Form.Field required>
                         <label>Attack type</label>
                         <Button.Group>
                             <Button
@@ -128,6 +182,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                                 {...integer}
                                 onChange={onNumber(logSetup, 'attack')}
                                 value={logSetup.attack || ''}
+                                required
                                 disabled={logSetup.nat20}
                             />
                             <Form.Field className={classes.checkbox}>
@@ -140,7 +195,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                         </Form.Group>
                     ) : (
                         <>
-                            <Form.Field>
+                            <Form.Field required>
                                 <label>Ability</label>
                                 <Dropdown
                                     selection
@@ -152,6 +207,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                                 />
                             </Form.Field>
                             <Form.Input
+                                required
                                 label={'DC'}
                                 onChange={onText(logSetup, 'DC')}
                                 {...integer}
