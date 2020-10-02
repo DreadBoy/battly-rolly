@@ -13,6 +13,7 @@ import {getEncounter} from '../repo/encounter';
 import {Encounter} from '../model/encounter';
 import {broadcastObject} from './socket';
 
+jest.mock('../model/reactive-entity');
 jest.mock('./socket')
 const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
 

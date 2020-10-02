@@ -7,6 +7,7 @@ import {broadcastObject} from './socket';
 import {Encounter} from '../model/encounter';
 import {Campaign} from '../model/campaign';
 
+jest.mock('../model/reactive-entity');
 jest.mock('./socket')
 const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
 

@@ -13,6 +13,7 @@ import {some} from 'lodash';
 import {HttpError} from '../middlewares/error-middleware';
 import {broadcastObject} from './socket';
 
+jest.mock('../model/reactive-entity');
 jest.mock('./socket')
 const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
 

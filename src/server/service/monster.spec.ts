@@ -4,6 +4,7 @@ import {broadcastObject} from './socket';
 import {subscribe, updateMonster, unsubscribe} from './monster';
 import {Monster} from '../model/monster';
 
+jest.mock('../model/reactive-entity');
 jest.mock('./socket')
 const mockedBroadcastObject = broadcastObject as jest.Mock<void>;
 
