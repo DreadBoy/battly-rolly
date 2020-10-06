@@ -29,7 +29,6 @@ export async function connectDatabase() {
         ...config,
         entities: [User, Campaign, Encounter, Feature, Log, Monster, Action],
         migrations: [],
-        synchronize: true,
     };
     return createConnection(config);
 }

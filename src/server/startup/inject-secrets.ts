@@ -9,9 +9,10 @@ export async function injectSecrets() {
 
     const values = await Promise.all(keys.map(async key => {
         const [accessResponse] = await client.accessSecretVersion({
-            name: `projects/942805254397/secrets/${key}/versions/1`,
+            name: `projects/942805254397/secrets/${key}/versions/latest`,
         });
         return accessResponse?.payload?.data?.toString();
     }));
-    keys.forEach((key, index) => process.env[key] = values[index]);
+    keys.forEach((key, index) =>
+        process.env[key] = process.env[key] || values[index]);
 }
