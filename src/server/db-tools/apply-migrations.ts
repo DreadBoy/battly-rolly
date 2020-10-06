@@ -1,39 +1,34 @@
-import {existsSync, readdirSync, unlinkSync, writeFileSync} from 'fs';
+import {existsSync, readdirSync} from 'fs';
 import {execSync} from 'child_process';
-import {getConfig} from './get-config';
-import {dieWith} from './die-with';
+import {createOrmConfig, deleteOrmConfig, injectNodemonEnv} from './migration-helpers';
 
-let DATABASE_URL = process.env.DATABASE_URL;
-if (!DATABASE_URL) {
-    const nodemonConfig = require('../../nodemon');
-    if (!nodemonConfig)
-        dieWith('Missing DATABASE_URL and nodemon.json');
-    DATABASE_URL = nodemonConfig.env.DATABASE_URL;
-}
-let ormconfig = getConfig(DATABASE_URL);
-ormconfig = {
-    ...ormconfig,
-    entities: ['build/model/*.js'],
-    migrations: ['build/migrations/*.js'],
-    cli: {
-        migrationsDir: 'build/migrations',
-        entitiesDir: 'build/model',
-    },
-};
+async function applyMigrations() {
+    await injectNodemonEnv();
+    const ormConfig = await createOrmConfig({
+        entities: ['build/model/*.js'],
+        migrations: ['build/migrations/*.js'],
+        cli: {
+            migrationsDir: 'build/migrations',
+            entitiesDir: 'build/model',
+        },
+    });
 
-console.log('Creating ormconfig.json');
-writeFileSync('ormconfig.json', JSON.stringify(ormconfig, null, 2));
+    if (!existsSync(ormConfig.cli.migrationsDir)) {
+        console.log(`Dir '${ormConfig.cli.migrationsDir}' doesn't exist, skipping migrations!`);
+    } else {
+        const migrations = readdirSync(ormConfig.cli.migrationsDir).filter(name => name.endsWith('js'));
 
-const migrationsDir = 'build/migrations';
+        console.log(`Applying migrations ${migrations.join(', ')}`);
+        execSync('typeorm migration:run', {stdio: 'inherit'});
+    }
 
-if (!existsSync(migrationsDir)) {
-    console.log(`Dir '${migrationsDir}' doesn't exist, skipping migrations!`);
-} else {
-    const migrations = readdirSync(migrationsDir).filter(name => name.endsWith('js'));
+    await deleteOrmConfig();
 
-    console.log(`Applying migrations ${migrations.join(', ')}`);
-    execSync('typeorm migration:run', {stdio: 'inherit'});
 }
 
-console.log('Removing ormconfig.json');
-unlinkSync('ormconfig.json');
+applyMigrations()
+    .then(() => process.exit(0))
+    .catch(e => {
+        console.error(e);
+        process.exit(1);
+    });
