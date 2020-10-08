@@ -13,7 +13,7 @@ export const validateToken = jwt({secret: process.env.JWT_KEY});
 
 export const pullUser: Middleware = async (ctx, next) => {
     if (!ctx.state.user)
-        throw new Error('You forgot to include readToken middleware');
+        throw new Error('You forgot to include validateToken middleware');
     ctx.state.user = ctx.state.user.user;
     return next();
 };

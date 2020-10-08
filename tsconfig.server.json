@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ES2019", // AppEngine demands node12 which is same as es2029
     "lib": [
       "dom",
       "dom.iterable",

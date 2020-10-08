@@ -4,10 +4,7 @@
     "PORT": "3000",
     "LOG_LEVEL": "info",
 
-    "DATABASE_URL": "",
-    "JWT_KEY": "",
-    "SENDGRID_API_KEY": "",
-    "BASE_URL": "http://localhost:3001"
+    "GOOGLE_APPLICATION_CREDENTIALS": "path/to/service-accounts/key.json"
   },
   "watch": [
     "build/"

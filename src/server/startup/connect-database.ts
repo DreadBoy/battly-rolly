@@ -9,8 +9,11 @@ import {Log} from '../model/log';
 import {Monster} from '../model/monster';
 import {Action} from '../model/action';
 import {ConnectionNotFoundError} from 'typeorm/error/ConnectionNotFoundError';
+import {logger} from '../logger';
+import {blue} from 'chalk';
 
-export async function connectDB() {
+export async function connectDatabase() {
+    logger.info(blue('Connecting to database'));
     try {
         const connection = getConnection();
         if (connection)

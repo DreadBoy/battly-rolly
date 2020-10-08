@@ -10,7 +10,7 @@ export function getConfig(DATABASE_URL?: string): ConnectionOptions {
 
     return {
         type: match[1] as any,
-        url: process.env.DATABASE_URL,
+        url: DATABASE_URL,
         logging: ['error', 'warn'],
         extra: {
             ssl: {
