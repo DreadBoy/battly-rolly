@@ -13,7 +13,7 @@ import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../elements/Stacktrace';
 import {usePlayerId} from '../helpers/PlayerId';
 import {OnLogin} from './Login';
-import {root} from '../App';
+import {app} from '../App';
 import {usePasswordInput} from '../hooks/use-password-input';
 
 export const Register: FC = observer(() => {
@@ -37,7 +37,7 @@ export const Register: FC = observer(() => {
         loader.fetchAsync(api.post('/auth', toJS(form)), loaderId)
             .then(data => {
                 onLogin(data);
-                push(root('/campaign'));
+                push(app('/campaign'));
             })
             .catch(e => e)
         ;
@@ -51,7 +51,7 @@ export const Register: FC = observer(() => {
                         <Header size={'huge'} textAlign='center'>Welcome to Battly Rolly</Header>
                         <p>
                             Run encounters. Create custom monsters. Do it all with Battly Rolly.
-                            Already have an account? <Link to={root()}>Log in</Link>
+                            Already have an account? <Link to={app()}>Log in</Link>
                         </p>
                         <Form onSubmit={register}>
                             <Form.Input

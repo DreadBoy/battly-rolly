@@ -1,60 +1,40 @@
 import React, {FC} from 'react';
-import {createUseStyles} from 'react-jss';
-import {Redirect} from 'react-router';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import {TouchProvider} from './elements/touch';
-import {BackendProvider} from './helpers/BackendProvider';
+import {Redirect, useRouteMatch} from 'react-router';
+import {Route, Switch} from 'react-router-dom';
 import {PlayerIdProvider} from './helpers/PlayerId';
 import {ResetPassword} from './email/ResetPassword';
 import {Register} from './user/Register';
 import {Campaign} from './campaign/Campaign';
 import {Monster} from './monster/Monster';
 import {User} from './user/User';
-import {GlobalStoreProvider} from './helpers/GlobalStore';
-import {ServiceWorkerProvider} from './hooks/use-service-worker';
+import {BackendProvider} from './helpers/BackendProvider';
 
-const useStyles = createUseStyles({
-    '@global': {
-        '*': {
-            boxSizing: 'border-box',
-        },
-    },
-});
-
-const App: FC = () => {
-    useStyles();
+export const App: FC = () => {
+    const {path} = useRouteMatch();
     return (
-        <ServiceWorkerProvider>
-            <GlobalStoreProvider>
-                <BrowserRouter>
-                    <TouchProvider>
-                        <BackendProvider>
-                            <Switch>
-                                <Route path={`/reset-password`} component={ResetPassword}/>
-                                <Route path={'*'}>
-                                    <PlayerIdProvider>
-                                        <Switch>
-                                            <Route path={`/register`} component={Register}/>
-                                            <Route path={`/campaign`} component={Campaign}/>
-                                            <Route path={`/monster`} component={Monster}/>
-                                            <Route path={`/user`} component={User}/>
-                                            <Route path={'*'}> <Redirect to={`/campaign`}/> </Route>
-                                        </Switch>
-                                    </PlayerIdProvider>
-                                </Route>
-                            </Switch>
-                        </BackendProvider>
-                    </TouchProvider>
-                </BrowserRouter>
-            </GlobalStoreProvider>
-        </ServiceWorkerProvider>
+        <BackendProvider>
+            <Switch>
+                <Route path={`${path}/reset-password`} component={ResetPassword}/>
+                <Route path={path}>
+                    <PlayerIdProvider>
+                        <Switch>
+                            <Route path={`${path}/register`} component={Register}/>
+                            <Route path={`${path}/campaign`} component={Campaign}/>
+                            <Route path={`${path}/monster`} component={Monster}/>
+                            <Route path={`${path}/user`} component={User}/>
+                            <Route path={`*`}>
+                                <Redirect to={app(`/campaign`)}/>
+                            </Route>
+                        </Switch>
+                    </PlayerIdProvider>
+                </Route>
+            </Switch>
+        </BackendProvider>
     );
 };
 
-export default App;
-
-export function root(path: string = '/') {
-    if (!path.startsWith('/'))
+export function app(path: string = '') {
+    if (path.length > 0 && !path.startsWith('/'))
         throw new Error('Path need to start with forward slash!');
-    return path;
+    return `/app${path}`;
 }

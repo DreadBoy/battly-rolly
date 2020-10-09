@@ -6,7 +6,7 @@ import {Link, Redirect} from 'react-router-dom';
 import {usePlayerId} from '../helpers/PlayerId';
 import {useBackend} from '../helpers/BackendProvider';
 import {useLoader} from '../helpers/Store';
-import {root} from '../App';
+import {app} from '../App';
 import {useGlobalStore} from '../helpers/GlobalStore';
 import {find, some} from 'lodash';
 import {observer} from 'mobx-react';
@@ -71,7 +71,7 @@ export const Layout: FC = observer(({children}) => {
     }, [api, loader, onLogin]);
 
     if (!!loader.data['logout'])
-        return <Redirect to={root('/login')}/>
+        return <Redirect to={app('/login')}/>
 
     return (
         <div className={classes.grid}>
@@ -84,23 +84,23 @@ export const Layout: FC = observer(({children}) => {
                         <Menu.Item>
                             <span>
                             <Icon fitted name={'attention'} color={'orange'}/>
-                            <Link to={root(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
+                            <Link to={app(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
                             > {encounter.name} </Link>
                             <Icon fitted name={'attention'} color={'orange'}/>
                             </span>
                         </Menu.Item>
                     )}
                     <Menu.Item>
-                        <Link className={classes.link} to={root('/campaign')}>Campaigns</Link>
+                        <Link className={classes.link} to={app('/campaign')}>Campaigns</Link>
                     </Menu.Item>
                     <Menu.Item>
-                        <Link className={classes.link} to={root('/monster')}>Monsters</Link>
+                        <Link className={classes.link} to={app('/monster')}>Monsters</Link>
                     </Menu.Item>
                     <Menu.Menu position={'right'}>
                         <Dropdown icon={'user outline'} item>
                             <Dropdown.Menu>
                                 <Dropdown.Item>
-                                    <Link className={classes.link} to={root(`/user/${id}`)}>
+                                    <Link className={classes.link} to={app(`/user/${id}`)}>
                                         Profile
                                     </Link>
                                 </Dropdown.Item>
@@ -117,14 +117,14 @@ export const Layout: FC = observer(({children}) => {
                     <Dropdown icon={'bars'} item>
                         <Dropdown.Menu className={classes.menu}>
                             <Dropdown.Item>
-                                <Link className={classes.link} to={root('/campaign')}>Campaigns</Link>
+                                <Link className={classes.link} to={app('/campaign')}>Campaigns</Link>
                             </Dropdown.Item>
                             <Dropdown.Item>
-                                <Link className={classes.link} to={root('/monster')}>Monsters</Link>
+                                <Link className={classes.link} to={app('/monster')}>Monsters</Link>
                             </Dropdown.Item>
                             <Dropdown.Divider/>
                             <Dropdown.Item>
-                                <Link className={classes.link} to={root(`/user/${id}`)}>
+                                <Link className={classes.link} to={app(`/user/${id}`)}>
                                     Profile
                                 </Link>
                             </Dropdown.Item>
@@ -138,7 +138,7 @@ export const Layout: FC = observer(({children}) => {
                         <Menu.Item className={classes.noBorder}>
                             <span>
                             <Icon fitted name={'attention'} color={'orange'}/>
-                            <Link to={root(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
+                            <Link to={app(`/campaign/${encounter.campaign.id}/encounter/${encounter.id}`)}
                             > {encounter.name} </Link>
                             <Icon fitted name={'attention'} color={'orange'}/>
                             </span>

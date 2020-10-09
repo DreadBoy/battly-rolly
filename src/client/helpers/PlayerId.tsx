@@ -6,7 +6,7 @@ import {toJS} from 'mobx';
 import {User} from '../../server/model/user';
 import {AxiosRequestConfig} from 'axios';
 import {useLocation} from 'react-router';
-import {root} from '../App';
+import {app} from '../App';
 
 const playerIdContext = createContext<{ id: string, user?: User, onLogin: (onLogin: OnLogin | null) => void }>(undefined as any);
 
@@ -72,7 +72,7 @@ export const PlayerIdProvider: FC = ({children}) => {
     const valid = !!value;
 
     const {pathname} = useLocation();
-    const showRegister = pathname === root('/register');
+    const showRegister = pathname === app('/register');
     return (
         <playerIdContext.Provider value={{id: userId ?? '', user: value?.user, onLogin}}>
             {(init && valid) || showRegister ? children : (

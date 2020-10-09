@@ -53,7 +53,7 @@ export async function resetPassword(user: User) {
                     },
                 ],
                 dynamicTemplateData: {
-                    url: `${process.env.BASE_URL}/reset-password?key=${user.resetPassword}`,
+                    url: `${process.env.BASE_URL}/app/reset-password?key=${user.resetPassword}`,
                     displayName: user.displayName,
                 },
             },

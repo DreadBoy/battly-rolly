@@ -6,7 +6,6 @@ import {createServer} from 'http';
 import {green} from 'chalk';
 import {createSockets} from '../service/socket';
 import {api} from '../api';
-import {landing} from '../landing';
 import {app as critHitApp} from '../app';
 
 export function startServer(): void {
@@ -27,8 +26,7 @@ export function startServer(): void {
         },
     }));
     app.use(mount('/api', api()));
-    critHitApp(app);
-    app.use(mount('/', landing()));
+    app.use(mount('/', critHitApp()));
 
     const server = createServer(app.callback());
     createSockets(server);

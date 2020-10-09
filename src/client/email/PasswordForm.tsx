@@ -5,7 +5,7 @@ import {useHistory} from 'react-router-dom';
 import {usePasswordInput} from '../hooks/use-password-input';
 import {useLoader} from '../helpers/Store';
 import {toJS} from 'mobx';
-import {root} from '../App';
+import {app} from '../App';
 import {Button, Form, Input} from 'semantic-ui-react';
 import {onText} from '../hooks/use-form';
 import {Stacktrace} from '../elements/Stacktrace';
@@ -30,7 +30,7 @@ export const PasswordForm: FC<{ query: string }> = observer(({query}) => {
     const update = useCallback(() => {
         loader.fetchAsync(api.put('/auth/reset-password', toJS(form), {params: {key: query}}), loaderId)
             .then(() => {
-                push(root());
+                push(app());
             })
             .catch(e => e)
         ;

@@ -12,7 +12,7 @@ import {toJS} from 'mobx';
 import {useLoader} from '../helpers/Store';
 import {Stacktrace} from '../elements/Stacktrace';
 import {User} from '../../server/model/user';
-import {root} from '../App';
+import {app} from '../App';
 import {usePasswordInput} from '../hooks/use-password-input';
 import {successMessage, useResetPassword} from '../hooks/use-reset-password';
 import {Success} from '../elements/Success';
@@ -66,7 +66,7 @@ export const Login: FC<Props> = observer(({onLogin}) => {
                     <Grid.Column>
                         <Header size={'huge'} textAlign='center'>Log In</Header>
                         <p>
-                            Need a Battly Rolly account? <Link to={root('/register')}>Create an account</Link>
+                            Need a Battly Rolly account? <Link to={app('/register')}>Create an account</Link>
                         </p>
                         <Form onSubmit={login}>
                             <Form.Field required>
