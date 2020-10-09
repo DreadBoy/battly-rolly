@@ -1,6 +1,5 @@
-import React, {createContext, FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {createContext, FC, useContext, useEffect, useRef, useState} from 'react';
 import Io from 'socket.io-client';
-import {Connect} from './Connect';
 import Axios, {AxiosInstance, AxiosPromise} from 'axios';
 import {BroadcastObject} from '../../server/service/socket';
 import {useGlobalStore} from './GlobalStore';
@@ -9,7 +8,6 @@ type BackendContext = {
     origin: string,
     api: AxiosInstance;
     socket: SocketIOClient.Socket | undefined | null,
-    connected: boolean,
 }
 
 const backendContext = createContext<BackendContext>(undefined as any);
@@ -19,14 +17,14 @@ export const BackendProvider: FC = ({children}) => {
      * undefined means uninitialized, null means disconnected
      */
     const [socket, setSocket] = useState<SocketIOClient.Socket | null | undefined>(undefined);
-    const [origin, setOrigin] = useState<string>('');
-    const [api, setApi] = useState<AxiosInstance>();
+    const origin = useRef<string>(`${window.location.protocol}//${window.location.hostname}`);
+    const api = useRef<AxiosInstance>(Axios.create({
+        baseURL: `${origin.current}/api`,
+    }));
     const globalStore = useGlobalStore();
 
-    const connected = !!origin && origin.length > 0;
-
-    const connect = useCallback((origin: string) => {
-        const s = Io.connect(origin);
+    useEffect(() => {
+        const s = Io.connect(origin.current);
         s.on('connect', () => {
             setSocket(s);
             console.log('%c  <-- %cSOCKET', 'color:green', 'color:white');
@@ -44,13 +42,8 @@ export const BackendProvider: FC = ({children}) => {
             });
         });
 
-        const api = Axios.create({
-            baseURL: `${origin}/api`,
-        });
-        setApi(() => api);
-
-        setOrigin(origin);
-    }, [globalStore]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const socketRef = useRef<SocketIOClient.Socket>();
     useEffect(() => {
@@ -64,10 +57,8 @@ export const BackendProvider: FC = ({children}) => {
     }, []);
 
     return (
-        <backendContext.Provider value={{connected, socket, origin, api: api as AxiosInstance}}>
-            {connected ? children : (
-                <Connect connect={connect}/>
-            )}
+        <backendContext.Provider value={{socket, origin: origin.current, api: api.current}}>
+            {children}
         </backendContext.Provider>
     )
 };

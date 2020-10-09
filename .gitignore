@@ -13,10 +13,6 @@
 
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 nodemon.json
 
 npm-debug.log*
@@ -44,4 +40,4 @@ yarn-error.log*
 
 service-accounts/*.json
 
-app/
+build-server/

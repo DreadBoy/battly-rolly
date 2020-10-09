@@ -6,13 +6,13 @@
   },
   "scripts": {
     "client:start": "react-scripts start",
-    "client:build": "react-scripts build && rimraf app && move-cli build app && rimraf build",
-    "client:clean": "rimraf app",
+    "client:build": "react-scripts build && react-snap",
+    "client:clean": "rimraf build",
     "client:test": "react-scripts test",
-    "server:watch": "rimraf build && tsc --watch --project tsconfig.server.json",
+    "server:watch": "npm run server:clean && tsc --watch --project tsconfig.server.json",
     "server:start": "nodemon --inspect=3002",
-    "server:build": "rimraf build && tsc --project tsconfig.server.json",
-    "server:clean": "rimraf build",
+    "server:build": "npm run server:clean && tsc --project tsconfig.server.json",
+    "server:clean": "rimraf build-server",
     "server:test": "jest",
     "create-migration": "npm run server:build && node build/db-tools/create-migration.js",
     "apply-migrations": "npm run server:build && node build/db-tools/apply-migrations.js",
@@ -20,7 +20,7 @@
     "clean": "npm run client:clean && npm run server:clean ",
     "test": "npm run client:test && npm run server:test",
     "deploy": "npm run build && gcloud app deploy -q && npm run clean",
-    "start": "node build/server.js"
+    "start": "node build-server/server.js"
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^3.2.0",
@@ -101,7 +101,11 @@
     "@types/sendmail": "^1.4.2",
     "@types/smtp-server": "^3.5.4",
     "@types/socket.io": "^2.1.8",
-    "@types/socket.io-client": "^1.4.33"
+    "@types/socket.io-client": "^1.4.33",
+    "react-snap": "^1.23.0"
+  },
+  "reactSnap": {
+    "inlineCss": false
   },
   "eslintConfig": {
     "extends": "react-app"

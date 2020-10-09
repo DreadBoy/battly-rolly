@@ -5,8 +5,7 @@ export function useProbe() {
     const [status, setStatus] = useState<'none' | 'probing' | 'success' | 'failure'>('none');
     const [origin, setOrigin] = useState<string>('');
     useEffect(() => {
-        const port = process.env.REACT_APP_API_PORT ? `:${process.env.REACT_APP_API_PORT}` : '';
-        setOrigin(`${window.location.protocol}//${window.location.hostname}${port}`);
+        setOrigin(`${window.location.protocol}//${window.location.hostname}`);
     }, []);
 
     const check = useCallback(async () => {

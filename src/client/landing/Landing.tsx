@@ -1,5 +1,7 @@
 import React, {FC} from 'react';
-import {Button, Container, Header, Icon} from 'semantic-ui-react';
+import {Container, Header, Icon} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
+import {app} from '../App';
 
 export const HomepageHeading: FC = () => (
     <Container text>
@@ -16,9 +18,9 @@ export const HomepageHeading: FC = () => (
                 marginTop: '1.5em',
             }}
         />
-        <Button primary size='huge'>
+        <Link className={'ui button primary huge'} to={app('/')}>
             Get Started
             <Icon name='arrow right'/>
-        </Button>
+        </Link>
     </Container>
 )

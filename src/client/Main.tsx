@@ -2,7 +2,6 @@ import React, {FC} from 'react';
 import {createUseStyles} from 'react-jss';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {TouchProvider} from './elements/touch';
-import {BackendProvider} from './helpers/BackendProvider';
 import {GlobalStoreProvider} from './helpers/GlobalStore';
 import {ServiceWorkerProvider} from './hooks/use-service-worker';
 import {app, App} from './App';

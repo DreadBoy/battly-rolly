@@ -8,8 +8,8 @@
     "GOOGLE_APPLICATION_CREDENTIALS": "path/to/service-accounts/key.json"
   },
   "watch": [
-    "build/"
+    "build-server/"
   ],
   "ext": "js",
-  "exec": "node --inspect=3002 build/server.js"
+  "exec": "node --inspect=3002 build-server/server.js"
 }
