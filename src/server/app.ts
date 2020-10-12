@@ -6,7 +6,7 @@ export function app() {
     const app = new Koa();
     app.use(KoaStatic({
         rootDir: join(process.cwd(), 'build'),
-        notFoundFile: 'index.html',
+        notFoundFile: '404.html',
         maxage: 1000 * 60 * 60 * 1,
     }));
     return app;

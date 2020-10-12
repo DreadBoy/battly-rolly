@@ -1,7 +1,6 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Container, Form, Grid, Header, Input} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
-import bg from '../../assets/backgrounds/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -44,13 +43,13 @@ export const Register: FC = observer(() => {
     }, [api, form, loader, onLogin, push]);
 
     return (
-        <Splash bg={bg} position={'88% center'}>
+        <Splash>
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Header size={'huge'} textAlign='center'>Welcome to Battly Rolly</Header>
+                        <Header size={'huge'} textAlign='center'>Welcome to Crit Hit</Header>
                         <p>
-                            Run encounters. Create custom monsters. Do it all with Battly Rolly.
+                            Run encounters. Create custom monsters. Do it all with Crit Hit.
                             Already have an account? <Link to={app()}>Log in</Link>
                         </p>
                         <Form onSubmit={register}>

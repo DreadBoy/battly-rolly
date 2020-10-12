@@ -1,11 +1,7 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC} from 'react';
 import {Segment} from 'semantic-ui-react';
-
-type Props = {
-    bg: string,
-    position?: string,
-}
+import bg from '../../assets/backgrounds/clint-bustrillos-X-A-LJVAhzk-unsplash.jpg';
 
 const useStyles = createUseStyles({
     grid: {
@@ -13,13 +9,16 @@ const useStyles = createUseStyles({
         width: '100vw',
         display: 'grid',
         alignItems: 'center',
+        overflow: 'hidden',
     },
     image: {
-        background: ({bg, position}: Props) => `url(${bg}) ${position} / cover`,
+        background: `url(${bg}) center center / cover`,
         gridColumn: '1 / 1',
         gridRow: '1 / 1',
         justifySelf: 'stretch',
         alignSelf: 'stretch',
+        filter: 'blur(3px)',
+        transform: 'scale(1.05)'
     },
     panel: {
         gridColumn: '1 / 1',
@@ -31,8 +30,8 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Splash: FC<Props> = ({bg, position, children}) => {
-    const classes = useStyles({bg, position});
+export const Splash: FC = ({children}) => {
+    const classes = useStyles();
     return (
         <div className={classes.grid}>
             <div className={classes.image}/>
@@ -41,7 +40,4 @@ export const Splash: FC<Props> = ({bg, position, children}) => {
             </Segment>
         </div>
     );
-};
-Splash.defaultProps = {
-    position: 'center center',
 };

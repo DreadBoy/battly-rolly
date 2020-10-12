@@ -1,11 +1,14 @@
 import React, {FC} from 'react';
 import {Container, Grid, Header} from 'semantic-ui-react';
-import bg from '../../assets/backgrounds/sage-advice-header-image.jpg';
 import {Splash} from './Splash';
+import { Helmet } from 'react-helmet';
 
 export const FourOhFour: FC = () => {
     return (
-        <Splash bg={bg}>
+        <Splash>
+            <Helmet>
+                <title>Crit Hit - 404 page</title>
+            </Helmet>
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>

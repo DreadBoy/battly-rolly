@@ -11,12 +11,12 @@ setApiKey(process.env.SENDGRID_API_KEY);
 function _config() {
     return {
         from: {
-            email: 'no-reply@maticleva.com',
-            name: 'Battly Rolly',
+            email: 'no-reply@crithit.app',
+            name: 'Crit Hit',
         },
         replyTo: {
-            email: 'no-reply@maticleva.com',
-            name: 'Battly Rolly',
+            email: 'no-reply@crithit.app',
+            name: 'Crit Hit',
         },
     };
 }

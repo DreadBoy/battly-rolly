@@ -1,7 +1,6 @@
 import {createUseStyles} from 'react-jss';
 import React, {FC, useEffect} from 'react';
 import {Button, Input} from 'semantic-ui-react';
-import bg from '../../assets/backgrounds/20-205533_paper-dungeons-hd-wallpaper-hd-d-d-desktop.jpg';
 import {useProbe} from '../hooks/use-probe';
 import { Splash } from '../layout/Splash';
 
@@ -23,7 +22,7 @@ export const Connect: FC<Props> = ({connect}) => {
             connect(origin);
     }, [connect, origin, status]);
     return (
-        <Splash bg={bg} position={'88% center'}>
+        <Splash>
             <Input
                 loading={status === 'probing'}
                 error={status === 'failure'}

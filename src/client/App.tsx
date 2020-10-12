@@ -8,6 +8,7 @@ import {Campaign} from './campaign/Campaign';
 import {Monster} from './monster/Monster';
 import {User} from './user/User';
 import {BackendProvider} from './helpers/BackendProvider';
+import {FourOhFour} from './layout/404';
 
 export const App: FC = () => {
     const {path} = useRouteMatch();
@@ -22,9 +23,10 @@ export const App: FC = () => {
                             <Route path={`${path}/campaign`} component={Campaign}/>
                             <Route path={`${path}/monster`} component={Monster}/>
                             <Route path={`${path}/user`} component={User}/>
-                            <Route path={`*`}>
+                            <Route path={path} exact={true}>
                                 <Redirect to={app(`/campaign`)}/>
                             </Route>
+                            <Route path={`*`} component={FourOhFour}/>
                         </Switch>
                     </PlayerIdProvider>
                 </Route>

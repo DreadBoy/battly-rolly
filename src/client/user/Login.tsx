@@ -1,7 +1,6 @@
 import React, {FC, useCallback, useRef} from 'react';
 import {Button, Container, Form, Grid, Header, Input, Icon} from 'semantic-ui-react';
 import {observer, useLocalStore} from 'mobx-react';
-import bg from '../../assets/backgrounds/07cdffb028209e9b2fe3ef7fc142e920.jpg';
 import {Link} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -60,13 +59,13 @@ export const Login: FC<Props> = observer(({onLogin}) => {
     }, [_reset]);
 
     return (
-        <Splash bg={bg}>
+        <Splash>
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
                         <Header size={'huge'} textAlign='center'>Log In</Header>
                         <p>
-                            Need a Battly Rolly account? <Link to={app('/register')}>Create an account</Link>
+                            Need a Crit Hit account? <Link to={app('/register')}>Create an account</Link>
                         </p>
                         <Form onSubmit={login}>
                             <Form.Field required>

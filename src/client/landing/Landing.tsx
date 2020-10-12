@@ -3,7 +3,7 @@ import {Container, Header, Icon} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 import {app} from '../App';
 
-export const HomepageHeading: FC = () => (
+export const Landing: FC = () => (
     <Container text>
         <Header
             as='h1'

@@ -5,11 +5,12 @@ import {TouchProvider} from './elements/touch';
 import {GlobalStoreProvider} from './helpers/GlobalStore';
 import {ServiceWorkerProvider} from './hooks/use-service-worker';
 import {app, App} from './App';
-import {HomepageHeading} from './landing/Landing';
+import {Landing} from './landing/Landing';
+import {FourOhFour} from './layout/404';
 
 const useStyles = createUseStyles({
     '@global': {
-        '*': {
+        'html': {
             boxSizing: 'border-box',
         },
     },
@@ -24,7 +25,8 @@ const Main: FC = () => {
                     <TouchProvider>
                         <Switch>
                             <Route path={app('')} component={App}/>
-                            <Route path={'/'} component={HomepageHeading}/>
+                            <Route path={'/'} exact component={Landing}/>
+                            <Route path={'*'} component={FourOhFour}/>
                         </Switch>
                     </TouchProvider>
                 </BrowserRouter>

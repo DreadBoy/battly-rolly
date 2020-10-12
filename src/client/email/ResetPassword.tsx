@@ -1,7 +1,6 @@
 import React, {FC, useEffect} from 'react';
 import {Container, Grid, Header} from 'semantic-ui-react';
 import {observer} from 'mobx-react';
-import bg from '../../assets/backgrounds/sage-advice-header-image.jpg';
 import {useLocation} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {useBackend} from '../helpers/BackendProvider';
@@ -20,7 +19,7 @@ export const ResetPassword: FC = observer(() => {
     }, [api, check, key])
 
     return (
-        <Splash bg={bg} position={'88% center'}>
+        <Splash>
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
