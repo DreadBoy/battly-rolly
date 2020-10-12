@@ -1,15 +1,3 @@
-export type Phase = 0 | 1 | 2 | 3;
-export const phases = ['Fast player', 'Fast monster', 'Slow player', 'Slow monster'];
-export type PlayerStats = {
-    name: string,
-    AC: number,
-    passivePerception: number,
-}
-export type Player = {
-    stats: PlayerStats,
-    actionLog: ActionLog[],
-}
-
 export type ActionLog = {
     attackerId: string,
     targetId: string,
@@ -38,48 +26,22 @@ export function isSaveLog(log: ActionLog): log is SaveLog {
     return typeof (log as SaveLog).save !== 'undefined';
 }
 
+export const damageTypes = ['acid', 'bludgeoning', 'cold', 'fire', 'force', 'lightning', 'necrotic', 'piercing', 'poison', 'psychic', 'radiant', 'slashing', 'thunder'] as const;
+export type DamageType = typeof damageTypes[number];
 
-export type DamageType =
-    'acid'
-    | 'bludgeoning'
-    | 'cold'
-    | 'fire'
-    | 'force'
-    | 'lightning'
-    | 'necrotic'
-    | 'piercing'
-    | 'poison'
-    | 'psychic'
-    | 'radiant'
-    | 'slashing'
-    | 'thunder'
-export const damageTypes = ['acid', 'bludgeoning', 'cold', 'fire', 'force', 'lightning', 'necrotic', 'piercing', 'poison', 'psychic', 'radiant', 'slashing', 'thunder'];
-export type Ability = 'strength' | 'dexterity' | 'constitution' | 'intelligence' | 'wisdom' | 'charisma';
 export const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'] as const;
-export type Status = 'blinded'
-    | 'charmed'
-    | 'deafened'
-    | 'fatigued'
-    | 'frightened'
-    | 'grappled'
-    | 'incapacitated'
-    | 'invisible'
-    | 'paralyzed'
-    | 'petrified'
-    | 'poisoned'
-    | 'prone'
-    | 'restrained'
-    | 'stunned'
-    | 'unconscious'
-    | 'exhaustion';
-export const statuses = ['blinded', 'charmed', 'deafened', 'fatigued', 'frightened', 'grappled', 'incapacitated', 'invisible', 'paralyzed', 'petrified', 'poisoned', 'prone', 'restrained', 'stunned', 'unconscious', 'exhaustion'];
+export type Ability = typeof abilities[number];
+
+export const statuses = ['blinded', 'charmed', 'deafened', 'fatigued', 'frightened', 'grappled', 'incapacitated', 'invisible', 'paralyzed', 'petrified', 'poisoned', 'prone', 'restrained', 'stunned', 'unconscious', 'exhaustion'] as const;
+export type Status = typeof statuses[number];
+
 export type Roll = [number, number, number];
 export type Damage = {
     rolls: Roll[],
     damageType: DamageType,
 }
-export type ActionType = 'attack' | 'save';
-export const actionTypes = ['attack', 'save'];
+export const actionTypes = ['attack', 'save'] as const;
+export type ActionType = typeof actionTypes[number];
 
 export type BaseAction = {
     type: ActionType,
@@ -91,10 +53,6 @@ export type Attack = BaseAction & {
     modifier: number,
     damage: Damage,
 };
-
-export function isAttack(action: Action): action is Attack {
-    return action.type === 'attack';
-}
 
 export type Save = BaseAction & {
     type: 'save',

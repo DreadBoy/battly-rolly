@@ -10,6 +10,7 @@ import {fakeRequest, useBackend} from '../../../helpers/BackendProvider';
 import {isAoe, isDirect} from '../../../../server/model/helpers';
 import {Action} from '../../../../server/model/action';
 import {findAction} from '../../../../server/model/action-types';
+import {toJS} from 'mobx';
 
 type Props = {
     encounter: Encounter,
@@ -72,7 +73,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
             o => !!o.body,
         );
         if (!isEmpty(invalid))
-            return console.error('Missing actions or return values: ', map(invalid, 'log'));
+            return console.error('Missing actions or return values: ', map(map(invalid, 'log'), toJS));
         const requests = map(valid, ({log, body}) => api.put(`/log/${log.id}/deal-damage`, body)).map(p => p.catch(e => e));
         const request = fakeRequest(() => requests);
         promise.current = _loader.fetchAsync(request, encounter.id)
