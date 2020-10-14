@@ -2,6 +2,7 @@ import {createUseStyles} from 'react-jss';
 import React, {FC} from 'react';
 import {Segment} from 'semantic-ui-react';
 import bg from '../../assets/backgrounds/clint-bustrillos-X-A-LJVAhzk-unsplash.jpg';
+import {UpdateButton} from './UpdateButton';
 
 const useStyles = createUseStyles({
     grid: {
@@ -18,7 +19,7 @@ const useStyles = createUseStyles({
         justifySelf: 'stretch',
         alignSelf: 'stretch',
         filter: 'blur(3px)',
-        transform: 'scale(1.05)'
+        transform: 'scale(1.05)',
     },
     panel: {
         gridColumn: '1 / 1',
@@ -37,6 +38,7 @@ export const Splash: FC = ({children}) => {
             <div className={classes.image}/>
             <Segment raised className={classes.panel}>
                 {children}
+                <UpdateButton/>
             </Segment>
         </div>
     );
