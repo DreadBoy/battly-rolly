@@ -96,6 +96,7 @@ export const ActionInput: FC<Props> = ({action, onChange, onRemove, required, id
                     <label htmlFor={`${id}-type`}>Attack type</label>
                     <Dropdown
                         id={`${id}-type`}
+                        search
                         selection
                         options={actionTypes.map(t => ({
                             key: t, value: t, text: t,
@@ -138,6 +139,7 @@ export const ActionInput: FC<Props> = ({action, onChange, onRemove, required, id
                                 <label htmlFor={`${id}-ability`}>Ability</label>
                                 <Dropdown
                                     id={`${id}-dc`}
+                                    search
                                     selection
                                     options={abilities.map(t => ({
                                         key: t, value: t, text: t,
@@ -165,6 +167,7 @@ export const ActionInput: FC<Props> = ({action, onChange, onRemove, required, id
                             <label htmlFor={`${id}-status`}>Status</label>
                             <Dropdown
                                 id={`${id}-status`}
+                                search
                                 selection
                                 options={[{
                                     key: 'no-effect',

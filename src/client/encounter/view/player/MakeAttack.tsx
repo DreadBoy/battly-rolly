@@ -198,6 +198,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             <Form.Field required>
                                 <label>Ability</label>
                                 <Dropdown
+                                    search
                                     selection
                                     options={abilities.map(t => ({
                                         key: t, value: t, text: t,

@@ -61,6 +61,7 @@ export const DamageInput: FC<Props> = ({id, label, required, value, onChange}) =
                 <label htmlFor={`${id}-type`}>{label} type</label>
                 <Dropdown
                     id={`${id}-type`}
+                    search
                     selection
                     options={damageTypes.map(t => ({
                         key: t, value: t, text: t,

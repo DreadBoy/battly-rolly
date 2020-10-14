@@ -85,6 +85,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
                             <Form.Field>
                                 <label>Damage type</label>
                                 <Dropdown
+                                    search
                                     selection
                                     options={damageTypes.map(t => ({
                                         key: t, value: t, text: t,
