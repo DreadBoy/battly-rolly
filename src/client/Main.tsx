@@ -14,6 +14,20 @@ const useStyles = createUseStyles({
         'html': {
             boxSizing: 'border-box',
         },
+        '.ui.search.dropdown .menu': {
+            '@media only screen and (min-height: 992px)': {
+                maxHeight: '21.37142857rem',
+            },
+            '@media only screen and (min-height: 768px)': {
+                maxHeight: '16.02857143rem',
+            },
+            '@media only screen and (min-width: 768px)': {
+                maxHeight: '10.68571429rem',
+            },
+            '@media only screen and (max-height: 767px)': {
+                maxHeight: '8.01428571rem',
+            },
+        },
     },
 });
 
