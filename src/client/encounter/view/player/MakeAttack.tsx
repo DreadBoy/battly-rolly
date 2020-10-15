@@ -137,6 +137,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
                             <ButtonGroup size={'tiny'} basic>
                                 {savedAttacks.map(a => (
                                     <Button
+                                        key={a.name}
                                         type={'button'}
                                         color={'grey'}
                                         onClick={loadAttack(a)}>

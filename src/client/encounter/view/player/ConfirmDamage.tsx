@@ -37,6 +37,7 @@ export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
 
     return (
         <Modal
+            key={log?.id}
             open={!isNil(log) && stillWaiting}
             dimmer={'blurring'}
         >

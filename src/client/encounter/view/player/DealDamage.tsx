@@ -62,6 +62,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
 
     return (
         <Modal
+            key={log?.id}
             open={!isNil(log)}
             dimmer={'blurring'}
         >

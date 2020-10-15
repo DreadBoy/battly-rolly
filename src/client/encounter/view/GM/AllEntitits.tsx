@@ -25,7 +25,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                 f => type(f) === 'npc',
                             ),
                             f => (
-                                <List.Item>
+                                <List.Item key={f.id}>
                                     <List.Content>
                                         <MonsterName feature={f}/>
                                         <MonsterHP id={f.id} HP={f.HP} initialHP={f.initialHP}/>
@@ -43,7 +43,7 @@ export const AllEntities: FC<Props> = observer(({encounter}) => {
                                 f => type(f) === 'player',
                             ),
                             f => (
-                                <List.Item>
+                                <List.Item key={f.id}>
                                     <List.Content>{featureToDisplay(f)}</List.Content>
                                 </List.Item>
                             ),
