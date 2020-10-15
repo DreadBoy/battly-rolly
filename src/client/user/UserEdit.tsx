@@ -7,11 +7,12 @@ import {useEditor} from '../hooks/use-editor';
 import {User} from '../../server/model/user';
 import {useRouteMatch} from 'react-router';
 import {AsyncSection} from '../helpers/AsyncSection';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<User>();
 
 export const UserEdit: FC = observer(() => {
-    const {params: {userId}} = useRouteMatch();
+    const {params: {userId}} = useRouteMatch<Params>();
     const user = useLoader<User>();
     const empty = useCallback(() => ({
         displayName: '',

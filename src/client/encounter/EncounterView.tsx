@@ -10,9 +10,10 @@ import {EncounterPlayer} from './view/EncounterPlayer';
 import {EncounterGm} from './view/EncounterGm';
 import {Loader} from 'semantic-ui-react';
 import {Layout} from '../layout/Layout';
+import {Params} from '../helpers/params';
 
 export const EncounterView: FC = observer(() => {
-    const {params: {encounterId}} = useRouteMatch();
+    const {params: {encounterId}} = useRouteMatch<Params>();
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
 

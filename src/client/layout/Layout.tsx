@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {Container, Dropdown, Icon, Menu, Responsive} from 'semantic-ui-react';
+import {Container, Dropdown, Icon, Menu} from 'semantic-ui-react';
 import {createUseStyles} from 'react-jss';
 import icon from '../../assets/dice-twenty-faces-twenty.svg';
 import {Link, Redirect} from 'react-router-dom';
@@ -50,6 +50,20 @@ const useStyles = createUseStyles({
             display: 'none',
         },
     },
+    menuDesktop: {
+        '.ui.menu>&.container': {
+            '@media only screen and (max-width: 440px)': {
+                display: 'none',
+            },
+        },
+    },
+    menuMobile: {
+        '.ui.menu>&.container': {
+            '@media only screen and (min-width: 440px)': {
+                display: 'none',
+            },
+        },
+    },
 });
 
 export const Layout: FC = observer(({children}) => {
@@ -75,8 +89,8 @@ export const Layout: FC = observer(({children}) => {
 
     return (
         <div className={classes.grid}>
-            <Responsive minWidth={440} as={Menu}>
-                <Container>
+            <Menu>
+                <Container className={classes.menuDesktop}>
                     <Menu.Item header>
                         <img src={icon} alt={'icon'} title={`App version: ${process.env.REACT_APP_APP_VERSION}`}/>
                     </Menu.Item>
@@ -111,9 +125,7 @@ export const Layout: FC = observer(({children}) => {
                         </Dropdown>
                     </Menu.Menu>
                 </Container>
-            </Responsive>
-            <Responsive maxWidth={439} as={Menu}>
-                <Container>
+                <Container className={classes.menuMobile}>
                     <Dropdown icon={'bars'} item>
                         <Dropdown.Menu className={classes.menu}>
                             <Dropdown.Item>
@@ -149,7 +161,7 @@ export const Layout: FC = observer(({children}) => {
                     <div className={classes.flex}/>
                     <Menu.Item className={classes.fakeItem}/>
                 </Container>
-            </Responsive>
+            </Menu>
             <Container>
                 {children}
                 <UpdateButton/>

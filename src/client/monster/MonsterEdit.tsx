@@ -16,11 +16,12 @@ import {cloneDeep, isNil, map} from 'lodash';
 import {Action} from '../../server/model/action';
 import {defaultDamage} from '../elements/DamageInput';
 import {integer} from '../helpers/integer';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<Monster>();
 
 export const MonsterEdit: FC = observer(() => {
-    const {params: {monsterId}} = useRouteMatch();
+    const {params: {monsterId}} = useRouteMatch<Params>();
     const monster = useLoader<Monster>();
     const empty: () => Partial<Monster> = useCallback(() => ({
         name: '',

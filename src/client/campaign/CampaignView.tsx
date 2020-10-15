@@ -15,12 +15,13 @@ import {EncounterListPlayer} from '../encounter/list/EncounterListPlayer';
 import {useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
 import {useGlobalStore} from '../helpers/GlobalStore';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<Campaign>();
 
 export const CampaignView: FC = observer(() => {
     const {id: playerId} = usePlayerId();
-    const {url, params: {campaignId: id}} = useRouteMatch();
+    const {url, params: {campaignId: id}} = useRouteMatch<Params>();
     const {api} = useBackend();
     const campaign = useGlobalStore();
 

@@ -13,13 +13,14 @@ import {Stacktrace} from '../elements/Stacktrace';
 import {Success} from '../elements/Success';
 import {isNil} from 'lodash';
 import {successMessage, useResetPassword} from '../hooks/use-reset-password';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<User>();
 
 export const UserView: FC = observer(() => {
     const {api} = useBackend();
 
-    const {params: {userId}} = useRouteMatch();
+    const {params: {userId}} = useRouteMatch<Params>();
     const user = useGlobalStore();
 
     useEffect(() => {

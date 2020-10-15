@@ -17,6 +17,7 @@ import {abilityShort, roll, withSign} from '../helpers/display-helpers';
 import {abilities, Ability, Roll} from '../../server/model/action-types';
 import {Action} from '../../server/model/action';
 import {toJS} from 'mobx';
+import {Params} from '../helpers/params';
 
 const View = AsyncSection<Monster>();
 
@@ -32,7 +33,7 @@ const useStyles = createUseStyles({
 export const MonsterView: FC = observer(() => {
     const classes = useStyles();
     const {id: playerId} = usePlayerId();
-    const {url, params: {monsterId}} = useRouteMatch();
+    const {url, params: {monsterId}} = useRouteMatch<Params>();
     const {api} = useBackend();
     const monster = useGlobalStore();
     useEffect(() => {

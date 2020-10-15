@@ -7,11 +7,12 @@ import {useLoader} from '../helpers/Store';
 import {Encounter} from '../../server/model/encounter';
 import {useRouteMatch} from 'react-router-dom';
 import {AsyncSection} from '../helpers/AsyncSection';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<Encounter>();
 
 export const EncounterEdit: FC = observer(() => {
-    const {params: {campaignId, encounterId}} = useRouteMatch();
+    const {params: {campaignId, encounterId}} = useRouteMatch<Params>();
 
     const encounter = useLoader<Encounter>();
     const empty = useCallback((): Partial<Encounter> => ({

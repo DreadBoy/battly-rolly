@@ -7,11 +7,12 @@ import {useLoader} from '../helpers/Store';
 import {useEditor} from '../hooks/use-editor';
 import {useRouteMatch} from 'react-router-dom';
 import {AsyncSection} from '../helpers/AsyncSection';
+import {Params} from '../helpers/params';
 
 const Editor = AsyncSection<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
-    const {params: {campaignId}} = useRouteMatch();
+    const {params: {campaignId}} = useRouteMatch<Params>();
     const campaign = useLoader<Campaign>();
     const empty = useCallback(() => ({
         name: '',
