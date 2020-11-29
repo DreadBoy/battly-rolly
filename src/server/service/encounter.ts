@@ -2,12 +2,13 @@ import {Encounter} from '../model/encounter';
 import {User} from '../model/user';
 import {getCampaign, pushCampaignOverSockets} from './campaign';
 import {HttpError} from '../middlewares/error-middleware';
-import {assign, filter, find, isNil, map, pick} from 'lodash';
+import {assign, difference, filter, find, isNil, map, pick, reject} from 'lodash';
 import {broadcastObject} from './socket';
 import {AddFeature, addFeatures} from '../repo/feature';
 import * as repo from '../repo/encounter';
 import {validateObject} from '../middlewares/validators';
 import {getManager} from 'typeorm';
+import {Feature} from '../model/feature';
 
 export async function createEncounter(campaignId: string, user: User, body: Partial<Encounter>): Promise<Encounter> {
     body = validateObject(body, ['name']);
@@ -26,12 +27,37 @@ export async function getEncounters(campaignId: string): Promise<Encounter[]> {
     return campaign.encounters;
 }
 
-export async function getEncounter(encounterId: string): Promise<Encounter> {
-    return repo.getEncounter(encounterId, [
-        'campaign',
-        'features', 'features.monster', 'features.player',
-        'logs', 'logs.source', 'logs.target',
-    ]);
+export async function getFullEncounter(encounterId: string): Promise<Encounter> {
+    const encounter = await Encounter.createQueryBuilder('encounter')
+        .leftJoinAndSelect('encounter.campaign', 'campaign')
+        .leftJoinAndSelect('campaign.gm', 'gm')
+        .leftJoinAndSelect('encounter.features', 'feature')
+        .leftJoinAndSelect('feature.monster', 'monster')
+        .leftJoinAndSelect('feature.player', 'player')
+        .leftJoinAndSelect('encounter.logs', 'log')
+        .leftJoinAndSelect('log.source', 'source')
+        .leftJoinAndSelect('log.target', 'target')
+        .where('encounter.id = :encounterId', {encounterId})
+        .getOne();
+
+    if (!encounter)
+        throw new HttpError(404, `Encounter with id ${encounterId} not found`);
+
+    function toFullFeatures(encounter: Encounter, partialFeatures?: Feature[]) {
+        return map(partialFeatures, f => {
+            const f1 = find(encounter.features, ['id', f.id]);
+            if (isNil(f1))
+                throw new HttpError(404, `Feature with id ${f.id} not found`);
+            return f1;
+        });
+    }
+
+    encounter.logs.forEach(log => {
+        log.source = toFullFeatures(encounter, log.source);
+        log.target = toFullFeatures(encounter, log.target);
+    })
+
+    return encounter;
 }
 
 export async function updateEncounter(encounterId: string, body: Partial<Encounter>): Promise<Encounter> {
@@ -53,21 +79,28 @@ export async function deleteEncounter(encounterId: string, user: User): Promise<
 export async function toggleActiveEncounter(encounterId: string, user: User): Promise<void> {
     const encounter = await repo.getEncounter(
         encounterId,
-        ['campaign', 'campaign.users', 'campaign.encounters', 'features'],
+        ['campaign'],
     );
     if (encounter?.campaign?.gm?.id !== user.id)
         throw new HttpError(403, 'You are not GM of this campaign, you can\'t modify encounters in it!');
     const campaign = encounter.campaign;
+    const encounters = await Encounter.find({
+        where: {campaign: {id: campaign.id}},
+        relations: ['features'],
+    });
     const before = map(campaign.encounters, e => pick(e, ['id', 'name', 'active']));
 
     const playerIds = campaign.users
         .filter(user => user.id !== campaign.gm.id)
         .map(user => user.id);
     await Promise.all(campaign.encounters.map(async enc => {
+        const fullEnc = find(encounters, ['id', enc.id]);
+        if (isNil(fullEnc))
+            return;
         enc.active = enc.id === encounterId && !enc.active;
         if (enc.active) {
-            const inEncounter = map(enc.features, 'id');
-            const notInEncounter = filter(playerIds, id => !inEncounter.includes(id));
+            const playersInEncounter = reject(map(fullEnc.features, 'player.id'), isNil);
+            const notInEncounter = difference(playerIds, playersInEncounter);
             const addedPlayers = notInEncounter
                 .map(id => ({
                     type: 'player',
@@ -111,7 +144,7 @@ export async function notifyUserOfActiveEncounter(userId: string): Promise<void>
 }
 
 export async function pushEncounterOverSockets(encounterId: string) {
-    const encounter = await getEncounter(encounterId);
+    const encounter = await getFullEncounter(encounterId);
     const users = await Encounter.affectedUsers(encounterId)
     broadcastObject(
         Encounter.name,
