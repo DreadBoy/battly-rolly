@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useMemo} from 'react';
 import {
     Button,
     ButtonGroup,
@@ -12,7 +12,7 @@ import {
     List,
 } from 'semantic-ui-react';
 import {Feature} from '../../../../server/model/feature';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
 import {assign, filter, find, includes, isEmpty, isNil, map, pick, pull, sortBy, uniqBy} from 'lodash';
 import {Encounter} from '../../../../server/model/encounter';
@@ -61,10 +61,10 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         stat: 'constitution',
         DC: undefined,
     } as StartLog), [playerFeature]);
-    const logSetup = useLocalStore<StartLog>(empty);
+    const logSetup = useLocalObservable<StartLog>(empty);
 
     const {value, remove, set} = useLocalStorage('saved-attacks');
-    const savedAttacks: StartLog[] = isNil(value) ? [] : JSON.parse(value);
+    const savedAttacks: StartLog[] = useMemo(() => isNil(value) ? [] : JSON.parse(value), [value]);
 
     const loadAttack = useCallback((log: StartLog) => () => {
         assign(logSetup, empty());
@@ -111,7 +111,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
             logSetup.nat20 = true;
         } else
             logSetup.nat20 = undefined;
-    }, [logSetup.nat20]);
+    }, [logSetup]);
 
     const isSetupValid = !isEmpty(logSetup.name) && !isEmpty(logSetup.target);
 

@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {useBackend} from '../helpers/BackendProvider';
 import {useHistory} from 'react-router-dom';
 import {usePasswordInput} from '../hooks/use-password-input';
@@ -19,7 +19,7 @@ export const PasswordForm: FC<{ query: string }> = observer(({query}) => {
     const {api} = useBackend();
     const {push} = useHistory();
 
-    const form = useLocalStore<FormModel>(() => ({
+    const form = useLocalObservable<FormModel>(() => ({
         password: '',
     }));
 

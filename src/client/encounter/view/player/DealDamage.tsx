@@ -1,6 +1,6 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Dropdown, Form, Header, InputOnChangeData, Modal} from 'semantic-ui-react';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {assign, find, isNil, isNumber} from 'lodash';
 import {Encounter} from '../../../../server/model/encounter';
 import {useLoader} from '../../../helpers/Store';
@@ -32,7 +32,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
         damageSuccess: undefined,
         damageFailure: undefined,
     } as DealDamageBody), []);
-    const form = useLocalStore<DealDamageBody>(empty);
+    const form = useLocalObservable<DealDamageBody>(empty);
 
     const isValid = isNumber(form.damageSuccess) &&
         (isNil(form.damageFailure) || isNumber(form.damageFailure)) &&

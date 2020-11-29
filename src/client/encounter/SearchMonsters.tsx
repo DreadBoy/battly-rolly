@@ -17,7 +17,7 @@ export const SearchMonsters: FC<Props> = observer(({onSelect, pool}) => {
     const {api} = useBackend();
 
     const [value, setValue] = useState<string>('');
-    const loader = useLoader<Monster[]>()
+    const loader = useLoader()
 
     const url = useRef<'search' | 'searchAll'>('search');
     useEffect(() => {

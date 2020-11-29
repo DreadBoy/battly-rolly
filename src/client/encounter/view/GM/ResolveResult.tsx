@@ -16,7 +16,7 @@ type Props = {
 
 export const ResolveResult: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
-    const _loader = useLoader<any[]>();
+    const _loader = useLoader();
 
     const logs = filter(encounter.logs, l =>
         l.stage === 'WaitingOnResult' &&

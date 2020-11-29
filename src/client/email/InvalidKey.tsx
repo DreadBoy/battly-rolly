@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useState} from 'react';
 import {successMessage, useResetPassword} from '../hooks/use-reset-password';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {Button, Form} from 'semantic-ui-react';
 import {onText} from '../hooks/use-form';
 import {Stacktrace} from '../elements/Stacktrace';
@@ -11,7 +11,7 @@ import {ButtonAsLink} from '../elements/ButtonAsLink';
 export const InvalidKey: FC = observer(() => {
 
     const [opened, setOpened] = useState<boolean>(false);
-    const form = useLocalStore<{ email: string }>(() => ({
+    const form = useLocalObservable<{ email: string }>(() => ({
         email: '',
     }));
     const open = useCallback(() => {

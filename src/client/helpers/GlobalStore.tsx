@@ -1,11 +1,11 @@
 import React, {createContext, FC, useContext} from 'react';
-import {useLocalStore} from 'mobx-react';
+import {useLocalObservable} from 'mobx-react';
 import {createStore, TStore} from './Store';
 
 const globalStoreContext = createContext<TStore | null>(null);
 
 export const GlobalStoreProvider: FC = ({children}) => {
-    const store = useLocalStore(createStore);
+    const store = useLocalObservable(createStore);
     return (
         <globalStoreContext.Provider value={store}>{children}</globalStoreContext.Provider>
     );

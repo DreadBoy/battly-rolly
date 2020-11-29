@@ -1,11 +1,10 @@
 import Io from 'socket.io';
-import SocketIO from 'socket.io';
 import {gray, green, red, white} from 'chalk';
 import {Server} from 'http';
 import {logger} from '../logger';
 import {notifyUserOfActiveEncounter} from './encounter';
 
-let io: SocketIO.Server;
+let io: Io.Server;
 
 export function createSockets(server: Server) {
     io = Io(server);

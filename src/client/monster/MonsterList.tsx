@@ -19,7 +19,7 @@ export const MonsterList: FC = observer(() => {
     const {api} = useBackend();
     const {id: playerId} = usePlayerId();
 
-    const monsters = useLoader<Monster[]>();
+    const monsters = useLoader();
     const fetchAll = useCallback(
         () => monsters.fetch(api.get('/monster'), playerId),
         [api, monsters, playerId],

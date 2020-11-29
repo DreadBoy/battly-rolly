@@ -22,7 +22,7 @@ const Editor = AsyncSection<Monster>();
 
 export const MonsterEdit: FC = observer(() => {
     const {params: {monsterId}} = useRouteMatch<Params>();
-    const monster = useLoader<Monster>();
+    const monster = useLoader();
     const empty: () => Partial<Monster> = useCallback(() => ({
         name: '',
         HP: [0, 0, 0],

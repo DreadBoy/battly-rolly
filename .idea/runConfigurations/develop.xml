@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="develop" type="Multirun" factoryName="Multirun" separateTabs="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="true" delayTime="0">
+  <configuration default="false" name="develop" type="Multirun" factoryName="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="true" delayTime="0.0">
+    <runConfiguration name="cloud_sql_proxy.sh" type="Shell Script" />
     <runConfiguration name="server:watch" type="npm" />
     <runConfiguration name="server:start" type="npm" />
     <runConfiguration name="client:start" type="npm" />

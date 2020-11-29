@@ -1,6 +1,6 @@
 import React, {FC, useCallback} from 'react';
 import {Button, Container, Form, Grid, Header, Input} from 'semantic-ui-react';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -11,7 +11,6 @@ import {toJS} from 'mobx';
 import {useBackend} from '../helpers/BackendProvider';
 import {Stacktrace} from '../elements/Stacktrace';
 import {usePlayerId} from '../helpers/PlayerId';
-import {OnLogin} from './Login';
 import {app} from '../App';
 import {usePasswordInput} from '../hooks/use-password-input';
 
@@ -20,7 +19,7 @@ export const Register: FC = observer(() => {
     const {push} = useHistory();
     const {onLogin} = usePlayerId();
 
-    const form = useLocalStore<FormModel>(() => ({
+    const form = useLocalObservable<FormModel>(() => ({
         email: '',
         displayName: '',
         password: '',
@@ -30,7 +29,7 @@ export const Register: FC = observer(() => {
 
     const valid = !isEmpty(form.email) && !isEmpty(form.displayName) && !isEmpty(form.password);
 
-    const loader = useLoader<OnLogin>();
+    const loader = useLoader();
     const loaderId = 'login';
     const register = useCallback(() => {
         loader.fetchAsync(api.post('/auth', toJS(form)), loaderId)

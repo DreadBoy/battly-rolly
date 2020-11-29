@@ -13,7 +13,7 @@ const Editor = AsyncSection<User>();
 
 export const UserEdit: FC = observer(() => {
     const {params: {userId}} = useRouteMatch<Params>();
-    const user = useLoader<User>();
+    const user = useLoader();
     const empty = useCallback(() => ({
         displayName: '',
     }), []);

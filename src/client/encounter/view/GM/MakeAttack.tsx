@@ -3,7 +3,7 @@ import {DndProvider} from 'react-dnd';
 import {Button, Form, Grid, Header, List} from 'semantic-ui-react';
 import {Feature} from '../../../../server/model/feature';
 import {DropTarget, TargetType} from './DropTarget';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {StartLog} from '../../../../server/service/log';
 import {assign, filter, find, includes, map, pull, sortBy} from 'lodash';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -32,7 +32,7 @@ export const MakeAttack: FC<Props> = observer(({encounter}) => {
         type: 'direct',
         name: '',
     } as StartLog), []);
-    const logSetup = useLocalStore<StartLog>(empty);
+    const logSetup = useLocalObservable<StartLog>(empty);
     const isTargetFull = logSetup.type === 'direct' && logSetup.target.length > 0;
     const onDrop = useCallback((id: string) => ({target, action}: OnDrop) => {
         if (target === 'target' && !isTargetFull && !includes(logSetup.target, id))

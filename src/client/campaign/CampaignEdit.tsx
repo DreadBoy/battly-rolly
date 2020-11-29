@@ -13,7 +13,7 @@ const Editor = AsyncSection<Campaign>();
 
 export const CampaignEdit: FC = observer(() => {
     const {params: {campaignId}} = useRouteMatch<Params>();
-    const campaign = useLoader<Campaign>();
+    const campaign = useLoader();
     const empty = useCallback(() => ({
         name: '',
     }), []);

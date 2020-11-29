@@ -14,7 +14,7 @@ const Editor = AsyncSection<Encounter>();
 export const EncounterEdit: FC = observer(() => {
     const {params: {campaignId, encounterId}} = useRouteMatch<Params>();
 
-    const encounter = useLoader<Encounter>();
+    const encounter = useLoader();
     const empty = useCallback((): Partial<Encounter> => ({
         name: '',
     }), []);

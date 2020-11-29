@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useRef} from 'react';
 import {Button, Container, Form, Grid, Header, Input, Icon} from 'semantic-ui-react';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {Link} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
 import {onText} from '../hooks/use-form';
@@ -29,7 +29,7 @@ export type OnLogin = {
 
 export const Login: FC<Props> = observer(({onLogin}) => {
     const {api} = useBackend();
-    const form = useLocalStore<FormModel>(() => ({
+    const form = useLocalObservable<FormModel>(() => ({
         email: '',
         password: '',
     }));
@@ -38,7 +38,7 @@ export const Login: FC<Props> = observer(({onLogin}) => {
 
     const valid = !isEmpty(form.email) && !isEmpty(form.password);
 
-    const loader = useLoader<OnLogin>();
+    const loader = useLoader();
     const loaderId = 'login';
     const login = useCallback(() => {
         loader.fetchAsync(api.put('/auth', toJS(form)), loaderId)

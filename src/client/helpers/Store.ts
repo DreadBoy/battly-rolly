@@ -1,4 +1,4 @@
-import {useLocalStore} from 'mobx-react';
+import {useLocalObservable} from 'mobx-react';
 import {AxiosPromise} from 'axios';
 
 export type Silent = 'silent' | undefined;
@@ -52,6 +52,6 @@ export function createStore() {
 
 export type TStore = ReturnType<typeof createStore>;
 
-export function useLoader<T = null>() {
-    return useLocalStore(createStore);
+export function useLoader() {
+    return useLocalObservable(createStore);
 }

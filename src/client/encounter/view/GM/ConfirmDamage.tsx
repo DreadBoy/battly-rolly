@@ -4,8 +4,7 @@ import {Encounter} from '../../../../server/model/encounter';
 import {filter, find, findIndex, flatMap, isEmpty, isNil, map, negate, pick, some} from 'lodash';
 import {useLoader} from '../../../helpers/Store';
 import {useBackend} from '../../../helpers/BackendProvider';
-import {Feature} from '../../../../server/model/feature';
-import { type } from '../../../../server/model/helpers';
+import {type} from '../../../../server/model/helpers';
 
 type Props = {
     encounter: Encounter,
@@ -13,8 +12,8 @@ type Props = {
 
 export const ConfirmDamage: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
-    const _update = useLoader<Feature[]>();
-    const _confirm = useLoader<any[]>();
+    const _update = useLoader();
+    const _confirm = useLoader();
 
     const logs = filter(encounter.logs, l =>
         l.stage === 'WaitingOnConfirmed' &&

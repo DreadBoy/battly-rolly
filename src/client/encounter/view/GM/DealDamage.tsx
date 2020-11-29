@@ -18,7 +18,7 @@ type Props = {
 
 export const DealDamage: FC<Props> = observer(({encounter}) => {
     const {api} = useBackend();
-    const _loader = useLoader<any[]>();
+    const _loader = useLoader();
     const promise = useRef<Promise<any> | undefined>();
 
     const logs = filter(encounter.logs, l => l.stage === 'WaitingOnDamage');

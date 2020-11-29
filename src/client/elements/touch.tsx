@@ -1,4 +1,4 @@
-import React, {createContext, FC, useCallback, useContext, useEffect, useState} from 'react';
+import React, {createContext, FC, useContext, useEffect, useMemo, useState} from 'react';
 import {debounce} from 'lodash';
 
 type TouchContext = {
@@ -11,12 +11,14 @@ export const TouchProvider: FC = ({children}) => {
 
     const [touches, setTouches] = useState<number>(0);
 
-    const onTouchStart = useCallback(debounce((e: TouchEvent) => {
+    const onTouchStart = useMemo(() => debounce((e: TouchEvent) => {
         setTouches(e.touches.length);
-    }, 200), []);
+    }, 200), [setTouches]);
+
     useEffect(() => {
-        window.addEventListener('touchstart', onTouchStart);
-        return () => window.removeEventListener('touchstart', onTouchStart);
+        const cached = onTouchStart;
+        window.addEventListener('touchstart', cached);
+        return () => window.removeEventListener('touchstart', cached);
     }, [onTouchStart]);
 
     return (

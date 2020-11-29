@@ -1,7 +1,7 @@
 import {fakeRequest, useBackend} from '../helpers/BackendProvider';
 import {useHistory} from 'react-router';
 import React, {FC, useCallback, useEffect} from 'react';
-import {observer, useLocalStore} from 'mobx-react';
+import {observer, useLocalObservable} from 'mobx-react';
 import {TStore, useLoader} from '../helpers/Store';
 import {assign} from 'lodash';
 import {toJS} from 'mobx';
@@ -32,9 +32,9 @@ export function useEditor<T>(store: TStore, baseUrl: string, id: string, creator
         delete: `/${baseUrl}/${id}`,
     }, urls);
 
-    const editor = useLocalStore<Partial<T>>(creator);
+    const editor = useLocalObservable<Partial<T>>(creator);
 
-    const editorDefault = useLocalStore<Partial<T>>(creator);
+    const editorDefault = useLocalObservable<Partial<T>>(creator);
     useEffect(() => {
         const promise = mode === 'edit' ?
             store.fetchAsync(api.get(urlsAll.get), id) :

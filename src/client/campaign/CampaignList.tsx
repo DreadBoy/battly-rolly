@@ -17,7 +17,7 @@ export const CampaignList: FC = observer(() => {
     const {url} = useRouteMatch();
     const {api} = useBackend();
     const {id} = usePlayerId();
-    const campaigns = useLoader<Campaign[]>();
+    const campaigns = useLoader();
     useEffect(() => {
         campaigns.fetch(api.get('/campaign'), id);
     }, [api, campaigns, id]);
