@@ -1,5 +1,6 @@
 import {useLocalObservable} from 'mobx-react';
 import {AxiosPromise} from 'axios';
+import {action, observable, runInAction} from 'mobx';
 
 export type Silent = 'silent' | undefined;
 type Obj<T = any> = { [id: string]: T };
@@ -19,22 +20,27 @@ export function createStore() {
         async fetchAsync(request: AxiosPromise, uuid: string, silent?: Silent) {
             const isSilent = silent === 'silent';
             if (!isSilent) {
-                this.loading[uuid] = true;
-                delete this.data[uuid];
-                delete this.error[uuid];
+                runInAction(() => {
+                    this.loading[uuid] = true;
+                    delete this.data[uuid];
+                    delete this.error[uuid];
+                })
             }
-
             try {
                 const response = await request;
-                this.data[uuid] = response.data;
-                this.loading[uuid] = false;
+                runInAction(() => {
+                    this.data[uuid] = response.data;
+                    this.loading[uuid] = false;
+                })
             } catch (e) {
                 let error = e;
                 if (e.response && e.response.data)
                     error = e.response.data;
                 console.error(error);
-                this.error[uuid] = error;
-                this.loading[uuid] = false;
+                runInAction(() => {
+                    this.error[uuid] = error;
+                    this.loading[uuid] = false;
+                })
                 throw error;
             }
             return this.data[uuid];
@@ -50,8 +56,19 @@ export function createStore() {
     };
 }
 
+export const annotations = {
+    loading: observable,
+    error: observable,
+    data: observable,
+    set: action,
+    get: action,
+    fetchAsync: action,
+    fetch: action,
+    reset: action,
+}
+
 export type TStore = ReturnType<typeof createStore>;
 
 export function useLoader() {
-    return useLocalObservable(createStore);
+    return useLocalObservable(createStore, annotations);
 }
