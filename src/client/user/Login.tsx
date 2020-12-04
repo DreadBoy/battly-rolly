@@ -1,5 +1,5 @@
 import React, {FC, useCallback, useRef} from 'react';
-import {Button, Container, Form, Grid, Header, Input, Icon} from 'semantic-ui-react';
+import {Button, Container, Form, Grid, Icon, Input} from 'semantic-ui-react';
 import {observer, useLocalObservable} from 'mobx-react';
 import {Link} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
@@ -16,6 +16,7 @@ import {usePasswordInput} from '../hooks/use-password-input';
 import {successMessage, useResetPassword} from '../hooks/use-reset-password';
 import {Success} from '../elements/Success';
 import {ButtonAsLink} from '../elements/ButtonAsLink';
+import {FormLogo} from './FormLogo';
 
 type Props = {
     onLogin: (onLogin: OnLogin) => void,
@@ -63,7 +64,7 @@ export const Login: FC<Props> = observer(({onLogin}) => {
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Header size={'huge'} textAlign='center'>Log In</Header>
+                        <FormLogo>Log In</FormLogo>
                         <p>
                             Need a Crit Hit account? <Link to={app('/register')}>Create an account</Link>
                         </p>

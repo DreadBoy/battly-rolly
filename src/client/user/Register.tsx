@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from 'react';
-import {Button, Container, Form, Grid, Header, Input} from 'semantic-ui-react';
+import {Button, Container, Form, Grid, Input} from 'semantic-ui-react';
 import {observer, useLocalObservable} from 'mobx-react';
 import {Link, useHistory} from 'react-router-dom';
 import {Splash} from '../layout/Splash';
@@ -13,6 +13,7 @@ import {Stacktrace} from '../elements/Stacktrace';
 import {usePlayerId} from '../helpers/PlayerId';
 import {app} from '../App';
 import {usePasswordInput} from '../hooks/use-password-input';
+import {FormLogo} from './FormLogo';
 
 export const Register: FC = observer(() => {
     const {api} = useBackend();
@@ -46,7 +47,7 @@ export const Register: FC = observer(() => {
             <Container>
                 <Grid columns={2} centered doubling>
                     <Grid.Column>
-                        <Header size={'huge'} textAlign='center'>Welcome to Crit Hit</Header>
+                        <FormLogo>Welcome to Crit Hit</FormLogo>
                         <p>
                             Run encounters. Create custom monsters. Do it all with Crit Hit.
                             Already have an account? <Link to={app()}>Log in</Link>
