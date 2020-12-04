@@ -13,6 +13,9 @@ type Props = {
 }
 
 const useStyles = createUseStyles({
+    container: {
+        marginBottom: 20,
+    },
     menuOnLanding: {
         '&.ui.menu': {
             background: 'transparent',
@@ -36,14 +39,14 @@ const useStyles = createUseStyles({
     },
 });
 
-export const Menu: FC<Props> = ({className, onLanding}) => {
+export const Menu: FC<Props> = ({onLanding}) => {
     const {path} = useRouteMatch();
     const classes = useStyles({onLanding});
     return (
         <>
-            <Container>
+            <Container className={classNames({[classes.container]: !onLanding})}>
                 <SMenu
-                    className={classNames(className, {[classes.menuOnLanding]: onLanding})}
+                    className={classNames({[classes.menuOnLanding]: onLanding})}
                     size={'large'}
                 >
                     <SMenu.Item as={Link} to={'/'} active={path === '/'}>Home</SMenu.Item>

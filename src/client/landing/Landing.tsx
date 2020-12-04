@@ -80,7 +80,7 @@ export const Landing: FC = () => {
                 />
                 <Header
                     as='h2'
-                    content='Run encounters. Create custom monsters. Do it all!'
+                    content='Run encounters with ease. Roleplay instead of crunching numbers!'
                     className={classes.header2}
                 />
                 <Button size={'huge'} primary className={classes.button} as={Link} to={app()}>

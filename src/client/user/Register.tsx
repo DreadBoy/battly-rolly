@@ -49,7 +49,7 @@ export const Register: FC = observer(() => {
                     <Grid.Column>
                         <FormLogo>Welcome to Crit Hit</FormLogo>
                         <p>
-                            Run encounters. Create custom monsters. Do it all with Crit Hit.
+                            Run encounters with ease. Create custom monsters. Do it all with Crit Hit.
                             Already have an account? <Link to={app()}>Log in</Link>
                         </p>
                         <Form onSubmit={register}>

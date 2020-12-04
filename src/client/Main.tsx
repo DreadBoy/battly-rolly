@@ -7,7 +7,7 @@ import {ServiceWorkerProvider} from './hooks/use-service-worker';
 import {app, App} from './App';
 import {Landing} from './landing/Landing';
 import {FourOhFour} from './layout/404';
-import {Page} from './layout/Page';
+import {About} from './landing/About';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -40,7 +40,7 @@ const Main: FC = () => {
                     <TouchProvider>
                         <Switch>
                             <Route path={app('')} component={App}/>
-                            <Route path={'/about'} component={Page}/>
+                            <Route path={'/about'} component={About}/>
                             <Route path={'/'} exact component={Landing}/>
                             <Route path={'*'} component={FourOhFour}/>
                         </Switch>
