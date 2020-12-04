@@ -65,9 +65,9 @@ export const BackendProvider: FC = ({children}) => {
 
 export const useBackend = () => useContext(backendContext);
 
-export function fakeRequest<T>(creator: () => Partial<T>, status = 200): AxiosPromise<T> {
-    return Promise.resolve({
-        data: creator(),
+export function fakeRequest<T>(creator: () => Promise<Partial<T>>, status = 200): AxiosPromise<T> {
+    return creator().then((value) => ({
+        data: value,
         status,
-    } as any);
+    } as any));
 }

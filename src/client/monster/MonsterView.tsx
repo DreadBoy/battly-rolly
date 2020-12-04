@@ -4,14 +4,14 @@ import {Layout} from '../layout/Layout';
 import {Monster} from '../../server/model/monster';
 import {observer} from 'mobx-react';
 import {Link, useRouteMatch} from 'react-router-dom';
-import {useBackend} from '../helpers/BackendProvider';
+import {fakeRequest, useBackend} from '../helpers/BackendProvider';
 import {createUseStyles} from 'react-jss';
 import {useLoader} from '../helpers/Store';
 import {useGlobalStore} from '../helpers/GlobalStore';
 import {usePlayerId} from '../helpers/PlayerId';
-import {filter, map, some, isNil} from 'lodash';
+import {filter, isNil, map, some} from 'lodash';
 import {Stacktrace} from '../elements/Stacktrace';
-import {useShare} from '../hooks/use-share';
+import {SilentShareMessage, useShare} from '../hooks/use-share';
 import {AsyncSection} from '../helpers/AsyncSection';
 import {abilityShort, roll, withSign} from '../helpers/display-helpers';
 import {abilities, Ability, Roll} from '../../server/model/action-types';
@@ -40,10 +40,14 @@ export const MonsterView: FC = observer(() => {
         monster.fetch(api.get(`/monster/${monsterId}`), monsterId);
     }, [api, monster, monsterId, url]);
 
-    const {canShare, share} = useShare({
+    const _share = useLoader();
+    const __share = useShare({
         title: monster.data[monsterId]?.name,
         url: window.location.href,
     });
+    const share = useCallback(() => {
+        _share.fetch(fakeRequest(__share), monsterId);
+    }, [__share, _share, monsterId]);
 
     const _sub = useLoader();
     const sub = useCallback(() => {
@@ -158,12 +162,6 @@ export const MonsterView: FC = observer(() => {
                             )}
                         </Grid.Column>
                         <Grid.Column>
-                            {canShare && (
-                                <>
-                                    <Header sub>Share monster</Header>
-                                    <Button basic primary onClick={share}>Share</Button>
-                                </>
-                            )}
                             {data.owner.id === playerId ? (
                                 <>
                                     <Header sub>Edit monster</Header>
@@ -197,6 +195,14 @@ export const MonsterView: FC = observer(() => {
                                     <Stacktrace error={_sub.error[monsterId]}/>
                                 </>
                             )}
+                            <Header sub>Share monster</Header>
+                            <Button
+                                basic
+                                primary
+                                onClick={share}
+                            >Share</Button>
+                            <Stacktrace error={_share.error[monsterId]}/>
+                            <SilentShareMessage result={_share.data[monsterId]}/>
                         </Grid.Column>
                     </Grid>
                 )}

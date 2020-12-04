@@ -38,7 +38,7 @@ export function useEditor<T>(store: TStore, baseUrl: string, id: string, creator
     useEffect(() => {
         const promise = mode === 'edit' ?
             store.fetchAsync(api.get(urlsAll.get), id) :
-            store.fetchAsync(fakeRequest<T>(creator), fakeId);
+            store.fetchAsync(fakeRequest<T>(async () => creator()), fakeId);
         promise.then((data) => {
             assign(editorDefault, data);
             assign(editor, data);

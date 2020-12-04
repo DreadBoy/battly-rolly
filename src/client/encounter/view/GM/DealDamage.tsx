@@ -75,7 +75,7 @@ export const DealDamage: FC<Props> = observer(({encounter}) => {
         if (!isEmpty(invalid))
             return console.error('Missing actions or return values: ', map(map(invalid, 'log'), l => toJS(l)));
         const requests = map(valid, ({log, body}) => api.put(`/log/${log.id}/deal-damage`, body)).map(p => p.catch(e => e));
-        const request = fakeRequest(() => requests);
+        const request = fakeRequest(async () => requests);
         promise.current = _loader.fetchAsync(request, encounter.id)
             .catch(e => e)
             .then(() => promise.current = undefined);
