@@ -8,6 +8,7 @@ import {app, App} from './App';
 import {Landing} from './landing/Landing';
 import {FourOhFour} from './layout/404';
 import {About} from './landing/About';
+import {UpdateButton} from './layout/UpdateButton';
 
 const useStyles = createUseStyles({
     '@global': {
@@ -43,6 +44,7 @@ const Main: FC = () => {
                             <Route path={'/about'} component={About}/>
                             <Route path={'/'} exact component={Landing}/>
                             <Route path={'*'} component={FourOhFour}/>
+                            <UpdateButton/>
                         </Switch>
                     </TouchProvider>
                 </BrowserRouter>

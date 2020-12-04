@@ -61,10 +61,6 @@ export const About: FC = () => {
                         </List.Item>
                     ))}
                 </List>
-                <p>
-
-                    Offline game
-                </p>
             </Container>
         </Page>
     );

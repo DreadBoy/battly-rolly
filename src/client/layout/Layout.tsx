@@ -10,7 +10,6 @@ import {app} from '../App';
 import {useGlobalStore} from '../helpers/GlobalStore';
 import {find, some} from 'lodash';
 import {observer} from 'mobx-react';
-import {UpdateButton} from './UpdateButton';
 import {Encounter} from '../../server/model/encounter';
 import {Campaign} from '../../server/model/campaign';
 
@@ -164,7 +163,6 @@ export const Layout: FC = observer(({children}) => {
             </Menu>
             <Container>
                 {children}
-                <UpdateButton/>
             </Container>
         </div>
     );
