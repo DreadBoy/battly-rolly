@@ -6,7 +6,7 @@ import {
     createMonster,
     deleteMonster, getAvailableMonsters,
     getMonster,
-    searchAllMonsters,
+    searchSubscribableMonsters,
     searchAvailableMonsters, subscribe, unsubscribe,
     updateMonster,
 } from '../service/monster';
@@ -17,9 +17,9 @@ router.get('/search', authenticate, async ctx => {
     const search = validateQuery(ctx, 'search');
     ctx.body = await searchAvailableMonsters(search, ctx.state.user);
 });
-router.get('/searchAll', authenticate, async ctx => {
+router.get('/search-subscribable', authenticate, async ctx => {
     const search = validateQuery(ctx, 'search');
-    ctx.body = await searchAllMonsters(search);
+    ctx.body = await searchSubscribableMonsters(search, ctx.state.user);
 });
 
 router.get('/', authenticate, async ctx => {

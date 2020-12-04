@@ -10,7 +10,7 @@ import {sadFace} from '../elements/emojis';
 
 type Props = {
     onSelect: (monster: Monster) => void,
-    pool?: 'available' | 'all',
+    pool: 'available' | 'subscribable',
 }
 
 export const SearchMonsters: FC<Props> = observer(({onSelect, pool}) => {
@@ -19,12 +19,12 @@ export const SearchMonsters: FC<Props> = observer(({onSelect, pool}) => {
     const [value, setValue] = useState<string>('');
     const loader = useLoader()
 
-    const url = useRef<'search' | 'searchAll'>('search');
+    const url = useRef<'search' | 'search-subscribable'>('search');
     useEffect(() => {
         if (pool === 'available')
             url.current = 'search';
-        if (pool === 'all')
-            url.current = 'searchAll';
+        if (pool === 'subscribable')
+            url.current = 'search-subscribable';
     }, [pool])
 
     const fetch = useRef(
@@ -80,6 +80,3 @@ export const SearchMonsters: FC<Props> = observer(({onSelect, pool}) => {
         </Form.Field>
     );
 });
-SearchMonsters.defaultProps = {
-    pool: 'available',
-}

@@ -61,13 +61,15 @@ export async function searchAvailableMonsters(term: string, user: User): Promise
         .getMany();
 }
 
-export async function searchAllMonsters(term: string): Promise<Monster[]> {
-    return byName(getManager().createQueryBuilder(Monster, 'monster'), term)
+export async function getAvailableMonsters(user: User): Promise<Monster[]> {
+    return availableMonsters(user)
         .getMany();
 }
 
-export async function getAvailableMonsters(user: User): Promise<Monster[]> {
-    return availableMonsters(user)
+export async function searchSubscribableMonsters(term: string, user: User): Promise<Monster[]> {
+    return byName(getManager().createQueryBuilder(Monster, 'monster'), term)
+        .leftJoin('monster.owner', 'owner')
+        .where('owner.id != :userId', {userId: user.id})
         .getMany();
 }
 

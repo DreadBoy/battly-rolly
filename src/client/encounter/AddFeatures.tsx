@@ -36,7 +36,7 @@ export const AddFeatures: FC<Props> = ({encounter}) => {
             <Header size={'small'}>Add entities</Header>
             <Grid columns={2}>
                 <Grid.Column>
-                    <SearchMonsters onSelect={onAdd}/>
+                    <SearchMonsters onSelect={onAdd} pool={'available'}/>
                 </Grid.Column>
                 <Grid.Column>
                     <Stacktrace error={silentLoader.error['add']}/>

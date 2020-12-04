@@ -97,7 +97,7 @@ export const MonsterList: FC = observer(() => {
                     <Grid.Column>
                         <Header sub>Subscribed monsters</Header>
                         <Form>
-                            <SearchMonsters pool={'all'} onSelect={subscribe}/>
+                            <SearchMonsters pool={'subscribable'} onSelect={subscribe}/>
                             <Stacktrace error={_subscribe.error['sub']}/>
                         </Form>
                         <List
