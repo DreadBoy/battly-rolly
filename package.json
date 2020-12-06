@@ -4,22 +4,24 @@
   "engines": {
     "node": "12.x"
   },
+  "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "client:start": "react-scripts start",
-    "client:build": "react-scripts build && react-snap",
+    "client:build": "react-scripts build && react-snap && workbox generateSW workbox-config.js",
     "client:clean": "rimraf build",
     "client:test": "react-scripts test",
-    "server:watch": "npm run server:clean && tsc --watch --project tsconfig.server.json",
+    "server:watch": "yarn run server:clean && tsc --watch --project tsconfig.server.json",
     "server:start": "nodemon --inspect=3002",
-    "server:build": "npm run server:clean && tsc --project tsconfig.server.json",
+    "server:build": "yarn run server:clean && tsc --project tsconfig.server.json",
     "server:clean": "rimraf build-server",
     "server:test": "jest",
-    "create-migration": "npm run server:build && node build/db-tools/create-migration.js",
-    "apply-migrations": "npm run server:build && node build/db-tools/apply-migrations.js",
-    "build": "npm run client:build && npm run server:build",
-    "clean": "npm run client:clean && npm run server:clean ",
-    "test": "npm run client:test && npm run server:test",
-    "deploy": "npm run build && gcloud app deploy -q && npm run clean",
+    "create-migration": "yarn run server:build && node build/db-tools/create-migration.js",
+    "apply-migrations": "yarn run server:build && node build/db-tools/apply-migrations.js",
+    "clean": "yarn run server:clean && yarn run client:clean ",
+    "test": "yarn run server:test && yarn run client:test",
+    "pre-deploy": "yarn run server:build && yarn run server:start",
+    "deploy": "yarn run client:build && gcloud app deploy -q && yarn run clean",
     "start": "node build-server/server.js"
   },
   "dependencies": {
@@ -104,7 +106,8 @@
     "@types/smtp-server": "3.5.5",
     "@types/socket.io": "2.1.11",
     "@types/socket.io-client": "1.4.34",
-    "react-snap": "1.23.0"
+    "react-snap": "1.23.0",
+    "workbox-cli": "6.0.2"
   },
   "reactSnap": {
     "inlineCss": false
@@ -125,6 +128,6 @@
     ]
   },
   "jest": {
-    "rootDir": "build"
+    "rootDir": "build-server"
   }
 }
