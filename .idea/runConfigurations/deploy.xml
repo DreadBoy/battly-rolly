@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="deploy" type="Multirun" factoryName="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="7.0">
+    <runConfiguration name="cloud_sql_proxy.sh" type="Shell Script" />
     <runConfiguration name="pre-deploy" type="npm" />
     <runConfiguration name="_deploy" type="npm" />
     <method v="2" />

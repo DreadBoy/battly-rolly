@@ -14,8 +14,8 @@ async function createMigration() {
 
     await injectNodemonEnv();
     await createOrmConfig({
-        entities: ['build/model/*.js'],
-        migrations: ['build/migrations/*.js'],
+        entities: ['build-server/model/*.js'],
+        migrations: ['build-server/migrations/*.js'],
         cli: {
             migrationsDir: 'src/server/migrations',
         },

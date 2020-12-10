@@ -18,5 +18,6 @@ export function getConfig(DATABASE_URL?: string): ConnectionOptions {
         extra: {
             ssl: false,
         },
+        synchronize: false,
     }
 }

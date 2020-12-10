@@ -16,7 +16,7 @@ export class Encounter extends ReactiveEntity {
     @Column()
     name!: string;
 
-    @ManyToOne(() => Campaign, campaign => campaign.encounters)
+    @ManyToOne(() => Campaign, campaign => campaign.encounters, {onDelete: 'CASCADE'})
     campaign!: Campaign;
 
     @OneToMany(() => Feature, feature => feature.encounter)

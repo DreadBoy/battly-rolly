@@ -5,11 +5,11 @@ import {createOrmConfig, deleteOrmConfig, injectNodemonEnv} from './migration-he
 async function applyMigrations() {
     await injectNodemonEnv();
     const ormConfig = await createOrmConfig({
-        entities: ['build/model/*.js'],
-        migrations: ['build/migrations/*.js'],
+        entities: ['build-server/model/*.js'],
+        migrations: ['build-server/migrations/*.js'],
         cli: {
-            migrationsDir: 'build/migrations',
-            entitiesDir: 'build/model',
+            migrationsDir: 'build-server/migrations',
+            entitiesDir: 'build-server/model',
         },
     });
 

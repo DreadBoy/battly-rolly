@@ -98,6 +98,6 @@ export class Log extends ReactiveEntity {
     })
     confirmed!: (boolean | null)[];
 
-    @ManyToOne(() => Encounter, encounter => encounter.logs)
+    @ManyToOne(() => Encounter, encounter => encounter.logs, {onDelete: 'CASCADE'})
     encounter!: Encounter;
 }
