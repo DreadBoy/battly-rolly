@@ -13,6 +13,8 @@ import {logger} from '../logger';
 import {blue} from 'chalk';
 
 export async function connectDatabase() {
+    if (!process.env.DATABASE_URL)
+        throw new Error('Invalid or missing DATABASE_URL env variable');
     logger.info(blue('Connecting to database'));
     try {
         const connection = getConnection();
@@ -22,13 +24,12 @@ export async function connectDatabase() {
         if (!(e instanceof ConnectionNotFoundError))
             throw e;
     }
-    if (!process.env.DATABASE_URL)
-        throw new Error('Invalid or missing DATABASE_URL env variable');
     let config = getConfig(process.env.DATABASE_URL);
     config = {
         ...config,
         entities: [User, Campaign, Encounter, Feature, Log, Monster, Action],
         migrations: [],
+        synchronize: false,
     };
     return createConnection(config);
 }

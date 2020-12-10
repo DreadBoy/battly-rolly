@@ -3,6 +3,13 @@ Your local setup will be connecting to DEV database and DEV secrets. Download an
 
 Once set up, you start local server by running `service-accounts/cloud_sql_proxy.sh`, `server:watch`, `server:start` and `client:start` in that order.
 
+##GCloud setup
+
+1. Create new app
+2. Enable Secret Manager and add all secrets (refer to `inject-secrets.ts`)
+3. Create service account and download its private key
+4. Under IAM, assign "Secret Manager Secret Accessor" and "Secret Manager Viewer" roles to newly created service account
+
 ## Deployment
 Run`yarn run deploy` and `yarn run server:start` right after serve is built. I know, deployment process is manual...
 
